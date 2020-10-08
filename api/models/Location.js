@@ -8,19 +8,19 @@ class Location extends Model {
 		return {
 			ridesTo: {
 				relation: Model.HasManyRelation,
-				modelClass: Vehicle,
+				modelClass: Ride,
 				join: {
-					from: "state.abbreviation",
-					to: 'Model.vehicle.licenseState'
+					from: "location.id",
+					to: 'Model.ride.toLocationId'
 				}
 			},
 
 			ridesFrom: {
 				relation: Model.HasManyRelation,
-				modelClass: Location,
+				modelClass: Ride,
 				join: {
-					from: 'state.abbreviation',
-					to: 'Model.location.state'
+					from: 'location.id',
+					to: 'Model.ride.fromLocationId'
 				}
 			}
 		}
