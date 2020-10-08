@@ -22,7 +22,7 @@ class State extends Model {
 					from: 'state.abbreviation',
 					to: 'Model.location.state'
 				}
-			}
+			},
 
 			drivers: {
 				relation: Model.HasManyRelation,

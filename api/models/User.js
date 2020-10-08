@@ -29,12 +29,15 @@ class User extends Model {
 }
 
 
-User.query()
-	.where('id',1)
-	.firs()
-	.then(user => {
-		console.log(user);
-		return user.$relatedQuery('drivers');
-	})
-	.then(drivers => console.log(drivers))
-	.catch(error => console.log(error.message));
+// User.query()
+// 	.where('id',1)
+// 	.firs()
+// 	.then(user => {
+// 		console.log(user);
+// 		return user.$relatedQuery('drivers');
+// 	})
+// 	.then(drivers => console.log(drivers))
+// 	.catch(error => console.log(error.message));
+
+module.exports = User;
+
