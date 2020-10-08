@@ -2,7 +2,7 @@ const { knex, Model } = require("../db");
 
 class User extends Model {
 	static get tableName() {
-		return 'user';
+		return 'User';
 	}
 
 	static get relationMappings() {
@@ -11,7 +11,7 @@ class User extends Model {
 				relation: Model.HasManyRelation,
 				modelClass: Driver,
 				join: {
-					from: 'Model.user.id',
+					from: "user.id",
 					to: 'Model.driver.id'
 				}
 			},
@@ -20,7 +20,7 @@ class User extends Model {
 				relation: Model.HasManyRelation,
 				modelClass: Passenger,
 				join: {
-					from: 'Model.user.id',
+					from: 'user.id',
 					to: 'Model.passenger.passengerId'
 				}
 			}
@@ -30,12 +30,11 @@ class User extends Model {
 
 
 User.query()
-	.where('id', 1)
-	.first()
+	.where('id',1)
+	.firs()
 	.then(user => {
 		console.log(user);
 		return user.$relatedQuery('drivers');
 	})
 	.then(drivers => console.log(drivers))
 	.catch(error => console.log(error.message));
-
