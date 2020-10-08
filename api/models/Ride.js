@@ -11,8 +11,16 @@ class Ride extends Model {
 				relation: Model.HasManyRelation,
 				modelClass: Passenger,
 				join: {
-					from: 'Model.ride.id',
+					from: 'ride.id',
 					to: 'Model.passenger.rideId'
+				}
+			},
+			drivers: {
+				relation: Model.HasManyRelation,
+				modelClass: Drivers,
+				join: {
+					from: 'ride.id',
+					to: 'Model.drivers.driverId'
 				}
 			}
 		}

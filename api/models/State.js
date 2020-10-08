@@ -4,7 +4,39 @@ class State extends Model {
 	static get tableName() {
 		return 'State';
 	}
+	static get relationMappings() {
+		return {
+			vehicles: {
+				relation: Model.HasManyRelation,
+				modelClass: Vehicle,
+				join: {
+					from: "state.abbreviation",
+					to: 'Model.vehicle.licenseState'
+				}
+			},
+
+			locations: {
+				relation: Model.HasManyRelation,
+				modelClass: Location,
+				join: {
+					from: 'state.abbreviation',
+					to: 'Model.location.state'
+				}
+			}
+
+			drivers: {
+				relation: Model.HasManyRelation,
+				modelClass: Driver,
+				join: {
+					from: 'state.abbreviation',
+					to: 'Model.driver.licenseState'
+				}
+			}
+		}
+	}
 }
+
+
 
 // State.query()
 //     .then(states => {

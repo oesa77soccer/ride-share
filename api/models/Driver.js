@@ -2,7 +2,7 @@ const { knex, Model } = require("../db");
 
 class Driver extends Model {
 	static get tableName() {
-		return 'driver';
+		return 'Driver';
 	}
 
 	static get relationMappings() {
@@ -11,7 +11,7 @@ class Driver extends Model {
 				relation: Model.HasManyRelation,
 				modelClass: Drivers,
 				join: {
-					from: 'Model.driver.id',
+					from: 'driver.id',
 					to: 'Model.drivers.driverId'
 				}
 			},
@@ -19,7 +19,7 @@ class Driver extends Model {
 				relation: Model.HasManyRelation,
 				modelClass: Authorization,
 				join: {
-					from: 'Model.driver.id',
+					from: 'driver.id',
 					to: 'Model.authorization.driverId'
 				}
 			}
