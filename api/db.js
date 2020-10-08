@@ -1,11 +1,12 @@
 // Connect knex to the database.
 const knex = require('knex') ({
-	client: 'pg',
+    client: 'pg',
+    searchPath: 'ride_share',
 	connection: {
 		host: 'faraday.cse.taylor.edu',
 		user: 'logan_roth',
 		password: 'fatipofo',
-		database: 'logan_roth'
+        database: 'logan_roth',
 	}
 });
 // Connect objection to knex.
