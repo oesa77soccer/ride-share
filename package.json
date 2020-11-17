@@ -1,0 +1,11 @@
+{
+  "name": "ride-share",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/oesa77soccer/ride-share.git",
+  "author": "Kendall Miyakawa <kemiyaka@cse.taylor.edu>",
+  "license": "MIT",
+  "dependencies": {
+    "swagger-ui": "^3.35.2"
+  }
+}
