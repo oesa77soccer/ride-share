@@ -6,8 +6,8 @@ class Passenger extends Model {
     }
     
     static get relationMappings() {
-        const Ride = require('Ride');
-        const User = require('User');
+        const Ride = require('./Ride');
+        const User = require('./User');
 		return {
 			user: {
 				relation: Model.BelongsToOneRelation,

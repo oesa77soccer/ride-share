@@ -5,14 +5,14 @@ class Location extends Model {
 		return 'Location';
 	}
 	static get relationMappings() {
-		const Ride = require('Ride');
+		const Ride = require('./Ride');
 		return {
 			ridesTo: {
 				relation: Model.HasManyRelation,
 				modelClass: Ride,
 				join: {
 					from: "location.id",
-					to: 'Model.ride.toLocationId'
+					to: 'ride.toLocationId'
 				}
 			},
 
@@ -21,7 +21,7 @@ class Location extends Model {
 				modelClass: Ride,
 				join: {
 					from: 'location.id',
-					to: 'Model.ride.fromLocationId'
+					to: 'ride.fromLocationId'
 				}
 			}
 		}

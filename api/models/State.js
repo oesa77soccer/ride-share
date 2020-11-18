@@ -5,16 +5,16 @@ class State extends Model {
 		return 'State';
 	}
 	static get relationMappings() {
-        const Driver = require('Driver');
-        const Vehicle = require('Vehicle');
-        const Location = require('Location');
+        const Driver = require('./Driver');
+        const Vehicle = require('./Vehicle');
+        const Location = require('./Location');
 		return {
 			vehicles: {
 				relation: Model.HasManyRelation,
 				modelClass: Vehicle,
 				join: {
 					from: "state.abbreviation",
-					to: 'Model.vehicle.licenseState'
+					to: 'vehicle.licenseState'
 				}
 			},
 
@@ -23,7 +23,7 @@ class State extends Model {
 				modelClass: Location,
 				join: {
 					from: 'state.abbreviation',
-					to: 'Model.location.state'
+					to: 'location.state'
 				}
 			},
 
@@ -32,7 +32,7 @@ class State extends Model {
 				modelClass: Driver,
 				join: {
 					from: 'state.abbreviation',
-					to: 'Model.driver.licenseState'
+					to: 'driver.licenseState'
 				}
 			}
 		}

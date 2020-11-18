@@ -6,15 +6,15 @@ class Vehicle extends Model {
 	}
 
 	static get relationMappings() {
-        const Authorization = require('Authorization');
-        const Ride = require('Ride');
+        const Authorization = require('./Authorization');
+        const Ride = require('./Ride');
 		return {
 			authorizations: {
 				relation: Model.HasManyRelation,
 				modelClass: Authorization,
 				join: {
 					from: "vehicle.id",
-					to: 'Model.authorization.id'
+					to: 'authorization.vehicleId'
 				}
 			},
 
@@ -23,7 +23,7 @@ class Vehicle extends Model {
 				modelClass: Ride,
 				join: {
 					from: 'vehicle.id',
-					to: 'Model.ride.vehicleId'
+					to: 'ride.vehicleId'
 				}
 			}
 		}

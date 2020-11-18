@@ -6,8 +6,8 @@ class User extends Model {
 	}
 
 	static get relationMappings() {
-        const Driver = require('Driver');
-        const Passenger = require('Passenger');
+        const Driver = require('./Driver');
+        const Passenger = require('./Passenger');
 		return {
 			drivers: {
 				relation: Model.HasManyRelation,

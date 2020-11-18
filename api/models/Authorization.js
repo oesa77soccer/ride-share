@@ -6,8 +6,8 @@ class Authorization extends Model {
     }
     
     static get relationMappings() {
-        const Driver = require('Driver');
-        const Vehicle = require('Vehicle');
+        const Driver = require('./Driver');
+        const Vehicle = require('./Vehicle');
 		return {
 			driver: {
 				relation: Model.BelongsToOneRelation,
