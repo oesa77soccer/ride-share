@@ -6,16 +6,16 @@ const objection = require("objection");
 objection.Model.knex(knex);
 
 // Models
-const Authorization = require("./models/Authorization");
-const Driver = require("./models/Driver");
-const Drivers = require("./models/Drivers");
-const Location = require("./models/Location");
-const Passenger = require("./models/Passenger");
-const Ride = require("./models/Ride");
-const State = require("./models/State");
-const User = require("./models/User");
-const Vehicle = require("./models/Vehicle");
-const VehicleType = require("./models/VehicleType");
+const Authorization = require("./api/models/Authorization");
+const Driver = require("./api/models/Driver");
+const Drivers = require("./api/models/Drivers");
+const Location = require("./api/models/Location");
+const Passenger = require("./api/models/Passenger");
+const Ride = require("./api/models/Ride");
+const State = require("./api/models/State");
+const User = require("./api/models/User");
+const Vehicle = require("./api/models/Vehicle");
+const VehicleType = require("./api/models/VehicleType");
 
 // Hapi
 const Joi = require("@hapi/joi"); // Input validation
