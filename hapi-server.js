@@ -1,14 +1,5 @@
-// Knex
-const knex = require("knex")({
-    client: "pg",
-    connection: {
-        host: 'faraday.cse.taylor.edu',
-        user: 'kendall_miyakawa',
-        password: 'sawizidi',
-        database: 'kendall_miyakawa'
-    },
-    searchPath: 'account_spa'
-});
+// Knex, Model
+const { knex, Model } = require("./api/db")
 
 // Objection
 const objection = require("objection");
