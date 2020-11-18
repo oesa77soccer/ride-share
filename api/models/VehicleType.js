@@ -6,6 +6,7 @@ class VehicleType extends Model {
 	}
 
 	static get relationMappings() {
+        const Vehicle = require('Vehicle');
 		return {
 			vehicles: {
 				relation: Model.HasManyRelation,

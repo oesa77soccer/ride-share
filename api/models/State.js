@@ -5,6 +5,9 @@ class State extends Model {
 		return 'State';
 	}
 	static get relationMappings() {
+        const Driver = require('Driver');
+        const Vehicle = require('Vehicle');
+        const Location = require('Location');
 		return {
 			vehicles: {
 				relation: Model.HasManyRelation,
