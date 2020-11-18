@@ -77,7 +77,7 @@ export default {
     // Calculate the CSS class for an item
     itemClass(item) {
       const currentRide = this.$store.state.currentRide;
-      if (currentRide && currentAccount.id === item.id) {
+      if (currentRide && currentRide.id === item.id) {
         return "currentRide";
       }
     },
