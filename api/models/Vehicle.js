@@ -30,3 +30,4 @@ class Vehicle extends Model {
 	}
 }
 
+module.exports = Vehicle;
