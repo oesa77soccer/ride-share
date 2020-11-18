@@ -14,7 +14,7 @@ class User extends Model {
 				modelClass: Driver,
 				join: {
 					from: "user.id",
-					to: 'Model.driver.id'
+					to: 'driver.userId'
 				}
 			},
 
@@ -23,7 +23,7 @@ class User extends Model {
 				modelClass: Passenger,
 				join: {
 					from: 'user.id',
-					to: 'Model.passenger.passengerId'
+					to: 'passenger.userId'
 				}
 			}
 		}
