@@ -6,7 +6,16 @@ const objection = require("objection");
 objection.Model.knex(knex);
 
 // Models
-const Account = require("./models/Account");
+const Authorization = require("./models/Authorization");
+const Driver = require("./models/Driver");
+const Drivers = require("./models/Drivers");
+const Location = require("./models/Location");
+const Passenger = require("./models/Passenger");
+const Ride = require("./models/Ride");
+const State = require("./models/State");
+const User = require("./models/User");
+const Vehicle = require("./models/Vehicle");
+const VehicleType = require("./models/VehicleType");
 
 // Hapi
 const Joi = require("@hapi/joi"); // Input validation
@@ -34,6 +43,30 @@ async function init() {
 
     // Configure routes.
     server.route([
+        {
+            method: "GET",
+            path: "/rides",
+            config: {
+                description: "Retrieve all rides",
+                validate: {
+                    params: Joi.object({
+                        name: Joi.optional().string().min(1),
+                        address: Joi.optional().string().min(1),
+                        city: Joi.optional().string().min(1),
+                        state: Joi.optional().string().length(2),
+                        zip: Joi.optional().number().length(5)
+                    })
+                }
+            },
+            handler: (request, h) => {
+                // const results;
+                // if (request.params.name) {
+                //     results = await User.query().withGraphFetched('location')
+                // }
+                return User.query().withGraphFetched('location')
+            },
+        },
+        
         {
             method: "POST",
             path: "/accounts",

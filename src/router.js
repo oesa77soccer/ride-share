@@ -7,6 +7,7 @@ import SignUp from "./pages/SignUp.vue";
 import About from "./pages/About.vue";
 import Accounts from "./pages/Accounts.vue";
 import ResetPassword from "./pages/ResetPassword.vue";
+import Rides from "./pages/Rides.vue";
 
 Vue.use(Router);
 
@@ -19,6 +20,7 @@ export default new Router({
     { name: "sign-in", path: "/sign-in", component: SignIn },
     { name: "about-us", path: "/about-us", component: About },
     { name: "accounts", path: "/accounts", component: Accounts },
-    { name: "reset-password", path: "/reset-password", component: ResetPassword }
+    { name: "reset-password", path: "/reset-password", component: ResetPassword },
+    { name: "rides", path: "/rides", component: Rides }
   ]
 });
