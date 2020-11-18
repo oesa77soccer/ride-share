@@ -20,3 +20,4 @@ class VehicleType extends Model {
 	}
 }
 
+module.exports = VehicleType;

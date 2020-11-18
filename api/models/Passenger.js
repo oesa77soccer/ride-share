@@ -28,3 +28,4 @@ class Passenger extends Model {
         }
     }
 }
+module.exports = Passenger;
