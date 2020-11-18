@@ -6,7 +6,7 @@ class Driver extends Model {
 	}
 
 	static get relationMappings() {
-		const Drivers = require('Driver');
+		const Drivers = require('Drivers');
 		const Authorization = require('Authorization');
 		return {
 			drivers: {
@@ -14,7 +14,7 @@ class Driver extends Model {
 				modelClass: Drivers,
 				join: {
 					from: 'driver.id',
-					to: 'Model.drivers.driverId'
+					to: 'drivers.driverId'
 				}
 			},
 			authorizations: {
@@ -22,7 +22,7 @@ class Driver extends Model {
 				modelClass: Authorization,
 				join: {
 					from: 'driver.id',
-					to: 'Model.authorization.driverId'
+					to: 'authorization.driverId'
 				}
 			}
 		}
