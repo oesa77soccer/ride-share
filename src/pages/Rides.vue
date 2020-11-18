@@ -10,9 +10,12 @@
       >
         <template v-slot:item="{ item }">
           <tr v-bind:class="itemClass(item)">
-            <td>{{ item.email }}</td>
-            <td>{{ item.firstName }}</td>
-            <td>{{ item.lastName }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.address }}</td>
+            <td>{{ item.city }}</td>
+            <td>{{ item.state }}</td>
+            <td>{{ item.zipCode }}</td>
+
             <td>
               <v-icon small @click="deleteRide(item)">
                 mdi-delete
@@ -42,9 +45,11 @@ export default {
   data: function() {
     return {
       headers: [
-        { text: "Email", value: "email" },
-        { text: "First", value: "firstName" },
-        { text: "Last", value: "lastName" },
+        { text: "Name", value: "name" },
+        { text: "Address", value: "address" },
+        { text: "City", value: "city" },
+        { text: "State", value: "state" },
+        { text: "Zip Code", value: "zipCode" },
         { text: "Action", value: "action" }
       ],
       rides: [],
@@ -60,9 +65,11 @@ export default {
     this.$axios.get("/rides").then(response => {
       this.rides = response.data.map(ride => ({
         id: ride.id,
-        email: ride.email,
-        firstName: ride.first_name,
-        lastName: ride.last_name
+        name: ride.name,
+        address: ride.address,
+        city: ride.city,
+        state: ride.state,
+        zipCode: ride.zipCode
       }));
     });
   },
