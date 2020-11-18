@@ -49,12 +49,12 @@ async function init() {
             config: {
                 description: "Retrieve all rides",
                 validate: {
-                    params: Joi.object({
-                        name: Joi.optional().string().min(1),
-                        address: Joi.optional().string().min(1),
-                        city: Joi.optional().string().min(1),
-                        state: Joi.optional().string().length(2),
-                        zip: Joi.optional().number().length(5)
+                    query: Joi.object({
+                        name: Joi.string().min(1).optional(),
+                        address: Joi.string().min(1).optional(),
+                        city: Joi.string().min(1).optional(),
+                        state: Joi.string().length(2).optional(),
+                        zip: Joi.number().min(5).optional()
                     })
                 }
             },
@@ -66,7 +66,7 @@ async function init() {
                 return User.query().withGraphFetched('location')
             },
         },
-        
+
         {
             method: "POST",
             path: "/accounts",
@@ -216,7 +216,7 @@ async function init() {
                     return {
                         ok: false,
                         msge: "Incorrect password",
-                    };               
+                    };
                 }
                 if (request.payload.newPassword !== request.payload.confirmNewPassword) {
                     return {
@@ -238,17 +238,17 @@ async function init() {
                     },
                 }
             }
-      },
-  ]);
+        },
+    ]);
 
-// Start the server.
-await server.start();
+    // Start the server.
+    await server.start();
 }
 
-process.on("unhandledRejection", (err) => {
-    server.logger().error(err);
-    process.exit(1);
-});
+// process.on("unhandledRejection", (err) => {
+//     server.logger().error(err);
+//     process.exit(1);
+// });
 
 // Go!
 init();
