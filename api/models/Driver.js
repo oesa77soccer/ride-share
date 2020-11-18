@@ -6,6 +6,8 @@ class Driver extends Model {
 	}
 
 	static get relationMappings() {
+		const Drivers = require('Driver');
+		const Authorization = require('Authorization');
 		return {
 			drivers: {
 				relation: Model.HasManyRelation,

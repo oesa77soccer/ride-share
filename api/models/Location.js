@@ -5,6 +5,7 @@ class Location extends Model {
 		return 'Location';
 	}
 	static get relationMappings() {
+		const Ride = require('Ride');
 		return {
 			ridesTo: {
 				relation: Model.HasManyRelation,
