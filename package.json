@@ -6,6 +6,9 @@
   "author": "Kendall Miyakawa <kemiyaka@cse.taylor.edu>",
   "license": "MIT",
   "dependencies": {
-    "swagger-ui": "^3.35.2"
+    "swagger-ui": "^3.35.2",
+    "knex": "^0.21.6",
+    "objection": "^2.2.3",
+    "pg": "^8.4.0"
   }
 }
