@@ -32,7 +32,7 @@ class Ride extends Model {
                 modelClass: Location,
                 join: {
                     from: 'Ride.fromLocationId',
-                    to: 'Location.Id'
+                    to: 'Location.id'
                 }
             },
             ToLocation: {
@@ -40,7 +40,7 @@ class Ride extends Model {
                 modelClass: Location,
                 join: {
                     from: 'Ride.toLocationId',
-                    to: 'Location.Id'
+                    to: 'Location.id'
                 }
             },
             Vehicle: {

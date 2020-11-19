@@ -56,12 +56,16 @@ async function init() {
                 }
             },
             handler: (request, h) => {
-                // const results;
-                // if (request.params.name) {
-                //     results = await User.query().withGraphFetched('location')
-                // }
-                // return Ride.query().withGraphFetched('fromLocation').withGraphFetched('toLocation')
-                return Ride.query().withGraphFetched('passengers');
+                if (request.query.name) {
+                    return Ride.query()
+                        .withGraphFetched('FromLocation')
+                        .withGraphFetched('ToLocation')
+                        .where('Location.name', '=', request.query.name)
+                        // .orWhere('ToLocation.name', '=', request.query.name);
+                }
+                return Ride.query()
+                    .withGraphFetched('FromLocation')
+                    .withGraphFetched('ToLocation')
             },
         },
 
