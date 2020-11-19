@@ -2,28 +2,28 @@ const { knex, Model } = require("../db");
 
 class User extends Model {
 	static get tableName() {
-		return 'user';
+		return 'User';
 	}
 
 	static get relationMappings() {
         const Driver = require('./Driver');
         const Passenger = require('./Passenger');
 		return {
-			drivers: {
+			Drivers: {
 				relation: Model.HasManyRelation,
 				modelClass: Driver,
 				join: {
-					from: "user.id",
-					to: 'driver.userId'
+					from: "User.id",
+					to: 'Driver.userId'
 				}
 			},
 
-			passengers: {
+			Passengers: {
 				relation: Model.HasManyRelation,
 				modelClass: Passenger,
 				join: {
-					from: 'user.id',
-					to: 'passenger.userId'
+					from: 'User.id',
+					to: 'Passenger.userId'
 				}
 			}
 		}

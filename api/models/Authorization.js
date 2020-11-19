@@ -2,27 +2,27 @@ const { knex, Model } = require("../db");
 
 class Authorization extends Model {
 	static get tableName() {
-		return 'authorization';
+		return 'Authorization';
     }
     
     static get relationMappings() {
         const Driver = require('./Driver');
         const Vehicle = require('./Vehicle');
 		return {
-			driver: {
+			Driver: {
 				relation: Model.BelongsToOneRelation,
 				modelClass: Driver,
 				join: {
-					from: 'authorization.driverId',
-					to: 'driver.id'
+					from: 'Authorization.driverId',
+					to: 'Driver.id'
 				}
             },
-            vehicle: {
+            Vehicle: {
                 relation: Model.BelongsToOneRelation,
                 modelClass: Vehicle,
                 join: {
-                    from: 'authorization.vehicleId',
-                    to: 'vehicle.id'
+                    from: 'Authorization.vehicleId',
+                    to: 'Vehicle.id'
                 }
             }
         }

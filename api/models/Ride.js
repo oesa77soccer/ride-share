@@ -2,7 +2,7 @@ const { knex, Model } = require("../db");
 
 class Ride extends Model {
 	static get tableName() {
-		return 'ride';
+		return 'Ride';
 	}
 
 	static get relationMappings() {
@@ -11,44 +11,44 @@ class Ride extends Model {
         const Location = require('./Location');
         const Vehicle = require('./Vehicle');
 		return {
-			passengers: {
+			Passengers: {
 				relation: Model.HasManyRelation,
 				modelClass: Passenger,
 				join: {
-					from: 'ride.id',
-					to: 'passenger.rideId'
+					from: 'Ride.id',
+					to: 'Passenger.rideId'
 				}
 			},
-			drivers: {
+			Drivers: {
 				relation: Model.HasManyRelation,
 				modelClass: Drivers,
 				join: {
-					from: 'ride.id',
-					to: 'drivers.rideId'
+					from: 'Ride.id',
+					to: 'Drivers.rideId'
 				}
             },
-            fromLocation: {
+            FromLocation: {
                 relation: Model.BelongsToOneRelation,
                 modelClass: Location,
                 join: {
-                    from: 'ride.fromLocationId',
-                    to: 'location.Id'
+                    from: 'Ride.fromLocationId',
+                    to: 'Location.Id'
                 }
             },
-            toLocation: {
+            ToLocation: {
                 relation: Model.BelongsToOneRelation,
                 modelClass: Location,
                 join: {
-                    from: 'ride.toLocationId',
-                    to: 'location.Id'
+                    from: 'Ride.toLocationId',
+                    to: 'Location.Id'
                 }
             },
-            vehicle: {
+            Vehicle: {
                 relation: Model.BelongsToOneRelation,
                 modelClass: Vehicle,
                 join: {
-                    from: 'ride.vehicleId',
-                    to: 'vehicle.Id'
+                    from: 'Ride.vehicleId',
+                    to: 'Vehicle.Id'
                 }
             }
 		}
