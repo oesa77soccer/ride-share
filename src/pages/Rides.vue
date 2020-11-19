@@ -10,11 +10,12 @@
       >
         <template v-slot:item="{ item }">
           <tr v-bind:class="itemClass(item)">
-            <td>{{ item.name }}</td>
-            <td>{{ item.address }}</td>
-            <td>{{ item.city }}</td>
-            <td>{{ item.state }}</td>
-            <td>{{ item.zipCode }}</td>
+            <td>{{ item.from.direction }}</td>
+            <td>{{ item.from.name }}</td>
+            <td>{{ item.from.address }}</td>
+            <td>{{ item.from.city }}</td>
+            <td>{{ item.from.state }}</td>
+            <td>{{ item.from.zipCode }}</td>
 
             <td>
               <v-icon small @click="deleteRide(item)">
@@ -23,6 +24,9 @@
               <v-icon small class="ml-2" @click="updateRide(item)">
                 mdi-pencil
               </v-icon>
+              <v-icon small class="ml-2" @click="signUpForRide(item)">
+                mdi-plus
+              </v-icon>              
             </td>
           </tr>
         </template>
@@ -45,6 +49,7 @@ export default {
   data: function() {
     return {
       headers: [
+        { text: "Direction", value: "direction" },
         { text: "Name", value: "name" },
         { text: "Address", value: "address" },
         { text: "City", value: "city" },
@@ -65,12 +70,24 @@ export default {
     this.$axios.get("/rides").then(response => {
       this.rides = response.data.map(ride => ({
         id: ride.id,
-        name: ride.name,
-        address: ride.address,
-        city: ride.city,
-        state: ride.state,
-        zipCode: ride.zipCode
+        from: {
+          direction: "From",
+          name: ride["FromLocation"].name,
+          address: ride["FromLocation"].address,
+          city: ride["FromLocation"].city,
+          state: ride["FromLocation"].state,
+          zipCode: ride["FromLocation"].zipCode,
+        },
+        to: {
+          direction: "To",
+          name: ride["ToLocation"].name,
+          address: ride["ToLocation"].address,
+          city: ride["ToLocation"].city,
+          state: ride["ToLocation"].state,
+          zipCode: ride["ToLocation"].zipCode,
+        }
       }));
+      console.log(this.rides);
     });
   },
 
@@ -93,6 +110,14 @@ export default {
     updateRide(item) {
       console.log("UPDATE", JSON.stringify(item, null, 2));
       this.showSnackbar("Sorry, update is not yet implemented.");
+    },
+
+    // sign up for ride if occupancy is available
+    signUpForRide(item) {
+      console.log("SIGN UP", JSON.stringify(item, null, 2));
+
+
+      this.showSnackbar("Sorry, sign up is not yet implemented.");
     },
 
     // Delete an ride.
