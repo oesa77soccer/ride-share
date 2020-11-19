@@ -1,9 +1,6 @@
 // Knex, Model
 const { knex, Model } = require("./api/db")
-
-// Objection
-const objection = require("objection");
-objection.Model.knex(knex);
+Model.knex(knex);
 
 // Models
 const Authorization = require("./api/models/Authorization");
@@ -63,7 +60,8 @@ async function init() {
                 // if (request.params.name) {
                 //     results = await User.query().withGraphFetched('location')
                 // }
-                return User.query().withGraphFetched('location')
+                // return Ride.query().withGraphFetched('fromLocation').withGraphFetched('toLocation')
+                return Ride.query().withGraphFetched('passengers');
             },
         },
 

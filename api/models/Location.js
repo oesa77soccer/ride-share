@@ -2,8 +2,9 @@ const { knex, Model } = require("../db");
 
 class Location extends Model {
 	static get tableName() {
-		return 'Location';
-	}
+		return 'location';
+    }
+    
 	static get relationMappings() {
 		const Ride = require('./Ride');
 		return {
@@ -27,4 +28,5 @@ class Location extends Model {
 		}
 	}
 }
+
 module.exports = Location;

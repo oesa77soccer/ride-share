@@ -2,7 +2,7 @@ const { knex, Model } = require("../db");
 
 class State extends Model {
 	static get tableName() {
-		return 'State';
+		return 'state';
 	}
 	static get relationMappings() {
         const Driver = require('./Driver');
@@ -38,21 +38,5 @@ class State extends Model {
 		}
 	}
 }
-
-async function getAllStates() {
-    const states = await State.query();
-    console.log(states);
-    knex.destroy();
-}
-
-
-getAllStates();
-// State.query()
-//     .then(states => {
-//         states.forEach(state => {
-//             console.log(state)
-//         })
-//     })
-//     .catch(err => console.log(err))
 
 module.exports = State;
