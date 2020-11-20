@@ -3,10 +3,18 @@
     <div>
       <h4 class="display-1">Rides</h4>
 
+      <select name="field" id="field">
+        <option value="name">Name</option>
+        <option value="address">Address</option>
+        <option value="city">City</option>
+        <option value="state">State</option>
+        <option value="zipCode">Zip Code</option>
+      </select>
       <input id="search" type="text" placeholder="Search..">
       <v-icon small @click="search()">
         mdi-plus
       </v-icon>
+
       <v-data-table
         class="elevation-1"
         v-bind:headers="headers"
@@ -109,7 +117,6 @@ export default {
           zipCode: ride["ToLocation"].zipCode,
         }
       }));
-      //console.log(this.rides);
     });
   },
 
@@ -129,30 +136,33 @@ export default {
     },
 
     search() {
-      var text = document.getElementById("search").text;
-      this.$axios.get("/rides", { params: {name: text} }).then(response => {
-      this.rides = response.data.map(ride => ({
-        id: ride.id,
-        date: ride.date,
-        time: ride.time,
-        from: {
-          direction: "From",
-          name: ride["FromLocation"].name,
-          address: ride["FromLocation"].address,
-          city: ride["FromLocation"].city,
-          state: ride["FromLocation"].state,
-          zipCode: ride["FromLocation"].zipCode,
-        },
-        to: {
-          direction: "To",
-          name: ride["ToLocation"].name,
-          address: ride["ToLocation"].address,
-          city: ride["ToLocation"].city,
-          state: ride["ToLocation"].state,
-          zipCode: ride["ToLocation"].zipCode,
-        }
-      }));
-    });
+      let text = document.getElementById("search").value;
+      let field = document.getElementById("field").value;
+      const params = new URLSearchParams([[field, text]]);
+
+      this.$axios.get("/rides", { params }).then(response => {
+        this.rides = response.data.map(ride => ({
+          id: ride.id,
+          date: ride.date,
+          time: ride.time,
+          from: {
+            direction: "From",
+            name: ride["FromLocation"].name,
+            address: ride["FromLocation"].address,
+            city: ride["FromLocation"].city,
+            state: ride["FromLocation"].state,
+            zipCode: ride["FromLocation"].zipCode,
+          },
+          to: {
+            direction: "To",
+            name: ride["ToLocation"].name,
+            address: ride["ToLocation"].address,
+            city: ride["ToLocation"].city,
+            state: ride["ToLocation"].state,
+            zipCode: ride["ToLocation"].zipCode,
+          }
+        }));
+      });
     },
 
     // Update ride information.
