@@ -10,13 +10,27 @@
       >
         <template v-slot:item="{ item }">
           <tr v-bind:class="itemClass(item)">
-            <td>{{ item.from.direction }}</td>
-            <td>{{ item.from.name }}</td>
-            <td>{{ item.from.address }}</td>
-            <td>{{ item.from.city }}</td>
-            <td>{{ item.from.state }}</td>
-            <td>{{ item.from.zipCode }}</td>
+            <td>{{ item.date }}</td>
+            <td>{{ item.time }}</td>
 
+            <td>{{ item.from.direction }}<br>
+              {{ item.to.direction }}
+            </td>
+            <td>{{ item.from.name }}<br>
+              {{ item.to.name }}
+            </td>
+            <td>{{ item.from.address }}<br>
+              {{ item.to.address }}
+            </td>
+            <td>{{ item.from.city }}<br>
+              {{ item.to.city }}
+            </td>
+            <td>{{ item.from.state }}<br>
+              {{ item.to.state }}
+            </td>
+            <td>{{ item.from.zipCode }}<br>
+              {{ item.to.zipCode }}
+            </td>
             <td>
               <v-icon small @click="deleteRide(item)">
                 mdi-delete
@@ -26,7 +40,7 @@
               </v-icon>
               <v-icon small class="ml-2" @click="signUpForRide(item)">
                 mdi-plus
-              </v-icon>              
+              </v-icon>            
             </td>
           </tr>
         </template>
@@ -49,6 +63,8 @@ export default {
   data: function() {
     return {
       headers: [
+        { text: "Date", value: "date" },
+        { text: "Time", value: "time" },
         { text: "Direction", value: "direction" },
         { text: "Name", value: "name" },
         { text: "Address", value: "address" },
@@ -70,6 +86,8 @@ export default {
     this.$axios.get("/rides").then(response => {
       this.rides = response.data.map(ride => ({
         id: ride.id,
+        date: ride.date,
+        time: ride.time,
         from: {
           direction: "From",
           name: ride["FromLocation"].name,
@@ -115,7 +133,7 @@ export default {
     // sign up for ride if occupancy is available
     signUpForRide(item) {
       console.log("SIGN UP", JSON.stringify(item, null, 2));
-
+      // need post route to add self as a rider for a ride if it has capacity
 
       this.showSnackbar("Sorry, sign up is not yet implemented.");
     },
