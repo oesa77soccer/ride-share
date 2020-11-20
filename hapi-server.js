@@ -51,17 +51,45 @@ async function init() {
                         address: Joi.string().min(1).optional(),
                         city: Joi.string().min(1).optional(),
                         state: Joi.string().length(2).optional(),
-                        zip: Joi.number().min(5).optional()
+                        zipCode: Joi.number().min(5).optional()
                     })
                 }
             },
             handler: (request, h) => {
                 if (request.query.name) {
                     return Ride.query()
-                        .withGraphFetched('FromLocation')
-                        .withGraphFetched('ToLocation')
-                        .where('Location.name', '=', request.query.name)
-                        // .orWhere('ToLocation.name', '=', request.query.name);
+                        .withGraphJoined('FromLocation')
+                        .withGraphJoined('ToLocation')
+                        .where('FromLocation.name', request.query.name)
+                        .orWhere('ToLocation.name', request.query.name)
+                }
+                if (request.query.address) {
+                    return Ride.query()
+                        .withGraphJoined('FromLocation')
+                        .withGraphJoined('ToLocation')
+                        .where('FromLocation.address', request.query.address)
+                        .orWhere('ToLocation.address', request.query.address)
+                }
+                if (request.query.city) {
+                    return Ride.query()
+                        .withGraphJoined('FromLocation')
+                        .withGraphJoined('ToLocation')
+                        .where('FromLocation.city', request.query.city)
+                        .orWhere('ToLocation.city', request.query.city)
+                }
+                if (request.query.state) {
+                    return Ride.query()
+                        .withGraphJoined('FromLocation')
+                        .withGraphJoined('ToLocation')
+                        .where('FromLocation.state', request.query.state)
+                        .orWhere('ToLocation.state', request.query.state)
+                }
+                if (request.query.zipCode) {
+                    return Ride.query()
+                        .withGraphJoined('FromLocation')
+                        .withGraphJoined('ToLocation')
+                        .where('FromLocation.zipCode', request.query.zipCode)
+                        .orWhere('ToLocation.zipCode', request.query.zipCode)
                 }
                 return Ride.query()
                     .withGraphFetched('FromLocation')
