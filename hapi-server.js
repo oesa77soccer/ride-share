@@ -99,6 +99,53 @@ async function init() {
 
         {
             method: "POST",
+            path: "/passengers",
+            config: {
+                description: "Sign up a user for a ride",
+                validate: {
+                    payload: Joi.object({
+                        userId: Joi.number().integer().required(),
+                        rideId: Joi.number().integer().required()
+                    })
+                }
+            },
+            handler: (request, h) => {
+                Ride.query().findById(request.payload.rideId)
+                return Passenger.query()
+                    .insert({
+                        userId: request.payload.userId,
+                        rideId: request.payload.rideId
+                    })
+                    .returning('*');
+            }
+        },
+
+        {
+            method: "POST",
+            path: "/drivers",
+            config: {
+                description: "Sign up a user as a driver (in general)",
+                validate: {
+                    payload: Joi.object({
+                        userId: Joi.number().integer().required(),
+                        licenseNumber: Joi.string().min(1).required(),
+                        licenseState: Joi.string().length(2).required(),
+                    })
+                }
+            },
+            handler: (request, h) => {
+                // const user = User.query().findById(request.payload.userId);
+                return Driver.query()
+                    .insert({
+                        userId: request.payload.userId,
+                        licenseNumber: request.payload.licenseNumber,
+                        licenseState: request.payload.licenseState
+                    })
+            }
+        },
+
+        {
+            method: "POST",
             path: "/accounts",
             config: {
                 description: "Sign up for an account",
