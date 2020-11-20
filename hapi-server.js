@@ -17,6 +17,7 @@ const VehicleType = require("./api/models/VehicleType");
 // Hapi
 const Joi = require("@hapi/joi"); // Input validation
 const Hapi = require("@hapi/hapi"); // Server
+const Boom = require("@hapi/boom") // Boom: error handling
 
 const server = Hapi.server({
     host: "localhost",
@@ -95,6 +96,65 @@ async function init() {
                     .withGraphFetched('FromLocation')
                     .withGraphFetched('ToLocation')
             },
+        },
+
+        {
+            method: "POST",
+            path: "/passengers",
+            config: {
+                description: "Sign up a user for a ride",
+                validate: {
+                    payload: Joi.object({
+                        userId: Joi.number().integer().required(),
+                        rideId: Joi.number().integer().required()
+                    })
+                }
+            },
+            handler: async (request, h) => {
+                const ride = await Ride.query()
+                    .findById(request.payload.rideId)
+                    .withGraphFetched('Vehicle')
+                    .withGraphFetched('Passengers');
+
+                const currentDate = new Date();        
+                if (ride.date < currentDate) {
+                    throw Boom.badRequest('Ride is already in transit')
+                }
+
+                // need to check capacity
+                
+
+                return Passenger.query()
+                    .insert({
+                        userId: request.payload.userId,
+                        rideId: request.payload.rideId
+                    })
+                    .returning('*');
+            }
+        },
+
+        {
+            method: "POST",
+            path: "/drivers",
+            config: {
+                description: "Sign up a user as a driver (in general)",
+                validate: {
+                    payload: Joi.object({
+                        userId: Joi.number().integer().required(),
+                        licenseNumber: Joi.string().min(1).required(),
+                        licenseState: Joi.string().length(2).required(),
+                    })
+                }
+            },
+            handler: (request, h) => {
+                // const user = User.query().findById(request.payload.userId);
+                return Driver.query()
+                    .insert({
+                        userId: request.payload.userId,
+                        licenseNumber: request.payload.licenseNumber,
+                        licenseState: request.payload.licenseState
+                    })
+            }
         },
 
         {
