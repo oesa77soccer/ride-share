@@ -61,36 +61,36 @@ async function init() {
                     return Ride.query()
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
-                        .where('FromLocation.name', request.query.name)
-                        .orWhere('ToLocation.name', request.query.name)
+                        .where('FromLocation.name', 'like', '%'+request.query.name+'%')
+                        .orWhere('ToLocation.name', 'like', '%'+request.query.name+'%')
                 }
                 if (request.query.address) {
                     return Ride.query()
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
-                        .where('FromLocation.address', request.query.address)
-                        .orWhere('ToLocation.address', request.query.address)
+                        .where('FromLocation.address', 'like', '%'+request.query.address+'%')
+                        .orWhere('ToLocation.address', 'like', '%'+request.query.address+'%')
                 }
                 if (request.query.city) {
                     return Ride.query()
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
-                        .where('FromLocation.city', request.query.city)
-                        .orWhere('ToLocation.city', request.query.city)
+                        .where('FromLocation.city', 'like', '%'+request.query.city+'%')
+                        .orWhere('ToLocation.city', 'like', '%'+request.query.city+'%')
                 }
                 if (request.query.state) {
                     return Ride.query()
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
-                        .where('FromLocation.state', request.query.state)
-                        .orWhere('ToLocation.state', request.query.state)
+                        .where('FromLocation.state', 'like', '%'+request.query.state+'%')
+                        .orWhere('ToLocation.state', 'like', '%'+request.query.state+'%')
                 }
                 if (request.query.zipCode) {
                     return Ride.query()
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
-                        .where('FromLocation.zipCode', request.query.zipCode)
-                        .orWhere('ToLocation.zipCode', request.query.zipCode)
+                        .where('FromLocation.zipCode', 'like', '%'+request.query.zipCode+'%')
+                        .orWhere('ToLocation.zipCode', 'like', '%'+request.query.zipCode+'%')
                 }
                 return Ride.query()
                     .withGraphFetched('FromLocation')
