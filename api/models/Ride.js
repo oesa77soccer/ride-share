@@ -48,7 +48,7 @@ class Ride extends Model {
                 modelClass: Vehicle,
                 join: {
                     from: 'Ride.vehicleId',
-                    to: 'Vehicle.Id'
+                    to: 'Vehicle.id'
                 }
             }
 		}

@@ -17,6 +17,7 @@ const VehicleType = require("./api/models/VehicleType");
 // Hapi
 const Joi = require("@hapi/joi"); // Input validation
 const Hapi = require("@hapi/hapi"); // Server
+const Boom = require("@hapi/boom") // Boom: error handling
 
 const server = Hapi.server({
     host: "localhost",
@@ -109,8 +110,20 @@ async function init() {
                     })
                 }
             },
-            handler: (request, h) => {
-                Ride.query().findById(request.payload.rideId)
+            handler: async (request, h) => {
+                const ride = await Ride.query()
+                    .findById(request.payload.rideId)
+                    .withGraphFetched('Vehicle')
+                    .withGraphFetched('Passengers');
+
+                const currentDate = new Date();        
+                if (ride.date < currentDate) {
+                    throw Boom.badRequest('Ride is already in transit')
+                }
+
+                // need to check capacity
+                
+
                 return Passenger.query()
                     .insert({
                         userId: request.payload.userId,
