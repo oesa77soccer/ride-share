@@ -121,8 +121,9 @@ async function init() {
                     throw Boom.badRequest('Ride is already in transit')
                 }
 
-                // need to check capacity
-                
+                if (ride.Passengers.length == ride.Vehicle.capacity) {
+                    throw Boom.badRequest('Ride is already full')
+                }
 
                 return Passenger.query()
                     .insert({
