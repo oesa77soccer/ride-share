@@ -56,43 +56,43 @@ async function init() {
                     })
                 }
             },
-            handler: (request, h) => {
+            handler: async (request, h) => {
                 if (request.query.name) {
-                    return Ride.query()
+                    return await Ride.query()
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.name', 'like', '%'+request.query.name+'%')
                         .orWhere('ToLocation.name', 'like', '%'+request.query.name+'%')
                 }
                 if (request.query.address) {
-                    return Ride.query()
+                    return await Ride.query()
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.address', 'like', '%'+request.query.address+'%')
                         .orWhere('ToLocation.address', 'like', '%'+request.query.address+'%')
                 }
                 if (request.query.city) {
-                    return Ride.query()
+                    return await Ride.query()
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.city', 'like', '%'+request.query.city+'%')
                         .orWhere('ToLocation.city', 'like', '%'+request.query.city+'%')
                 }
                 if (request.query.state) {
-                    return Ride.query()
+                    return await Ride.query()
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.state', 'like', '%'+request.query.state+'%')
                         .orWhere('ToLocation.state', 'like', '%'+request.query.state+'%')
                 }
                 if (request.query.zipCode) {
-                    return Ride.query()
+                    return await Ride.query()
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.zipCode', 'like', '%'+request.query.zipCode+'%')
                         .orWhere('ToLocation.zipCode', 'like', '%'+request.query.zipCode+'%')
                 }
-                return Ride.query()
+                return await Ride.query()
                     .withGraphFetched('FromLocation')
                     .withGraphFetched('ToLocation')
             },
@@ -102,7 +102,7 @@ async function init() {
             method: "POST",
             path: "/passengers",
             config: {
-                description: "Sign up a user for a ride",
+                description: "Sign a user up for a ride",
                 validate: {
                     payload: Joi.object({
                         userId: Joi.number().integer().required(),
@@ -115,6 +115,9 @@ async function init() {
                     .findById(request.payload.rideId)
                     .withGraphFetched('Vehicle')
                     .withGraphFetched('Passengers');
+                if (!ride) {
+                    throw Boom.notFound('Ride does not exist')
+                }
 
                 const currentDate = new Date();        
                 if (ride.date < currentDate) {
@@ -123,6 +126,12 @@ async function init() {
 
                 if (ride.Passengers.length == ride.Vehicle.capacity) {
                     throw Boom.badRequest('Ride is already full')
+                }
+
+                const user = await User.query()
+                    .findById(request.payload.userId);
+                if (!user) {
+                    throw Boom.notFound('User does not exist');
                 }
 
                 return Passenger.query()
@@ -147,8 +156,19 @@ async function init() {
                     })
                 }
             },
-            handler: (request, h) => {
-                // const user = User.query().findById(request.payload.userId);
+            handler: async (request, h) => {
+                const user = await User.query()
+                    .findById(request.payload.userId);
+                if (!user) {
+                    throw Boom.notFound('User does not exist');
+                }
+
+                const licenseState = await State.query()
+                    .findById(request.payload.licenseState);
+                if (!licenseState) {
+                    throw Boom.notFound('Invalid license state');
+                }
+
                 return Driver.query()
                     .insert({
                         userId: request.payload.userId,
