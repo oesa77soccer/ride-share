@@ -163,6 +163,8 @@ export default {
           }
         }));
       });
+      this.$router.push({ path: `/rides?${field}=${text}` });
+
     },
 
     // Update ride information.
@@ -175,7 +177,9 @@ export default {
     signUpForRide(item) {
       console.log("SIGN UP", JSON.stringify(item, null, 2));
       // need post route to add self as a rider for a ride if it has capacity
-
+      //this.$axios.post('/rides').then(response => {
+        
+      //});
       this.showSnackbar("Sorry, sign up is not yet implemented.");
     },
 
