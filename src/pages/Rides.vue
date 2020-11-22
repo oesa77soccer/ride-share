@@ -95,32 +95,37 @@ export default {
     },
 
     beforeMount() {
-        this.$axios.get('/rides', {
-            params: this.$route.query
-        })
-        .then(response => {
-            this.rides = response.data.map(ride => ({
-                id: ride.id,
-                date: ride.date,
-                time: ride.time,
-                from: {
-                    direction: "From",
-                    name: ride["FromLocation"].name,
-                    address: ride["FromLocation"].address,
-                    city: ride["FromLocation"].city,
-                    state: ride["FromLocation"].state,
-                    zipCode: ride["FromLocation"].zipCode,
-                },
-                to: {
-                    direction: "To",
-                    name: ride["ToLocation"].name,
-                    address: ride["ToLocation"].address,
-                    city: ride["ToLocation"].city,
-                    state: ride["ToLocation"].state,
-                    zipCode: ride["ToLocation"].zipCode,
-                }
-            }))
-        });
+        if (!this.isLoggedIn()) {
+            this.$router.push({ name: "sign-in" });
+        }
+        else {
+            this.$axios.get('/rides', {
+                params: this.$route.query
+            })
+            .then(response => {
+                this.rides = response.data.map(ride => ({
+                    id: ride.id,
+                    date: ride.date,
+                    time: ride.time,
+                    from: {
+                        direction: "From",
+                        name: ride["FromLocation"].name,
+                        address: ride["FromLocation"].address,
+                        city: ride["FromLocation"].city,
+                        state: ride["FromLocation"].state,
+                        zipCode: ride["FromLocation"].zipCode,
+                    },
+                    to: {
+                        direction: "To",
+                        name: ride["ToLocation"].name,
+                        address: ride["ToLocation"].address,
+                        city: ride["ToLocation"].city,
+                        state: ride["ToLocation"].state,
+                        zipCode: ride["ToLocation"].zipCode,
+                    }
+                }))
+            });
+        }
     },
 
     methods: {

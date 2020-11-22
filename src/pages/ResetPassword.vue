@@ -120,7 +120,18 @@ export default {
       },
     };
   },
+
+beforeMount() {
+    if (!this.isLoggedIn()) {
+        this.$router.push({ name: "sign-in" });
+    }
+  },
+
   methods: {
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    },
+
     // Invoked when the user clicks the 'Reset Password' button.
     handleSubmit: function () {
       // Haven't been successful yet.

@@ -7,3 +7,19 @@
     </div>
   </v-container>
 </template>
+
+<script>
+export default {
+  methods: {
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    }
+  },
+
+  beforeMount() {
+    if (!this.isLoggedIn()) {
+        this.$router.push({ name: "sign-in" });
+    }
+  },
+};
+</script>

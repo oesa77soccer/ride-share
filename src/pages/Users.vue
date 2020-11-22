@@ -67,7 +67,17 @@ export default {
     });
   },
 
+beforeMount() {
+    if (!this.isLoggedIn()) {
+        this.$router.push({ name: "sign-in" });
+    }
+  },
+
   methods: {
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn;
+    },
+    
     // Display a snackbar message.
     showSnackbar(text) {
       this.snackbar.text = text;
