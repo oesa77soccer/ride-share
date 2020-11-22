@@ -160,45 +160,47 @@ async function init() {
 
         {
             method: "POST",
-            path: "/accounts",
+            path: "/user",
             config: {
-                description: "Sign up for an account",
+                description: "Sign up to be a user",
                 validate: {
                     payload: Joi.object({
                         firstName: Joi.string().required(),
                         lastName: Joi.string().required(),
                         email: Joi.string().email().required(),
                         password: Joi.string().required(),
+                        phone: Joi.string().required(),
                     }),
                 },
             },
             handler: async (request, h) => {
-                const existingAccount = await Account.query()
+                const existingUser = await User.query()
                     .where("email", request.payload.email)
                     .first();
-                if (existingAccount) {
+                if (existingUser) {
                     return {
                         ok: false,
-                        msge: `Account with email '${request.payload.email}' is already in use`,
+                        msge: `User with email '${request.payload.email}' is already in use`,
                     };
                 }
 
-                const newAccount = await Account.query().insert({
-                    first_name: request.payload.firstName,
-                    last_name: request.payload.lastName,
+                const newUser = await User.query().insert({
+                    firstName: request.payload.firstName,
+                    lastName: request.payload.lastName,
                     email: request.payload.email,
                     password: request.payload.password,
+                    phone: request.payload.phone,
                 });
 
-                if (newAccount) {
+                if (newUser) {
                     return {
                         ok: true,
-                        msge: `Created account '${request.payload.email}'`,
+                        msge: `Created user '${request.payload.email}'`,
                     };
                 } else {
                     return {
                         ok: false,
-                        msge: `Couldn't create account with email '${request.payload.email}'`,
+                        msge: `Couldn't create user with email '${request.payload.email}'`,
                     };
                 }
             },

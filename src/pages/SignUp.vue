@@ -23,13 +23,25 @@
           type="email"
           label="Your email address"
         >
+
         </v-text-field>
+
         <v-text-field
           v-model="newMember.password"
           v-bind:rules="rules.password"
           error-count="10"
           type="password"
           label="Non-trivial password"
+          required
+        >
+        </v-text-field>
+
+        <v-text-field
+          v-model="newMember.phone"
+          v-bind:rules="rules.phone"
+          error-count="10"
+          type="phone"
+          label="Phone Number"
           required
         >
         </v-text-field>
@@ -80,10 +92,11 @@ export default {
         lastName: "",
         email: "",
         password: "",
+        phone: "",
       },
 
       // Was an account created successfully?
-      accountCreated: false,
+      userCreated: false,
 
       // Data to be displayed by the dialog.
       dialogHeader: "<no dialogHeader>",
@@ -101,6 +114,9 @@ export default {
         email: [
           (val) => /\w{3,}@\w{3,}(?:.\w{3,})+$/.test(val) || "Invalid e-mail",
         ],
+        phone: [
+          (val) => /\d{3}\d{3}\d{4}/.test(val) || "Invalid phone number (format: ###-###-####",
+        ],
         password: [
           (val) => /[A-Z]/.test(val) || "Need upper case letter",
           (val) => /[a-z]/.test(val) || "Need lower case letter",
@@ -114,22 +130,23 @@ export default {
     // Invoked when the user clicks the 'Sign Up' button.
     handleSubmit: function () {
       // Haven't been successful yet.
-      this.accountCreated = false;
+      this.userCreated = false;
 
       // Post the content of the form to the Hapi server.
       this.$axios
-        .post("/accounts", {
+        .post("/user", {
           firstName: this.newMember.firstName,
           lastName: this.newMember.lastName,
           email: this.newMember.email,
           password: this.newMember.password,
+          phone: this.newMember.phone,
         })
         .then((result) => {
           // Based on whether things worked or not, show the
           // appropriate dialog.
           if (result.data.ok) {
             this.showDialog("Success", result.data.msge);
-            this.accountCreated = true;
+            this.userCreated = true;
           } else {
             this.showDialog("Sorry", result.data.msge);
           }
@@ -148,7 +165,7 @@ export default {
     // and navigate to the home page.
     hideDialog: function () {
       this.dialogVisible = false;
-      if (this.accountCreated) {
+      if (this.userCreated) {
         // Only navigate away from the sign-up page if we were successful.
         this.$router.push({ name: "home-page" });
       }
