@@ -275,21 +275,23 @@ async function init() {
                 },
             },
             handler: async (request, h) => {
-                const account = await Account.query()
+                const user = await User.query()
                     .where("email", request.payload.email)
                     .first();
                 if (
-                    account &&
-                    (await account.verifyPassword(request.payload.password))
+                    user &&
+                    (await user.verifyPassword(request.payload.password))
                 ) {
                     return {
                         ok: true,
                         msge: `Logged in successfully as '${request.payload.email}'`,
                         details: {
-                            id: account.id,
-                            firstName: account.first_name,
-                            lastName: account.last_name,
-                            email: account.email,
+                            id: user.id,
+                            firstName: user.first_name,
+                            lastName: user.last_name,
+                            email: user.email,
+                            phone: user.phone,
+                            isAdmin: user.isAdmin,
                         },
                     };
                 } else {
