@@ -38,6 +38,10 @@
           <v-list-item-title>Rides</v-list-item-title>
         </v-list-item>
 
+        <v-list-item v-bind:to="{ name: 'become-driver' }">
+          <v-list-item-title>Become a Driver</v-list-item-title>
+        </v-list-item>
+
         <v-divider></v-divider>
 
         <v-list-item @click="signOut">
