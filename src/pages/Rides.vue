@@ -148,56 +148,54 @@ export default {
             })
             .then(response => {
                 this.rides = response.data.map(ride => ({
-                id: ride.id,
-                date: ride.date,
-                time: ride.time,
-                from: {
-                    direction: "From",
-                    name: ride["FromLocation"].name,
-                    address: ride["FromLocation"].address,
-                    city: ride["FromLocation"].city,
-                    state: ride["FromLocation"].state,
-                    zipCode: ride["FromLocation"].zipCode,
-                },
-                to: {
-                    direction: "To",
-                    name: ride["ToLocation"].name,
-                    address: ride["ToLocation"].address,
-                    city: ride["ToLocation"].city,
-                    state: ride["ToLocation"].state,
-                    zipCode: ride["ToLocation"].zipCode,
-                }
-            }));
-        });
-        this.$router.push({ path: `/rides?${field}=${text}` });
-
+                    id: ride.id,
+                    date: ride.date,
+                    time: ride.time,
+                    from: {
+                        direction: "From",
+                        name: ride["FromLocation"].name,
+                        address: ride["FromLocation"].address,
+                        city: ride["FromLocation"].city,
+                        state: ride["FromLocation"].state,
+                        zipCode: ride["FromLocation"].zipCode,
+                    },
+                    to: {
+                        direction: "To",
+                        name: ride["ToLocation"].name,
+                        address: ride["ToLocation"].address,
+                        city: ride["ToLocation"].city,
+                        state: ride["ToLocation"].state,
+                        zipCode: ride["ToLocation"].zipCode,
+                    }
+                }));
+            });
         },
 
         // Update ride information.
         updateRide(item) {
-        console.log("UPDATE", JSON.stringify(item, null, 2));
-        this.showSnackbar("Sorry, update is not yet implemented.");
+            console.log("UPDATE", JSON.stringify(item, null, 2));
+            this.showSnackbar("Sorry, update is not yet implemented.");
         },
 
         // sign up for ride if occupancy is available
         signUpForRide(item) {
-        console.log("SIGN UP", JSON.stringify(item, null, 2));
-        // need post route to add self as a rider for a ride if it has capacity
-        //this.$axios.post('/rides').then(response => {
-            
-        //});
-        this.showSnackbar("Sorry, sign up is not yet implemented.");
+            console.log("SIGN UP", JSON.stringify(item, null, 2));
+            // need post route to add self as a rider for a ride if it has capacity
+            //this.$axios.post('/rides').then(response => {
+                
+            //});
+            this.showSnackbar("Sorry, sign up is not yet implemented.");
         },
 
         // Delete an ride.
         deleteRides(item) {
-        this.$axios.delete(`/ride/${item.id}`).then(response => {
-            if (response.data.ok) {
-            // The delete operation worked on the server; delete the local account
-            // by filtering the deleted account from the list of accounts.
-            this.rides = this.rides.filter(
-                ride => ride.id !== item.id
-            );
+            this.$axios.delete(`/ride/${item.id}`).then(response => {
+                if (response.data.ok) {
+                // The delete operation worked on the server; delete the local account
+                // by filtering the deleted account from the list of accounts.
+                this.rides = this.rides.filter(
+                    ride => ride.id !== item.id
+                );
             }
         });
     }
