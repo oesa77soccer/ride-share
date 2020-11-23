@@ -26,6 +26,10 @@ export default new Vuex.Store({
   getters: {
     isLoggedIn(state) {
       return state.currentAccount !== null;
+    },
+
+    userId(state) {
+        return state.currentAccount.id;
     }
   },
 
