@@ -115,7 +115,7 @@ export default {
           (val) => /\w{3,}@\w{3,}(?:.\w{3,})+$/.test(val) || "Invalid e-mail",
         ],
         phone: [
-          (val) => /\d{3}\d{3}\d{4}/.test(val) || "Invalid phone number (format: ###-###-####",
+          (val) => /\d{3}\d{3}\d{4}/.test(val) || "Invalid phone number (format: ##########)",
         ],
         password: [
           (val) => /[A-Z]/.test(val) || "Need upper case letter",
