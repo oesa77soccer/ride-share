@@ -164,17 +164,33 @@ async function init() {
                 }
 
                 const licenseState = await State.query()
-                    .findById(request.payload.licenseState);
-                if (!licenseState) {
+                    .where('abbreviation', request.payload.licenseState);
+                if (licenseState.length == 0) {
                     throw Boom.notFound('Invalid license state');
                 }
 
-                return Driver.query()
+                if (await Driver.query().findById(request.payload.userId)) {
+                    throw Boom.badRequest('You are already a driver');
+                }
+
+                const newDriver = await Driver.query()
                     .insert({
                         userId: request.payload.userId,
                         licenseNumber: request.payload.licenseNumber,
                         licenseState: request.payload.licenseState
-                    })
+                    });
+
+                if (newDriver) {
+                    return {
+                        ok: true,
+                        msge: `Nice! You're now a driver.`,
+                    };
+                } else {
+                    return {
+                        ok: false,
+                        msge: `That didn't work for some reason.`,
+                    };
+                }
             }
         },
 

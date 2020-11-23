@@ -127,6 +127,10 @@ methods: {
       return this.$store.getters.isLoggedIn;
     },
 
+    userId() {
+        return this.$store.getters.userId;
+    },
+
     // Invoked when the user clicks the 'Sign Up' button.
     handleSubmit: function () {
       // Haven't been successful yet.
@@ -135,9 +139,9 @@ methods: {
       // Post the content of the form to the Hapi server.
       this.$axios
         .post("/drivers", {
-          userId: 4,
-          state: this.member.state,
-          licenseNumber: this.member.licenseNumber,
+          userId: this.userId(),
+          licenseState: this.member.state,
+          licenseNumber: this.member.licenseNumber
         })
         .then((result) => {
           // Based on whether things worked or not, show the
