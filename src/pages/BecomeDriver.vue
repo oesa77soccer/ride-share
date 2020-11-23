@@ -79,7 +79,7 @@ export default {
 
       // Object to collect account data
       member: {
-        state: "",
+        licenseState: "",
         licenseNumber: "",
         password: "",
       },
@@ -101,10 +101,10 @@ export default {
       rules: {
         required: [(val) => val.length > 0 || "Required"],
         state: [
-          (val) => /[A-Z]{2}/.test(val) || "Invalid State (format: OH)",
+          (val) => /^[A-Z]{2}$/.test(val) || "Invalid State (format: OH)",
         ],
         licenseNumber: [
-          (val) => /[A-Z]{2}\d{6}/.test(val) || "Invalid license number (format: AA######)",
+          (val) => /^[A-Z]{2}\d{6}$/.test(val) || "Invalid license number (format: AA######)",
         ],
         password: [
           (val) => /[A-Z]/.test(val) || "Need upper case letter",
