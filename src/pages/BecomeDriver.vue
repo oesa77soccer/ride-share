@@ -7,27 +7,27 @@
 
       <v-form v-model="valid">
         <v-text-field
-          v-model="newMember.firstName"
-          v-bind:rules="rules.required"
-          label="First name"
-        ></v-text-field>
-        <v-text-field
-          v-model="newMember.lastName"
-          v-bind:rules="rules.required"
-          label="Last name"
-        ></v-text-field>
-        <v-text-field
-          v-model="newMember.email"
-          v-bind:rules="rules.email"
+          v-model="member.state"
+          v-bind:rules="rules.state"
           error-count="10"
-          type="email"
-          label="Your email address"
+          type="state"
+          label="State"
+          required
         >
-
         </v-text-field>
 
         <v-text-field
-          v-model="newMember.password"
+          v-model="member.licenseNumber"
+          v-bind:rules="rules.licenseNumber"
+          error-count="10"
+          type="licenseNumber"
+          label="License Number"
+          required
+        >
+        </v-text-field>
+
+        <v-text-field
+          v-model="member.password"
           v-bind:rules="rules.password"
           error-count="10"
           type="password"
@@ -36,17 +36,8 @@
         >
         </v-text-field>
 
-        <v-text-field
-          v-model="newMember.phone"
-          v-bind:rules="rules.phone"
-          error-count="10"
-          type="phone"
-          label="Phone Number"
-          required
-        >
-        </v-text-field>
         <v-btn v-bind:disabled="!valid" v-on:click="handleSubmit"
-          >Sign Up
+          >Drive!
         </v-btn>
       </v-form>
 
@@ -78,7 +69,7 @@
 import Instructions from "../components/Instructions.vue";
 
 export default {
-  name: "SignUpPage",
+  name: "BecomeDriverPage",
   components: {
     Instructions, // Use the Instructions component we just imported
   },
@@ -87,16 +78,14 @@ export default {
       valid: false, // Are all the fields in the form valid?
 
       // Object to collect account data
-      newMember: {
-        firstName: "",
-        lastName: "",
-        email: "",
+      member: {
+        state: "",
+        licenseNumber: "",
         password: "",
-        phone: "",
       },
 
       // Was an account created successfully?
-      userCreated: false,
+      addedDriver: false,
 
       // Data to be displayed by the dialog.
       dialogHeader: "<no dialogHeader>",
@@ -111,11 +100,11 @@ export default {
       // containing an error message indicating why the field doesn't pass validation.
       rules: {
         required: [(val) => val.length > 0 || "Required"],
-        email: [
-          (val) => /\w{3,}@\w{3,}(?:.\w{3,})+$/.test(val) || "Invalid e-mail",
+        state: [
+          (val) => /[A-Z]{2}/.test(val) || "Invalid State (format: OH)",
         ],
-        phone: [
-          (val) => /\d{3}\d{3}\d{4}/.test(val) || "Invalid phone number (format: ###-###-####",
+        licenseNumber: [
+          (val) => /[A-Z]{2}\d{6}/.test(val) || "Invalid license number (format: AA######)",
         ],
         password: [
           (val) => /[A-Z]/.test(val) || "Need upper case letter",
@@ -141,23 +130,21 @@ methods: {
     // Invoked when the user clicks the 'Sign Up' button.
     handleSubmit: function () {
       // Haven't been successful yet.
-      this.userCreated = false;
+      this.addedDriver = false;
 
       // Post the content of the form to the Hapi server.
       this.$axios
-        .post("/user", {
-          firstName: this.newMember.firstName,
-          lastName: this.newMember.lastName,
-          email: this.newMember.email,
-          password: this.newMember.password,
-          phone: this.newMember.phone,
+        .post("/drivers", {
+          userId: 4,
+          state: this.member.state,
+          licenseNumber: this.member.licenseNumber,
         })
         .then((result) => {
           // Based on whether things worked or not, show the
           // appropriate dialog.
           if (result.data.ok) {
             this.showDialog("Success", result.data.msge);
-            this.userCreated = true;
+            this.addedDriver = true;
           } else {
             this.showDialog("Sorry", result.data.msge);
           }
@@ -176,7 +163,7 @@ methods: {
     // and navigate to the home page.
     hideDialog: function () {
       this.dialogVisible = false;
-      if (this.userCreated) {
+      if (this.addedDriver) {
         // Only navigate away from the sign-up page if we were successful.
         this.$router.push({ name: "home-page" });
       }
