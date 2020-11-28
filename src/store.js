@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
@@ -12,9 +13,12 @@ Vue.use(Vuex);
 // https://vuex.vuejs.org/guide/state.html#the-mapstate-helper
 
 export default new Vuex.Store({
+
+    plugins: [createPersistedState()],
+
   // Single source for application state.
   // Cannot update state directly; use a `mutation` (below).
-  // Access in components as `this.$store.state.currentAccount`
+  // Access in components as `this.$store.state.currentUser`
   state: {
     currentUser: null
   },
@@ -35,13 +39,13 @@ export default new Vuex.Store({
     isAdmin(state) {
         console.log(state);
         return true;
-        //return state.currentAccount.isAdmin;
+        // return state.currentUser.isAdmin;
     }
   },
 
   // Make changes to global state.
   // Access in components using the `commit` method:
-  // `this.$store.commit('logIn', account)`
+  // `this.$store.commit('logIn', user)`
   mutations: {
     logIn(state, user) {
       state.currentUser = user;
