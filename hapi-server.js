@@ -97,14 +97,13 @@ async function init() {
                     .withGraphFetched('ToLocation')
             },
         },
-        {
+        {   
             method: "DELETE",
             path: "/ride/{id}",
             config : {
                 description: "Delete ride",
             },
             handler: (request, h) => {
-                //console.log("TRYING TO DELETE");
                 return Ride.query()
                     .deleteById(request.params.id)
                     .then((rowsDeleted) => {
@@ -267,12 +266,12 @@ async function init() {
 
         {
             method: "GET",
-            path: "/accounts",
+            path: "/users",
             config: {
-                description: "Retrieve all accounts",
+                description: "Retrieve all users",
             },
             handler: (request, h) => {
-                return Account.query();
+                return User.query();
             },
         },
 

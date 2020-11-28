@@ -8,7 +8,7 @@
 
     <v-spacer></v-spacer>
 
-    <v-btn v-if="isAdmin" text v-bind:to="{ name: 'admin' }">
+    <v-btn v-if="isLoggedIn && isAdmin" text v-bind:to="{ name: 'admin' }">
       Full Admin Privileges
     </v-btn>
     <v-btn v-if="!isAdmin" text v-bind:to="{ name: 'about-us' }">About Us</v-btn>
@@ -25,7 +25,7 @@
       <template v-slot:activator="{ on }">
         <v-btn text v-on="on">
           <v-icon dark>mdi-account</v-icon>
-          <span>{{ $store.state.currentAccount.firstName }}</span>
+          <span>{{ $store.state.currentUser.firstName }}</span>
           <v-icon dark>mdi-menu-down</v-icon>
         </v-btn>
       </template>
