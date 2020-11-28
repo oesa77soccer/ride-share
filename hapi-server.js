@@ -183,13 +183,10 @@ async function init() {
                 if (newDriver) {
                     return {
                         ok: true,
-                        msge: `Nice! You're now a driver.`,
+                        message: `Nice! You're now a driver.`,
                     };
                 } else {
-                    return {
-                        ok: false,
-                        msge: `That didn't work for some reason.`,
-                    };
+                    throw Boom.internal('That didn\'t work for some reason.');
                 }
             }
         },
@@ -216,7 +213,7 @@ async function init() {
                 if (existingUser) {
                     return {
                         ok: false,
-                        msge: `User with email '${request.payload.email}' is already in use`,
+                        message: `User with email '${request.payload.email}' is already in use`,
                     };
                 }
 
@@ -231,12 +228,12 @@ async function init() {
                 if (newUser) {
                     return {
                         ok: true,
-                        msge: `Created user '${request.payload.email}'`,
+                        message: `Created user '${request.payload.email}'`,
                     };
                 } else {
                     return {
                         ok: false,
-                        msge: `Couldn't create user with email '${request.payload.email}'`,
+                        message: `Couldn't create user with email '${request.payload.email}'`,
                     };
                 }
             },
@@ -266,12 +263,12 @@ async function init() {
                         if (rowsDeleted === 1) {
                             return {
                                 ok: true,
-                                msge: `Deleted account with ID '${request.params.id}'`,
+                                message: `Deleted account with ID '${request.params.id}'`,
                             };
                         } else {
                             return {
                                 ok: false,
-                                msge: `Couldn't delete account with ID '${request.params.id}'`,
+                                message: `Couldn't delete account with ID '${request.params.id}'`,
                             };
                         }
                     });
@@ -300,7 +297,7 @@ async function init() {
                 ) {
                     return {
                         ok: true,
-                        msge: `Logged in successfully as '${request.payload.email}'`,
+                        message: `Logged in successfully as '${request.payload.email}'`,
                         details: {
                             id: user.id,
                             firstName: user.first_name,
@@ -311,10 +308,7 @@ async function init() {
                         },
                     };
                 } else {
-                    return {
-                        ok: false,
-                        msge: "Invalid email or password",
-                    };
+                    throw Boom.badRequest('Invalid email or password');
                 }
             },
         },
@@ -340,19 +334,19 @@ async function init() {
                 if (!account) {
                     return {
                         ok: false,
-                        msge: "Invalid email address",
+                        message: "Invalid email address",
                     };
                 }
                 if (!(await account.verifyPassword(request.payload.currentPassword))) {
                     return {
                         ok: false,
-                        msge: "Incorrect password",
+                        message: "Incorrect password",
                     };
                 }
                 if (request.payload.newPassword !== request.payload.confirmNewPassword) {
                     return {
                         ok: false,
-                        msge: "New passwords don't match",
+                        message: "New passwords don't match",
                     };
                 }
                 await Account.query()
@@ -360,7 +354,7 @@ async function init() {
                     .where("email", request.payload.email)
                 return {
                     ok: true,
-                    msge: `Reset password successfully for '${request.payload.email}'`,
+                    message: `Reset password successfully for '${request.payload.email}'`,
                     details: {
                         id: account.id,
                         firstName: account.first_name,

@@ -34,7 +34,7 @@
     </v-row>
 
     <v-snackbar v-model="snackbar.show">
-      {{ snackbar.msge }}
+      {{ snackbar.message }}
       <v-btn text color="primary" @click="snackbar.show = false">Close</v-btn>
     </v-snackbar>
   </v-container>
@@ -49,7 +49,7 @@ export default {
 
       snackbar: {
         show: false,
-        msge: "",
+        message: "",
       },
     };
   },
@@ -62,18 +62,18 @@ export default {
           password: this.password,
         })
         .then((result) => {
-          this.showSnackbar(result.data.msge);
+            this.showSnackbar(result.data.message);
           if (result.data.ok) {
             this.$store.commit("logIn", result.data.details);
             console.log(result.data.details);
             this.$router.push({ name: "home-page" });
           }
         })
-        .catch((err) => this.showSnackbar(err));
+        .catch((err) => this.showSnackbar(err.response.data.message));
     },
 
-    showSnackbar(msge) {
-      this.snackbar.msge = msge;
+    showSnackbar(message) {
+      this.snackbar.message = message;
       this.snackbar.show = true;
     },
   },
