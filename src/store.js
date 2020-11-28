@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import createPersistedState from "vuex-persistedstate";
 
 Vue.use(Vuex);
 
@@ -12,6 +13,9 @@ Vue.use(Vuex);
 // https://vuex.vuejs.org/guide/state.html#the-mapstate-helper
 
 export default new Vuex.Store({
+
+    plugins: [createPersistedState()],
+
   // Single source for application state.
   // Cannot update state directly; use a `mutation` (below).
   // Access in components as `this.$store.state.currentAccount`
