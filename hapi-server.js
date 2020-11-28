@@ -277,23 +277,23 @@ async function init() {
 
         {
             method: "DELETE",
-            path: "/accounts/{id}",
+            path: "/user/{id}",
             config: {
-                description: "Delete an account",
+                description: "Delete a user",
             },
             handler: (request, h) => {
-                return Account.query()
+                return User.query()
                     .deleteById(request.params.id)
                     .then((rowsDeleted) => {
                         if (rowsDeleted === 1) {
                             return {
                                 ok: true,
-                                message: `Deleted account with ID '${request.params.id}'`,
+                                message: `Deleted user with ID '${request.params.id}'`,
                             };
                         } else {
                             return {
                                 ok: false,
-                                message: `Couldn't delete account with ID '${request.params.id}'`,
+                                message: `Couldn't delete user with ID '${request.params.id}'`,
                             };
                         }
                     });
