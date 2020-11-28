@@ -30,6 +30,12 @@ export default new Vuex.Store({
 
     userId(state) {
         return state.currentAccount.id;
+    },
+
+    isAdmin(state) {
+        console.log(state);
+        return true;
+        //return state.currentAccount.isAdmin;
     }
   },
 
