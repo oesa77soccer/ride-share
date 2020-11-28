@@ -48,11 +48,11 @@
               {{ item.to.zipCode }}
             </td>
             <td>
-              <v-icon small @click="deleteRide(item)"> mdi-delete </v-icon>
-              <v-icon small class="ml-2" @click="updateRide(item)">
+              <v-icon v-if="isAdmin" small @click="deleteRide(item)"> mdi-delete </v-icon>
+              <v-icon v-if="isAdmin" small class="ml-2" @click="updateRide(item)">
                 mdi-pencil
               </v-icon>
-              <v-icon small class="ml-2" @click="signUpForRide(item)">
+              <v-icon v-if="!isAdmin" small class="ml-2" @click="signUpForRide(item)">
                 mdi-plus
               </v-icon>
             </td>
@@ -126,6 +126,11 @@ export default {
                 }))
             });
         // }
+    },
+    computed: {
+        isAdmin() {
+            return this.$store.getters.isAdmin;
+        }
     },
 
     methods: {

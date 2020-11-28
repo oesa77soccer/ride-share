@@ -97,6 +97,23 @@ async function init() {
                     .withGraphFetched('ToLocation')
             },
         },
+        {
+            method: "DELETE",
+            path: "/ride/${id}",
+            config : {
+                description: "Delete ride",
+            },
+            handler: async (request, h) => {
+                const ride = await Ride.query()
+                    .findById(request.payload.rideId)
+                    .withGraphFetched('Vehicle')
+                    .withGraphFetched('Passengers');
+                if (!ride) {
+                    throw Boom.notFound('Ride does not exist')
+                }
+            }
+
+        },
 
         {
             method: "POST",
