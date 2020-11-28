@@ -18,9 +18,9 @@ export default new Vuex.Store({
 
   // Single source for application state.
   // Cannot update state directly; use a `mutation` (below).
-  // Access in components as `this.$store.state.currentAccount`
+  // Access in components as `this.$store.state.currentUser`
   state: {
-    currentAccount: null
+    currentUser: null
   },
 
   // A "getter" returns a computed property from the store, similar
@@ -29,29 +29,27 @@ export default new Vuex.Store({
   // (Not that it behaves like a property -- no parens.)
   getters: {
     isLoggedIn(state) {
-      return state.currentAccount !== null;
+      return state.currentUser !== null;
     },
 
     userId(state) {
-        return state.currentAccount.id;
+        return state.currentUser.id;
     },
 
     isAdmin(state) {
-        //return state.currentAccount.isAdmin;
-        console.log(state);
-        return true;
+        return state.currentUser.isAdmin;
     }
   },
 
   // Make changes to global state.
   // Access in components using the `commit` method:
-  // `this.$store.commit('logIn', account)`
+  // `this.$store.commit('logIn', user)`
   mutations: {
-    logIn(state, account) {
-      state.currentAccount = account;
+    logIn(state, user) {
+      state.currentUser = user;
     },
     logOut(state) {
-      state.currentAccount = null;
+      state.currentUser = null;
     }
   }
 });
