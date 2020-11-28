@@ -91,7 +91,7 @@ export default {
             show: false,
             text: ""
         }
-        };
+      };
     },
 
     beforeMount() {
@@ -217,8 +217,9 @@ export default {
             });
         },
 
-        // Delete an ride.
-        deleteRides(item) {
+        // Delete a ride.
+        deleteRide(item) {
+            console.log("DELETE");
             this.$axios.delete(`/ride/${item.id}`).then(response => {
                 if (response.data.ok) {
                 // The delete operation worked on the server; delete the local account

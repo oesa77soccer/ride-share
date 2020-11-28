@@ -99,20 +99,29 @@ async function init() {
         },
         {
             method: "DELETE",
-            path: "/ride/${id}",
+            path: "/ride/{id}",
             config : {
                 description: "Delete ride",
             },
-            handler: async (request, h) => {
-                const ride = await Ride.query()
-                    .findById(request.payload.rideId)
-                    .withGraphFetched('Vehicle')
-                    .withGraphFetched('Passengers');
-                if (!ride) {
-                    throw Boom.notFound('Ride does not exist')
-                }
-            }
-
+            handler: (request, h) => {
+                //console.log("TRYING TO DELETE");
+                return Ride.query()
+                    .deleteById(request.params.id)
+                    .then((rowsDeleted) => {
+                        if (rowsDeleted === 1) {
+                            return {
+                                ok: true,
+                                message: `Deleted account with ID '${request.params.id}'`,
+                            };
+                        } else {
+                            return {
+                                ok: false,
+                                message: `Couldn't delete account with ID '${request.params.id}'`,
+                            };
+                        }
+                    }
+                );
+            },
         },
 
         {
