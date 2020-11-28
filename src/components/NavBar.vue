@@ -8,15 +8,18 @@
 
     <v-spacer></v-spacer>
 
-    <v-btn text v-bind:to="{ name: 'about-us' }">About Us</v-btn>
+    <v-btn v-if="isAdmin" text v-bind:to="{ name: 'admin' }">
+      Full Admin Privileges
+    </v-btn>
+    <v-btn v-if="!isAdmin" text v-bind:to="{ name: 'about-us' }">About Us</v-btn>
     <v-btn v-if="!isLoggedIn" text v-bind:to="{ name: 'sign-up' }">
       Sign Up
     </v-btn>
     <v-btn v-if="!isLoggedIn" text v-bind:to="{ name: 'sign-in' }">
       Sign In
     </v-btn>
-    <v-btn v-if="isLoggedIn" text v-bind:to="{ name: 'rides' }">Find a Ride</v-btn>
-    <v-btn v-if="isLoggedIn" text v-bind:to="{ name: 'become-driver' }">Become a Driver</v-btn>
+    <v-btn v-if="isLoggedIn && !isAdmin" text v-bind:to="{ name: 'rides' }">Find a Ride</v-btn>
+    <v-btn v-if="isLoggedIn && !isAdmin" text v-bind:to="{ name: 'become-driver' }">Become a Driver</v-btn>
 
     <v-menu v-if="isLoggedIn" offset-y>
       <template v-slot:activator="{ on }">
@@ -47,6 +50,9 @@ export default {
   computed: {
     isLoggedIn() {
       return this.$store.getters.isLoggedIn;
+    },
+    isAdmin() {
+        return this.$store.getters.isAdmin;
     }
   },
 
