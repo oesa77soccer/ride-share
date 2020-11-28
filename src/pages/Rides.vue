@@ -147,10 +147,6 @@ export default {
             }
         },
 
-        isLoggedIn() {
-            return this.$store.getters.isLoggedIn;
-        },
-
         userId() {
             return this.$store.getters.userId;
         },
