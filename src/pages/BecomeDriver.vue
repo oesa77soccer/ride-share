@@ -147,13 +147,13 @@ methods: {
           // Based on whether things worked or not, show the
           // appropriate dialog.
           if (result.data.ok) {
-            this.showDialog("Success", result.data.msge);
+            this.showDialog("Success", result.data.message);
             this.addedDriver = true;
           } else {
-            this.showDialog("Sorry", result.data.msge);
+            this.showDialog("Sorry", result.data.message);
           }
         })
-        .catch((err) => this.showDialog("Failed", err));
+        .catch((err) => this.showDialog("Sorry", err.response.data.message));
     },
 
     // Helper method to display the dialog box with the appropriate content.
