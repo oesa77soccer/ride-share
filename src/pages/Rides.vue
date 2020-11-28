@@ -143,6 +143,14 @@ export default {
             }
         },
 
+        isLoggedIn() {
+            return this.$store.getters.isLoggedIn;
+        },
+
+        userId() {
+            return this.$store.getters.userId;
+        },
+
         search() {
             let text = document.getElementById("search").value;
             let field = document.getElementById("field").value;
@@ -174,6 +182,7 @@ export default {
                     }
                 }));
             });
+            this.$router.push(`/rides?${field}=${text}`);
         },
 
         // Update ride information.
@@ -185,11 +194,22 @@ export default {
         // sign up for ride if occupancy is available
         signUpForRide(item) {
             console.log("SIGN UP", JSON.stringify(item, null, 2));
+
+            const params = {
+              rideId: item.id,
+              userId: this.userId(),
+            }
+            //console.log(this.userId());
+
             // need post route to add self as a rider for a ride if it has capacity
-            //this.$axios.post('/rides').then(response => {
-                
-            //});
-            this.showSnackbar("Sorry, sign up is not yet implemented.");
+            this.$axios.post('/passengers', params).then(response => {
+                if (response.data.ok) {
+                    this.showSnackbar("Signing up for ride was successful!"); 
+                }
+                else {
+                    this.showSnackbar("Signing up for ride was unsuccessful!"); 
+                }
+            });
         },
 
         // Delete an ride.
