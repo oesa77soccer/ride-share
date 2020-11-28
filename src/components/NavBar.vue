@@ -8,13 +8,15 @@
 
     <v-spacer></v-spacer>
 
+    <v-btn text v-bind:to="{ name: 'about-us' }">About Us</v-btn>
     <v-btn v-if="!isLoggedIn" text v-bind:to="{ name: 'sign-up' }">
       Sign Up
     </v-btn>
     <v-btn v-if="!isLoggedIn" text v-bind:to="{ name: 'sign-in' }">
       Sign In
     </v-btn>
-    <v-btn text v-bind:to="{ name: 'about-us' }">About Us</v-btn>
+    <v-btn v-if="isLoggedIn" text v-bind:to="{ name: 'rides' }">Find a Ride</v-btn>
+    <v-btn v-if="isLoggedIn" text v-bind:to="{ name: 'become-driver' }">Become a Driver</v-btn>
 
     <v-menu v-if="isLoggedIn" offset-y>
       <template v-slot:activator="{ on }">
@@ -26,20 +28,8 @@
       </template>
 
       <v-list>
-        <v-list-item v-bind:to="{ name: 'accounts' }">
-          <v-list-item-title>Accounts</v-list-item-title>
-        </v-list-item>
-
         <v-list-item v-bind:to="{ name: 'reset-password' }">
           <v-list-item-title>Reset Password</v-list-item-title>
-        </v-list-item>
-
-        <v-list-item v-bind:to="{ name: 'rides' }">
-          <v-list-item-title>Rides</v-list-item-title>
-        </v-list-item>
-
-        <v-list-item v-bind:to="{ name: 'become-driver' }">
-          <v-list-item-title>Become a Driver</v-list-item-title>
         </v-list-item>
 
         <v-divider></v-divider>

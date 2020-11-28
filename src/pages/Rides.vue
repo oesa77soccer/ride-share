@@ -11,7 +11,7 @@
         <option value="zipCode">Zip Code</option>
       </select>
       <input id="search" type="text" placeholder="Search.." />
-      <v-icon small @click="search()"> mdi-plus </v-icon>
+      <v-icon large @click="search()"> mdi-search-web </v-icon>
 
       <v-data-table
         class="elevation-1"
@@ -95,10 +95,10 @@ export default {
     },
 
     beforeMount() {
-        if (!this.isLoggedIn()) {
-            this.$router.push({ name: "sign-in" });
-        }
-        else {
+        // if (!this.isLoggedIn()) {
+        //     this.$router.push({ name: "sign-in" });
+        // }
+        // else {
             this.$axios.get('/rides', {
                 params: this.$route.query
             })
@@ -125,10 +125,14 @@ export default {
                     }
                 }))
             });
-        }
+        // }
     },
 
     methods: {
+        isLoggedIn() {
+            return this.$store.getters.isLoggedIn;
+        },
+
         // Display a snackbar message.
         showSnackbar(text) {
             this.snackbar.text = text;
