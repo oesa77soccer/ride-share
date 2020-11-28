@@ -12,13 +12,21 @@
     <v-btn text v-bind:to="{ name: 'vehicle-types' }">
       Vehicle Types
     </v-btn>
-    <v-btn text v-bind:to="{ name: 'rides' }">
-      Rides
+    <v-btn text v-bind:to="{ name: 'locations' }">
+      Locations
+    </v-btn>
+    <v-btn text v-bind:to="{ name: 'users' }">
+      Users
     </v-btn>
     <v-btn text v-bind:to="{ name: 'rides' }">
       Rides
     </v-btn>
-
+    <v-btn text v-bind:to="{ name: 'drivers' }">
+      Drivers
+    </v-btn>
+    <v-btn text v-bind:to="{ name: 'Passengers' }">
+      Passengers
+    </v-btn>
 
   </v-container>
 </template>
@@ -28,11 +36,14 @@ export default {
   methods: {
     isAdmin() {
       return this.$store.getters.isAdmin;
+    },
+    isLoggedIn() {
+      return this.$store.getters.isLoggedIn;
     }
   },
 
   beforeMount() {
-    if (!this.isAdmin()) {
+    if (!this.isAdmin() || !this.isLoggedIn()) {
         this.$router.push({ name: "sign-in" });
     }
   },
