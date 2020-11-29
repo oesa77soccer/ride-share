@@ -170,54 +170,6 @@ async function init() {
 
         {
             method: "POST",
-            path: "/drivers",
-            config: {
-                description: "Sign up a user as a driver (in general)",
-                validate: {
-                    payload: Joi.object({
-                        userId: Joi.number().integer().required(),
-                        licenseNumber: Joi.string().min(1).required(),
-                        licenseState: Joi.string().length(2).required(),
-                    })
-                }
-            },
-            handler: async (request, h) => {
-                const user = await User.query()
-                    .findById(request.payload.userId);
-                if (!user) {
-                    throw Boom.notFound('User does not exist');
-                }
-
-                const licenseState = await State.query()
-                    .where('abbreviation', request.payload.licenseState);
-                if (licenseState.length == 0) {
-                    throw Boom.notFound('Invalid license state');
-                }
-
-                if (await Driver.query().findById(request.payload.userId)) {
-                    throw Boom.badRequest('You are already a driver');
-                }
-
-                const newDriver = await Driver.query()
-                    .insert({
-                        userId: request.payload.userId,
-                        licenseNumber: request.payload.licenseNumber,
-                        licenseState: request.payload.licenseState
-                    });
-
-                if (newDriver) {
-                    return {
-                        ok: true,
-                        message: `Nice! You're now a driver.`,
-                    };
-                } else {
-                    throw Boom.internal('That didn\'t work for some reason.');
-                }
-            }
-        },
-
-        {
-            method: "POST",
             path: "/user",
             config: {
                 description: "Sign up to be a user",
@@ -296,8 +248,242 @@ async function init() {
                                 message: `Couldn't delete user with ID '${request.params.id}'`,
                             };
                         }
-                    });
+                    }
+                );
             },
+        },
+
+        {
+            method: "GET",
+            path: "/vehicles",
+            config: {
+                description: "Retrieve all vehicles",
+            },
+            handler: (request, h) => {
+                return Vehicle.query();
+            },
+        },
+
+        {
+            method: "DELETE",
+            path: "/vehicle/{id}",
+            config: {
+                description: "Delete a vehicle",
+            },
+            handler: (request, h) => {
+                return Vehicle.query()
+                    .deleteById(request.params.id)
+                    .then((rowsDeleted) => {
+                        if (rowsDeleted === 1) {
+                            return {
+                                ok: true,
+                                message: `Deleted vehicle with ID '${request.params.id}'`,
+                            };
+                        } else {
+                            return {
+                                ok: false,
+                                message: `Couldn't delete vehicle with ID '${request.params.id}'`,
+                            };
+                        }
+                    }
+                );
+            },
+        },
+
+        {
+            method: "GET",
+            path: "/vehicle-types",
+            config: {
+                description: "Retrieve all vehicle-types",
+            },
+            handler: (request, h) => {
+                return VehicleType.query();
+            },
+        },
+
+        {
+            method: "DELETE",
+            path: "/vehicle-type/{id}",
+            config: {
+                description: "Delete a vehicle-type",
+            },
+            handler: (request, h) => {
+                return VehicleType.query()
+                    .deleteById(request.params.id)
+                    .then((rowsDeleted) => {
+                        if (rowsDeleted === 1) {
+                            return {
+                                ok: true,
+                                message: `Deleted vehicle-type with ID '${request.params.id}'`,
+                            };
+                        } else {
+                            return {
+                                ok: false,
+                                message: `Couldn't delete vehicle-type with ID '${request.params.id}'`,
+                            };
+                        }
+                    }
+                );
+            },
+        },
+
+        {
+            method: "GET",
+            path: "/locations",
+            config: {
+                description: "Retrieve all locations",
+            },
+            handler: (request, h) => {
+                return Location.query();
+            },
+        },
+
+        {
+            method: "DELETE",
+            path: "/location/{id}",
+            config: {
+                description: "Delete a location",
+            },
+            handler: (request, h) => {
+                return Location.query()
+                    .deleteById(request.params.id)
+                    .then((rowsDeleted) => {
+                        if (rowsDeleted === 1) {
+                            return {
+                                ok: true,
+                                message: `Deleted location with ID '${request.params.id}'`,
+                            };
+                        } else {
+                            return {
+                                ok: false,
+                                message: `Couldn't delete location with ID '${request.params.id}'`,
+                            };
+                        }
+                    }
+                );
+            },
+        },
+
+        {
+            method: "GET",
+            path: "/passengers",
+            config: {
+                description: "Retrieve all passengers",
+            },
+            handler: (request, h) => {
+                return Passenger.query();
+            },
+        },
+
+        {
+            method: "DELETE",
+            path: "/passenger/{id}",
+            config: {
+                description: "Delete a passenger",
+            },
+            handler: (request, h) => {
+                return Passenger.query()
+                    .deleteById(request.params.id)
+                    .then((rowsDeleted) => {
+                        if (rowsDeleted === 1) {
+                            return {
+                                ok: true,
+                                message: `Deleted passenger with ID '${request.params.id}'`,
+                            };
+                        } else {
+                            return {
+                                ok: false,
+                                message: `Couldn't delete passenger with ID '${request.params.id}'`,
+                            };
+                        }
+                    }
+                );
+            },
+        },
+
+        {
+            method: "GET",
+            path: "/drivers",
+            config: {
+                description: "Retrieve all drivers",
+            },
+            handler: (request, h) => {
+                return Driver.query();
+            },
+        },
+
+        {
+            method: "DELETE",
+            path: "/driver/{id}",
+            config: {
+                description: "Delete a driver",
+            },
+            handler: (request, h) => {
+                return Driver.query()
+                    .deleteById(request.params.id)
+                    .then((rowsDeleted) => {
+                        if (rowsDeleted === 1) {
+                            return {
+                                ok: true,
+                                message: `Deleted driver with ID '${request.params.id}'`,
+                            };
+                        } else {
+                            return {
+                                ok: false,
+                                message: `Couldn't delete driver with ID '${request.params.id}'`,
+                            };
+                        }
+                    }
+                );
+            },
+        },
+
+        {
+            method: "POST",
+            path: "/drivers",
+            config: {
+                description: "Sign up a user as a driver (in general)",
+                validate: {
+                    payload: Joi.object({
+                        userId: Joi.number().integer().required(),
+                        licenseNumber: Joi.string().min(1).required(),
+                        licenseState: Joi.string().length(2).required(),
+                    })
+                }
+            },
+            handler: async (request, h) => {
+                const user = await User.query()
+                    .findById(request.payload.userId);
+                if (!user) {
+                    throw Boom.notFound('User does not exist');
+                }
+
+                const licenseState = await State.query()
+                    .where('abbreviation', request.payload.licenseState);
+                if (licenseState.length == 0) {
+                    throw Boom.notFound('Invalid license state');
+                }
+
+                if (await Driver.query().findById(request.payload.userId)) {
+                    throw Boom.badRequest('You are already a driver');
+                }
+
+                const newDriver = await Driver.query()
+                    .insert({
+                        userId: request.payload.userId,
+                        licenseNumber: request.payload.licenseNumber,
+                        licenseState: request.payload.licenseState
+                    });
+
+                if (newDriver) {
+                    return {
+                        ok: true,
+                        message: `Nice! You're now a driver.`,
+                    };
+                } else {
+                    throw Boom.internal('That didn\'t work for some reason.');
+                }
+            }
         },
 
         {

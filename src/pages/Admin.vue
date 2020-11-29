@@ -24,7 +24,7 @@
     <v-btn text v-bind:to="{ name: 'drivers' }">
       Drivers
     </v-btn>
-    <v-btn text v-bind:to="{ name: 'Passengers' }">
+    <v-btn text v-bind:to="{ name: 'passengers' }">
       Passengers
     </v-btn>
 

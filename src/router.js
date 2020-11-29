@@ -11,6 +11,11 @@ import Rides from "./pages/Rides.vue";
 import Users from "./pages/Users.vue";
 import BecomeDriver from "./pages/BecomeDriver.vue";
 import Admin from "./pages/Admin.vue";
+import Vehicles from "./pages/Vehicles.vue";
+import Locations from "./pages/Locations.vue";
+import Drivers from "./pages/Drivers.vue";
+import Passengers from "./pages/Passengers.vue";
+import VehicleTypes from "./pages/VehicleTypes.vue";
 
 Vue.use(Router);
 
@@ -27,6 +32,11 @@ export default new Router({
     { name: "rides", path: "/rides", component: Rides },
     { name: "users", path: "/users", component: Users },
     { name: "become-driver", path: "/drivers", component: BecomeDriver },
-    { name: "admin", path: "/admin", component: Admin }
+    { name: "admin", path: "/admin", component: Admin },
+    { name: "vehicles", path: "/vehicles", component: Vehicles },
+    { name: "locations", path: "/locations", component: Locations },
+    { name: "drivers", path: "/drivers", component: Drivers },
+    { name: "passengers", path: "/passengers", component: Passengers },
+    { name: "vehicle-types", path: "/vehicle-types", component: VehicleTypes },
   ]
 });
