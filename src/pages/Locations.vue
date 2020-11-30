@@ -10,17 +10,14 @@
       >
         <template v-slot:item="{ item }">
           <tr>
-            <td>{{ item.name }}</td>
-            <td>{{ item.address }}</td>
-            <td>{{ item.city }}</td>
-            <td>{{ item.state }}</td>
-            <td>{{ item.zipCode }}</td>
+            <td contenteditable @blur="updateName(item, $event)">{{ item.name }}</td>
+            <td contenteditable @blur="updateAddress(item, $event)">{{ item.address }}</td>
+            <td contenteditable @blur="updateCity(item, $event)">{{ item.city }}</td>
+            <td contenteditable @blur="updateState(item, $event)">{{ item.state }}</td>
+            <td contenteditable @blur="updateZipCode(item, $event)">{{ item.zipCode }}</td>
             <td>
               <v-icon small @click="deleteLocation(item)">
                 mdi-delete
-              </v-icon>
-              <v-icon small class="ml-2" @click="updateLocation(item)">
-                mdi-pencil
               </v-icon>
             </td>
           </tr>
@@ -94,10 +91,50 @@ beforeMount() {
       this.snackbar.show = true;
     },
 
-    // Update location information.
+    // Update name 
+    updateName(item, e) {
+        item.name = e.target.textContent;
+        this.updateLocation(item);
+    },
+
+    // Update address 
+    updateAddress(item, e) {
+        item.address = e.target.textContent;
+        this.updateLocation(item);
+    },
+
+    // Update city 
+    updateCity(item, e) {
+        item.city = e.target.textContent;
+        this.updateLocation(item);
+    },
+
+    // Update state 
+    updateState(item, e) {
+        item.state = e.target.textContent;
+        this.updateLocation(item);
+    },
+
+    // Update zip code 
+    updateZipCode(item, e) {
+        item.state = e.target.textContent;
+        this.updateLocation(item);
+    },
+
     updateLocation(item) {
-      console.log("UPDATE", JSON.stringify(item, null, 2));
-      this.showSnackbar("Sorry, update is not yet implemented.");
+        this.$axios
+        .patch(`/locations/${item.id}`, {
+            name: item.name,
+            address: item.address,
+            city: item.city,
+            state: item.state,
+            zipCode: item.zipCode,
+         })
+        .then(response => {
+            if (response.data.ok) {
+                console.log("Edit worked in the database");
+            }
+        });
     },
 
     // Delete a location.

@@ -82,16 +82,20 @@ beforeMount() {
     // Update vehicleType information.
     updateVehicleType(item, e) {
       item.type = e.target.textContent;
+      this.updateRow(item);
+    },
+
+    // update row for entire item in database
+    updateRow(item) {
       this.$axios
       .patch(`/vehicle-type/${item.id}`, {
-        "type": item.type
+        type: item.type
       })
       .then(response => {
         if (response.data.ok) {
           console.log("Edit worked in the database");
         }
       });
-    
     },
 
     // Delete a vehicleType.

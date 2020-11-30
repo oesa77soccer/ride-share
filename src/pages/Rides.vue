@@ -20,32 +20,32 @@
       >
         <template v-slot:item="{ item }">
           <tr v-bind:class="itemClass(item)">
-            <td>{{ item.date }}</td>
-            <td>{{ item.time }}</td>
+            <td contenteditable @blur="updateDate(item, $event)">{{ item.date }}</td>
+            <td contenteditable @blur="updateTime(item, $event)">{{ item.time }}</td>
 
             <td>
-              {{ item.from.direction }}<br />
-              {{ item.to.direction }}
+              <div>{{ item.from.direction }}</div>
+              <div>{{ item.to.direction }}</div>
             </td>
             <td>
-              {{ item.from.name }}<br />
-              {{ item.to.name }}
+              <div>{{ item.from.name }}</div>
+              <div>{{ item.to.name }}</div>
             </td>
             <td>
-              {{ item.from.address }}<br />
-              {{ item.to.address }}
+              <div>{{ item.from.address }}</div>
+              <div>{{ item.to.address }}</div>
             </td>
             <td>
-              {{ item.from.city }}<br />
-              {{ item.to.city }}
+              <div>{{ item.from.city }}</div>
+              <div>{{ item.to.city }}</div>
             </td>
             <td>
-              {{ item.from.state }}<br />
-              {{ item.to.state }}
+              <div>{{ item.from.state }}</div>
+              <div>{{ item.to.state }}</div>
             </td>
             <td>
-              {{ item.from.zipCode }}<br />
-              {{ item.to.zipCode }}
+              <div>{{ item.from.zipCode }}</div>
+              <div>{{ item.to.zipCode }}</div>
             </td>
             <td>
               <v-icon v-if="isAdmin" small @click="deleteRide(item)"> mdi-delete </v-icon>
@@ -190,10 +190,29 @@ export default {
             this.$router.push(`/rides?${field}=${text}`);
         },
 
-        // Update ride information.
+        // Update date 
+        updateDate(item, e) {
+            item.date = e.target.textContent;
+            this.updateRide(item);
+        },
+
+        // Update time 
+        updateTime(item, e) {
+            item.time = e.target.textContent;
+            this.updateRide(item);
+        },    
+
         updateRide(item) {
-            console.log("UPDATE", JSON.stringify(item, null, 2));
-            this.showSnackbar("Sorry, update is not yet implemented.");
+            this.$axios
+            .patch(`/rides/${item.id}`, {
+                date: item.date,
+                time: item.time,
+            })
+            .then(response => {
+                if (response.data.ok) {
+                    console.log("Edit worked in the database");
+                }
+            });
         },
 
         // sign up for ride if occupancy is available

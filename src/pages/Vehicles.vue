@@ -10,20 +10,17 @@
       >
         <template v-slot:item="{ item }">
           <tr>
-            <td>{{ item.make }}</td>
-            <td>{{ item.model }}</td>
-            <td>{{ item.color }}</td>
-            <td>{{ item.vehicleTypeId }}</td>
-            <td>{{ item.capacity }}</td>
-            <td>{{ item.mpg }}</td>
-            <td>{{ item.licenseState }}</td>
-            <td>{{ item.licensePlate }}</td>
+            <td contenteditable @blur="updateMake(item, $event)">{{ item.make }}</td>
+            <td contenteditable @blur="updateModel(item, $event)">{{ item.model }}</td>
+            <td contenteditable @blur="updateColor(item, $event)">{{ item.color }}</td>
+            <td contenteditable @blur="updateVehicleTypeId(item, $event)">{{ item.vehicleTypeId }}</td>
+            <td contenteditable @blur="updateCapacity(item, $event)">{{ item.capacity }}</td>
+            <td contenteditable @blur="updateMPG(item, $event)">{{ item.mpg }}</td>
+            <td contenteditable @blur="updateLicenseState(item, $event)">{{ item.licenseState }}</td>
+            <td contenteditable @blur="updateLicensePlate(item, $event)">{{ item.licensePlate }}</td>
             <td>
               <v-icon small @click="deleteVehicle(item)">
                 mdi-delete
-              </v-icon>
-              <v-icon small class="ml-2" @click="updateVehicle(item)">
-                mdi-pencil
               </v-icon>
             </td>
           </tr>
@@ -75,7 +72,7 @@ export default {
         color: vehicle.color,
         vehicleTypeId: vehicle.vehicleTypeId,
         capacity: vehicle.capacity,
-        mpg: vehicle.model,
+        mpg: vehicle.mpg,
         licenseState: vehicle.licenseState,
         licensePlate: vehicle.licensePlate,
       }));
@@ -103,10 +100,72 @@ beforeMount() {
       this.snackbar.show = true;
     },
 
-    // Update vehicle information.
+    // Update make 
+    updateMake(item, e) {
+        item.make = e.target.textContent;
+        this.updateVehicle(item);
+    },
+
+    // Update model 
+    updateModel(item, e) {
+        item.model = e.target.textContent;
+        this.updateVehicle(item);
+    },
+
+    // Update color 
+    updateColor(item, e) {
+        item.color = e.target.textContent;
+        this.updateVehicle(item);
+    },
+
+    // Update vehicle type 
+    updateVehicleTypeId(item, e) {
+        item.vehicleTypeId = e.target.textContent;
+        this.updateVehicle(item);
+    },
+
+    // Update capacity 
+    updateCapacity(item, e) {
+        item.capacity = e.target.textContent;
+        this.updateVehicle(item);
+    },
+
+    // Update mpg 
+    updateMPG(item, e) {
+        item.mpg = e.target.textContent;
+        this.updateVehicle(item);
+    },
+
+    // Update license state 
+    updateLicenseState(item, e) {
+        item.licenseState = e.target.textContent;
+        this.updateVehicle(item);
+    },
+
+    // Update license plate 
+    updateLicensePlate(item, e) {
+        item.licensePlate = e.target.textContent;
+        this.updateVehicle(item);
+    },
+
+    // update entire vehicle row
     updateVehicle(item) {
-      console.log("UPDATE", JSON.stringify(item, null, 2));
-      this.showSnackbar("Sorry, update is not yet implemented.");
+        this.$axios
+        .patch(`/vehicles/${item.id}`, {
+            make: item.make,
+            model: item.model,
+            color: item.color,
+            vehicleTypeId: item.vehicleTypeId,
+            capacity: item.capacity,
+            mpg: item.mpg,
+            licenseState: item.licenseState,
+            licensePlate: item.licensePlate,
+         })
+        .then(response => {
+            if (response.data.ok) {
+                console.log("Edit worked in the database");
+            }
+        });
     },
 
     // Delete a vehicle.

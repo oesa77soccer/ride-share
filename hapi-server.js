@@ -175,6 +175,29 @@ async function init() {
         },
 
         {
+            method: "PATCH",
+            path: "/vehicles/{id}",
+            config: {
+                description: "Update a vehicle",
+            },
+            handler: (request, h) => {
+                return Vehicle.query()
+                    .findById(request.params.id)
+                    .patch({
+                        make: request.payload.make,
+                        model: request.payload.model,
+                        color: request.payload.color,
+                        vehicleTypeId: request.payload.vehicleTypeId,
+                        capacity: request.payload.capacity,
+                        mpg: request.payload.mpg,
+                        licenseState: request.payload.licenseState,
+                        licensePlate: request.payload.licensePlate,
+                    }
+                );
+            },
+        },
+
+        {
             method: "GET",
             path: "/vehicle-types",
             config: {
@@ -374,6 +397,26 @@ async function init() {
         },
 
         {
+            method: "PATCH",
+            path: "/locations/{id}",
+            config: {
+                description: "Update a location",
+            },
+            handler: (request, h) => {
+                return Location.query()
+                    .findById(request.params.id)
+                    .patch({
+                        name: request.payload.name,
+                        address: request.payload.address,
+                        city: request.payload.city,
+                        state: request.payload.state,
+                        zipCode: request.payload.zipCode,
+                    }
+                );
+            },
+        },
+
+        {
             method: "GET",
             path: "/users",
             config: {
@@ -489,6 +532,24 @@ async function init() {
                                 message: `Couldn't delete user with ID '${request.params.id}'`,
                             };
                         }
+                    }
+                );
+            },
+        },
+
+        {
+            method: "PATCH",
+            path: "/users/{id}",
+            config: {
+                description: "Update a user",
+            },
+            handler: (request, h) => {
+                return User.query()
+                    .findById(request.params.id)
+                    .patch({
+                        email: request.payload.email,
+                        firstName: request.payload.firstName,
+                        lastName: request.payload.lastName,                        
                     }
                 );
             },
@@ -611,6 +672,23 @@ async function init() {
         },
 
         {
+            method: "PATCH",
+            path: "/rides/{id}",
+            config: {
+                description: "Update a ride",
+            },
+            handler: (request, h) => {
+                return Ride.query()
+                    .findById(request.params.id)
+                    .patch({
+                        date: request.payload.date,
+                        time: request.payload.time,
+                    }
+                );
+            },
+        },
+
+        {
             method: "GET",
             path: "/drivers",
             config: {
@@ -723,6 +801,24 @@ async function init() {
                                 message: `Couldn't delete driver with ID '${request.params.id}'`,
                             };
                         }
+                    }
+                );
+            },
+        },
+
+        {
+            method: "PATCH",
+            path: "/drivers/{id}",
+            config: {
+                description: "Update a driver",
+            },
+            handler: (request, h) => {
+                return Driver.query()
+                    .findById(request.params.id)
+                    .patch({
+                        userId: request.payload.userId,
+                        licenseState: request.payload.licenseState,
+                        licenseNumber: request.payload.licenseNumber,
                     }
                 );
             },

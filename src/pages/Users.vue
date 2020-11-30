@@ -10,7 +10,7 @@
       >
         <template v-slot:item="{ item }">
           <tr v-bind:class="itemClass(item)">
-            <td contenteditable @blur="updateUserEmail(item, $event)">{{ item.email }}</td>
+            <td contenteditable >{{ item.email }}</td>
             <td>{{ item.firstName }}</td>
             <td>{{ item.lastName }}</td>
             <td>
@@ -97,11 +97,13 @@ beforeMount() {
     },
 
     // Update user email.
-    updateUserEmail(item, e) {
+    /*updateUserEmail(item, e) {
       item.email = e.target.textContent;
       this.$axios
       .patch(`/users/${item.id}`, {
-        email: item.email
+        firstName: item.firstName,
+        lastName: item.lastName,
+        email: item.email,
       })
       .then(response => {
         if (response.data.ok) {
@@ -109,7 +111,7 @@ beforeMount() {
         }
       });
     
-    },
+    },*/
 
     // Delete a user.
     deleteUser(item) {

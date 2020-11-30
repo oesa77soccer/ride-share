@@ -10,9 +10,9 @@
       >
         <template v-slot:item="{ item }">
           <tr>
-            <td>{{ item.userId }}</td>
-            <td>{{ item.licenseNumber }}</td>
-            <td>{{ item.licenseState }}</td>
+            <td contenteditable @blur="updateUserId(item, $event)">{{ item.userId }}</td>
+            <td contenteditable @blur="updateLicenseNumber(item, $event)">{{ item.licenseNumber }}</td>
+            <td contenteditable @blur="updateLicenseState(item, $event)">{{ item.licenseState }}</td>
             <td>
               <v-icon small @click="deleteDriver(item)">
                 mdi-delete
@@ -88,10 +88,36 @@ beforeMount() {
       this.snackbar.show = true;
     },
 
-    // Update driver information.
-    updateDriver(item) {
-      console.log("UPDATE", JSON.stringify(item, null, 2));
-      this.showSnackbar("Sorry, update is not yet implemented.");
+    // Update userId 
+    updateUserId(item, e) {
+      item.userId = e.target.textContent;
+      this.updateRow(item);
+    },
+
+    // Update licenseNumber 
+    updateLicenseNumber(item, e) {
+      item.licenseNumber = e.target.textContent;
+      this.updateRow(item);
+    },
+
+    // Update userId 
+    updateLicenseState(item, e) {
+      item.userId = e.target.textContent;
+      this.updateRow(item);
+    },
+
+    updateRow(item) {
+      this.$axios
+      .patch(`/drivers/${item.id}`, {
+        userId: item.userId,
+        licenseNumber: item.licenseNumber,
+        licenseState: item.licenseState,
+      })
+      .then(response => {
+        if (response.data.ok) {
+          console.log("Edit worked in the database");
+        }
+      });
     },
 
     // Delete a driver.
