@@ -696,7 +696,7 @@ async function init() {
                         firstName: Joi.string().min(1).optional(),
                         lastName: Joi.string().min(1).optional(),
                         email: Joi.string().email().optional(),
-                        password: Joi.string().min(1).optional(),
+                        password: Joi.string().password().optional(),
                         phone: Joi.string().length(10).optional(),
                     }),
                 },
@@ -748,7 +748,7 @@ async function init() {
                         firstName: Joi.string().min(1).optional(),
                         lastName: Joi.string().min(1).optional(),
                         email: Joi.string().email().optional(),
-                        password: Joi.string().min(1).optional(),
+                        password: Joi.string().password().optional(),
                         phone: Joi.string().length(10).optional(),
                     }),
                 },
@@ -768,7 +768,7 @@ async function init() {
                     const existingUser = await User.query()
                         .where("email", request.payload.email)
                         .first();
-                    if (existingUser) {
+                    if (existingUser && (existingUser.id !== request.params.id)) {
                         return h.response({
                             ok: false,
                             message: `User with email '${request.payload.email}' is already in use`,
