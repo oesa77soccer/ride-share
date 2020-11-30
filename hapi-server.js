@@ -213,17 +213,7 @@ async function init() {
             handler: (request, h) => {
                 return Vehicle.query()
                     .findById(request.params.id)
-                    .patch({
-                        make: request.payload.make,
-                        model: request.payload.model,
-                        color: request.payload.color,
-                        vehicleTypeId: request.payload.vehicleTypeId,
-                        capacity: request.payload.capacity,
-                        mpg: request.payload.mpg,
-                        licenseState: request.payload.licenseState,
-                        licensePlate: request.payload.licensePlate,
-                    }
-                );
+                    .patch(request.payload);
             },
         },
 
