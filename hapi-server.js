@@ -288,6 +288,22 @@ async function init() {
         },
 
         {
+            method: "PATCH",
+            path: "/vehicle-type/{id}",
+            config: {
+                description: "Update a vehicle-type",
+            },
+            handler: (request, h) => {
+                return VehicleType.query()
+                    .findById(request.params.id)
+                    .patch({
+                        type: request.payload.type,
+                    }
+                );
+            },
+        },
+
+        {
             method: "GET",
             path: "/locations",
             config: {
