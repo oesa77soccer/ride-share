@@ -1049,6 +1049,7 @@ async function init() {
                         message: `That didn't work for some reason`
                     })
                     .code(500);
+                }
             }
         },
 
