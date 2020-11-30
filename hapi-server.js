@@ -168,7 +168,7 @@ async function init() {
             method: "PATCH",
             path: "/vehicles/{id}",
             config: {
-                description: "Add a vehicle",
+                description: "Update a vehicle",
                 validate: {
                     params: Joi.object({
                         id: Joi.number().integer().min(1).required(),
@@ -234,14 +234,14 @@ async function init() {
                     }
                 }
 
-                const newVehicle = await Vehicle.query()
-                    .insert(request.payload)
+                const updatedVehicle = await Vehicle.query()
+                    .patchAndFetchById(request.params.id, request.payload)
                     .returning('*');
-                if (newVehicle) {
+                if (updatedVehicle) {
                     return h.response({
                         ok: true,
                         message: `Updated vehicle with ID '${request.params.id}'`,
-                        data: newVehicle
+                        data: updatedVehicle
                     })
                     .code(200);
                 } else {

@@ -105,9 +105,7 @@ beforeMount() {
 
     // Update make 
     updateMake(item, e) {
-        console.log(item.make);
         item.make = e.target.textContent;
-        console.log(item.make);
         const payload = {
           make: item.make
         }
@@ -117,7 +115,6 @@ beforeMount() {
     // Update model 
     updateModel(item, e) {
         item.model = e.target.textContent;
-        console.log(item.model);
         const payload = {
           model: item.model
         }
@@ -196,7 +193,7 @@ beforeMount() {
         )
         .then(response => {
             if (response.data.ok) {
-                this.vehicles.push(response.data.newVehicle);
+                this.vehicles.push(response.data);
                 console.log("Add worked in the database");
             }
         });
