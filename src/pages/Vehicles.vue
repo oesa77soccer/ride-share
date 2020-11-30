@@ -2,6 +2,9 @@
   <v-container>
     <div>
       <h4 class="display-1">Vehicles</h4>
+      <v-icon large @click="addVehicle()">
+          mdi-plus
+      </v-icon>
 
       <v-data-table
         class="elevation-1"
@@ -164,6 +167,30 @@ beforeMount() {
         .then(response => {
             if (response.data.ok) {
                 console.log("Edit worked in the database");
+            }
+        });
+    },
+
+    addVehicle() {
+        console.log(this.vehicles.length);
+        const vehicle = {
+            /*make: "Ford",
+            model: "Focus",
+            color: "Red",
+            vehicleTypeId: 1,
+            capacity: 12,
+            mpg: 2,
+            licenseState: "OH",
+            licensePlate: "FGE 3004",*/
+        }
+        this.vehicles.push(vehicle);
+
+        this.$axios.post(`/vehicles`, 
+            vehicle
+        )
+        .then(response => {
+            if (response.data.ok) {
+                console.log("Add worked in the database");
             }
         });
     },
