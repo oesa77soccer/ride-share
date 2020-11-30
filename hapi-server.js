@@ -116,6 +116,27 @@ async function init() {
                     .code(400);
                 }
 
+                const vehicleType = await VehicleType.query()
+                    .findById(request.payload.vehicleTypeId);
+                if (!vehicleType) {
+                    return h.response({
+                        ok: false,
+                        message: `Vehicle type with ID '${request.payload.vehicleTypeId}' does not exist`
+                    })
+                    .code(404)
+                }
+
+                const state = await State.query()
+                    .where('abbreviation', request.payload.licenseState)
+                    .first();
+                if (!state) {
+                    return h.response({
+                        ok: false,
+                        message: `State with abbreviation '${request.payload.licenseState}' does not exist`
+                    })
+                    .code(404)
+                }
+
                 const newVehicle = await Vehicle.query().insert({
                     make: request.payload.make,
                     model: request.payload.model,
@@ -125,12 +146,14 @@ async function init() {
                     mpg: request.payload.mpg,
                     licenseState: request.payload.licenseState,
                     licensePlate: request.payload.licensePlate,
-                });
+                })
+                .returning('*');
 
                 if (newVehicle) {
                     return h.response({
                         ok: true,
                         message: `Created vehicle with license plate '${request.payload.licensePlate}'`,
+                        data: newVehicle
                     })
                     .code(201);
                 } else {
@@ -266,12 +289,14 @@ async function init() {
 
                 const newVehicleType = await Vehicle.query().insert({
                     type: request.payload.type
-                });
+                })
+                .returning('*');
 
                 if (newVehicleType) {
                     return h.response({
                         ok: true,
                         message: `Created vehicle type '${request.payload.type}'`,
+                        data: newVehicleType
                     })
                     .code(201);
                 } else {
@@ -285,6 +310,45 @@ async function init() {
         },
 
         {
+            method: "PATCH",
+            path: "/vehicle-types/{id}",
+            config: {
+                description: "Update a vehicle type",
+                validate: {
+                    params: Joi.object({
+                        id: Joi.number().integer().required()
+                    }),
+                    payload: Joi.object({
+                        type: Joi.string().min(1).max(50).required(),
+                    }),
+                },
+            },
+            handler: (request, h) => {
+                return VehicleType.query()
+                    .findById(request.params.id)
+                    .patch({
+                        type: request.payload.type,
+                    })
+                    .returning('*')
+                    .then(rowsPatched => {
+                        if (rowsPatched) {
+                            return {
+                                ok: true,
+                                message: `Updated vehicle type with ID '${request.params.id}'`,
+                                data: rowsPatched
+                            };
+                        } else {
+                            return {
+                                ok: false,
+                                message: `Couldn't update vehicle type with ID '${request.params.id}'`,
+                            };
+                        }
+                    }
+                );
+            },
+        },
+
+        {
             method: "DELETE",
             path: "/vehicle-types/{id}",
             config: {
@@ -294,10 +358,11 @@ async function init() {
                 return VehicleType.query()
                     .deleteById(request.params.id)
                     .then((rowsDeleted) => {
-                        if (rowsDeleted === 1) {
+                        if (rowsDeleted) {
                             return {
                                 ok: true,
                                 message: `Deleted vehicle-type with ID '${request.params.id}'`,
+                                data: rowsDeleted
                             };
                         } else {
                             return {
@@ -305,22 +370,6 @@ async function init() {
                                 message: `Couldn't delete vehicle-type with ID '${request.params.id}'`,
                             };
                         }
-                    }
-                );
-            },
-        },
-
-        {
-            method: "PATCH",
-            path: "/vehicle-type/{id}",
-            config: {
-                description: "Update a vehicle-type",
-            },
-            handler: (request, h) => {
-                return VehicleType.query()
-                    .findById(request.params.id)
-                    .patch({
-                        type: request.payload.type,
                     }
                 );
             },
@@ -368,6 +417,59 @@ async function init() {
                         }
                     });
             }
+        },
+
+        {
+            method: "POST",
+            path: "/locations",
+            config: {
+                description: "Create a location",
+                validate: {
+                    payload: Joi.object({
+                        name: Joi.string().min(1).max(50).required(),
+                        address: Joi.string().min(1).max(100).required(),
+                        city: Joi.string().min(1).max(50).required(),
+                        state: Joi.string().min(2).max(2).required(),
+                        zipCode: Joi.string().min(5).max(5).required(),
+                    }),
+                },
+            },
+            handler: async (request, h) => {
+                const state = await State.query()
+                    .where('abbreviation', request.payload.state)
+                    .first();
+                if (!state) {
+                    return h.response({
+                        ok: false,
+                        message: `State with abbreviation '${request.payload.state}' does not exist`
+                    })
+                    .code(404)
+                }
+
+                const newLocation = await Location.query().insert({
+                    name: request.payload.name,
+                    address: request.payload.address,
+                    city: request.payload.city,
+                    state: request.payload.state,
+                    zipCode: request.payload.zipCode,
+                })
+                .returning('*');
+
+                if (newLocation) {
+                    return h.response({
+                        ok: true,
+                        message: `Created location '${request.payload.name}'`,
+                        data: newLocation
+                    })
+                    .code(201);
+                } else {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't create location '${request.payload.name}'`,
+                    })
+                    .code(500);
+                }
+            },
         },
 
         {
@@ -493,12 +595,14 @@ async function init() {
                     email: request.payload.email,
                     password: request.payload.password,
                     phone: request.payload.phone,
-                });
+                })
+                .returning('*');
 
                 if (newUser) {
                     return h.response({
                         ok: true,
                         message: `Created user '${request.payload.email}'`,
+                        data: newUser
                     })
                     .code(201);
                 } else {
@@ -645,6 +749,84 @@ async function init() {
             }
         },
 
+        {
+            method: "POST",
+            path: "/rides",
+            config: {
+                description: "Create a ride",
+                validate: {
+                    payload: Joi.object({
+                        date: Joi.date().required(),
+                        time: Joi.string().min(7).max(8).required(),
+                        distance: Joi.number().required(),
+                        fuelPrice: Joi.number().required(),
+                        fee: Joi.number().required(),
+                        vehicleId: Joi.number().integer().required(),
+                        fromLocationId: Joi.number().integer().required(),
+                        toLocationId: Joi.number().integer().required()
+                    }),
+                },
+            },
+            handler: async (request, h) => {
+                const vehicle = await Vehicle.query()
+                    .findById(request.payload.vehicleId);
+                if (!vehicle) {
+                    return h.response({
+                        ok: false,
+                        message: `Vehicle with ID '${request.payload.vehicleId}' does not exist`
+                    })
+                    .code(404)
+                }
+
+                const fromLocation = await Location.query()
+                    .findById(request.payload.fromLocationId);
+                if (!fromLocation) {
+                    return h.response({
+                        ok: false,
+                        message: `Location '${request.payload.fromLocationId}' does not exist`
+                    })
+                    .code(404)
+                }
+
+                const toLocation = await Location.query()
+                    .findById(request.payload.toLocationId);
+                if (!toLocation) {
+                    return h.response({
+                        ok: false,
+                        message: `Location '${request.payload.toLocationId}' does not exist`
+                    })
+                    .code(404)
+                }
+
+                const newRide = await Ride.query().insert({
+                    date: request.payload.date,
+                    time: request.payload.time,
+                    distance: request.payload.distance,
+                    fuelPrice: request.payload.fuelPrice,
+                    fee: request.payload.fee,
+                    vehicleId: request.payload.vehicleId,
+                    fromLocationId: request.payload.fromLocationId,
+                    toLocationId: request.payload.toLocationId,
+                })
+                .returning('*');
+
+                if (newRide) {
+                    return h.response({
+                        ok: true,
+                        message: `Created ride`,
+                        data: newRide
+                    })
+                    .code(201);
+                } else {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't create ride`,
+                    })
+                    .code(500);
+                }
+            },
+        },
+
         {   
             method: "DELETE",
             path: "/rides/{id}",
@@ -749,17 +931,33 @@ async function init() {
                 const user = await User.query()
                     .findById(request.payload.userId);
                 if (!user) {
-                    throw Boom.notFound('User does not exist');
+                    return h.response({
+                        ok: false,
+                        message: `User with ID '${request.payload.userId}' does not exist`
+                    })
+                    .code(404);
                 }
 
                 const licenseState = await State.query()
-                    .where('abbreviation', request.payload.licenseState);
-                if (licenseState.length == 0) {
-                    throw Boom.notFound('Invalid license state');
+                    .where('abbreviation', request.payload.licenseState)
+                    .first();
+                if (!licenseState) {
+                    return h.response({
+                        ok: false,
+                        message: `License state with abbreviation '${request.payload.licenseState}' does not exist`
+                    })
+                    .code(404);
                 }
 
-                if (await Driver.query().findById(request.payload.userId)) {
-                    throw Boom.badRequest('You are already a driver');
+                const existingDriver = await Driver.query()
+                    .where('userId', request.payload.userId)
+                    .first();
+                if (existingDriver) {
+                    return h.response({
+                        ok: false,
+                        message: `You are already a driver`
+                    })
+                    .code(400);             
                 }
 
                 const newDriver = await Driver.query()
@@ -767,15 +965,22 @@ async function init() {
                         userId: request.payload.userId,
                         licenseNumber: request.payload.licenseNumber,
                         licenseState: request.payload.licenseState
-                    });
+                    })
+                    .returning('*');
 
                 if (newDriver) {
-                    return {
+                    return h.response({
                         ok: true,
-                        message: `Nice! You're now a driver.`,
-                    };
+                        message: `Nice! You're now a driver`,
+                        data: newDriver
+                    })
+                    .code(201);
                 } else {
-                    throw Boom.internal('That didn\'t work for some reason.');
+                    return h.response({
+                        ok: false,
+                        message: `That didn't work for some reason`
+                    })
+                    .code(500);                  
                 }
             }
         },
@@ -886,30 +1091,61 @@ async function init() {
                     .withGraphFetched('Vehicle')
                     .withGraphFetched('Passengers');
                 if (!ride) {
-                    throw Boom.notFound('Ride does not exist')
+                    return h.response({
+                        ok: false,
+                        message: `Ride with ID ${request.payload.rideId} does not exist`
+                    })
+                    .code(404);
                 }
 
                 const currentDate = new Date();        
                 if (ride.date < currentDate) {
-                    throw Boom.badRequest('Ride is already in transit')
+                    return h.response({
+                        ok: false,
+                        message: `Ride is already in transit`
+                    })
+                    .code(400);
                 }
 
                 if (ride.Passengers.length == ride.Vehicle.capacity) {
-                    throw Boom.badRequest('Ride is already full')
+                    return h.response({
+                        ok: false,
+                        message: `Ride is full`
+                    })
+                    .code(400);                
                 }
 
                 const user = await User.query()
                     .findById(request.payload.userId);
                 if (!user) {
-                    throw Boom.notFound('User does not exist');
+                    return h.response({
+                        ok: false,
+                        message: `User with ID '${request.payload.userId}' does not exist`
+                    })
+                    .code(404);                
                 }
 
-                return Passenger.query()
+                const newPassenger = await Passenger.query()
                     .insert({
                         userId: request.payload.userId,
                         rideId: request.payload.rideId
                     })
                     .returning('*');
+
+                if (newPassenger) {
+                    return h.response({
+                        ok: true,
+                        message: `Created passenger`,
+                        data: newPassenger
+                    })
+                    .code(201);
+                } else {
+                    return h.response({
+                        ok: false,
+                        message: `That didn't work for some reason`
+                    })
+                    .code(500);
+                }
             }
         },
 
