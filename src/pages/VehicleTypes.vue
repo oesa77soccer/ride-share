@@ -10,13 +10,10 @@
       >
         <template v-slot:item="{ item }">
           <tr>
-            <td>{{ item.type }}</td>
+            <td contenteditable @blur="updateVehicleType(item, $event)">{{ item.type }}</td>
             <td>
               <v-icon small @click="deleteVehicleType(item)">
                 mdi-delete
-              </v-icon>
-              <v-icon small class="ml-2" @click="updateVehicleType(item)">
-                mdi-pencil
               </v-icon>
             </td>
           </tr>
@@ -83,9 +80,18 @@ beforeMount() {
     },
 
     // Update vehicleType information.
-    updateVehicleType(item) {
-      console.log("UPDATE", JSON.stringify(item, null, 2));
-      this.showSnackbar("Sorry, update is not yet implemented.");
+    updateVehicleType(item, e) {
+      item.type = e.target.textContent;
+      this.$axios
+      .patch(`/vehicle-type/${item.id}`, {
+        "type": item.type
+      })
+      .then(response => {
+        if (response.data.ok) {
+          console.log("Edit worked in the database");
+        }
+      });
+    
     },
 
     // Delete a vehicleType.

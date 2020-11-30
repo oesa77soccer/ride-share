@@ -10,7 +10,7 @@
       >
         <template v-slot:item="{ item }">
           <tr v-bind:class="itemClass(item)">
-            <td>{{ item.email }}</td>
+            <td contenteditable @blur="updateUserEmail(item, $event)">{{ item.email }}</td>
             <td>{{ item.firstName }}</td>
             <td>{{ item.lastName }}</td>
             <td>
@@ -96,10 +96,19 @@ beforeMount() {
       }
     },
 
-    // Update user information.
-    updateUser(item) {
-      console.log("UPDATE", JSON.stringify(item, null, 2));
-      this.showSnackbar("Sorry, update is not yet implemented.");
+    // Update user email.
+    updateUserEmail(item, e) {
+      item.email = e.target.textContent;
+      this.$axios
+      .patch(`/users/${item.id}`, {
+        email: item.email
+      })
+      .then(response => {
+        if (response.data.ok) {
+          console.log("Edit worked in the database");
+        }
+      });
+    
     },
 
     // Delete a user.
