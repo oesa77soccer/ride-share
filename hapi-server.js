@@ -234,7 +234,7 @@ async function init() {
                 }
 
                 const updatedVehicle = await Vehicle.query()
-                    .patchAndFetchById(request.params.id, request.payload)
+                    .patchAndFetchById(request.params.id, request.payload);
                 if (updatedVehicle) {
                     return h.response({
                         ok: true,
@@ -410,19 +410,19 @@ async function init() {
                     }
                 }
 
-                const newVehicleType = await VehicleType.query()
-                    .patchAndFetchById(request.params.id, request.payload)
-                if (newVehicleType) {
+                const updatedVehicleType = await VehicleType.query()
+                    .patchAndFetchById(request.params.id, request.payload);
+                if (updatedVehicleType) {
                     return h.response({
                         ok: true,
                         message: `Updated vehicle type with ID '${request.params.id}'`,
-                        data: newVehicleType
+                        data: updatedVehicleType
                     })
                     .code(200);
                 } else {
                     return h.response({
                         ok: false,
-                        message: `Couldn't updated vehicle type with ID '${request.params.id}'`,
+                        message: `Couldn't update vehicle type with ID '${request.params.id}'`,
                     })
                     .code(500);
                 }
@@ -587,13 +587,13 @@ async function init() {
                     .code(404);
                 }
 
-                const newLocation = await Location.query()
+                const updatedLocation = await Location.query()
                     .patchAndFetchById(request.params.id, request.payload)
-                if (newLocation) {
+                if (updatedLocation) {
                     return h.response({
                         ok: true,
                         message: `Updated location with ID '${request.params.id}'`,
-                        data: newLocation
+                        data: updatedLocation
                     })
                     .code(200);
                 } else {
@@ -767,20 +767,19 @@ async function init() {
                     }
                 }
 
-                const newUser = await User.query()
-                    .insert(request.payload)
-                    .returning('*');
-                if (newUser) {
+                const updatedUser = await User.query()
+                    .patchAndFetchById(request.params.id, request.payload);
+                if (updatedUser) {
                     return h.response({
                         ok: true,
-                        message: `Created user with email '${request.payload.email}'`,
-                        data: newUser
+                        message: `Updated user with ID '${request.params.id}'`,
+                        data: updatedUser
                     })
-                    .code(201);
+                    .code(200);
                 } else {
                     return h.response({
                         ok: false,
-                        message: `Couldn't create user with email '${request.payload.email}'`,
+                        message: `Couldn't update user with ID '${request.params.id}'`,
                     })
                     .code(500);
                 }
@@ -808,24 +807,6 @@ async function init() {
                                 message: `Couldn't delete user with ID '${request.params.id}'`,
                             };
                         }
-                    }
-                );
-            },
-        },
-
-        {
-            method: "PATCH",
-            path: "/users/{id}",
-            config: {
-                description: "Update a user",
-            },
-            handler: (request, h) => {
-                return User.query()
-                    .findById(request.params.id)
-                    .patch({
-                        email: request.payload.email,
-                        firstName: request.payload.firstName,
-                        lastName: request.payload.lastName,                        
                     }
                 );
             },
