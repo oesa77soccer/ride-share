@@ -1016,17 +1016,71 @@ async function init() {
             path: "/drivers/{id}",
             config: {
                 description: "Update a driver",
+                validate: {
+                    params: Joi.object({
+                        id: Joi.number().integer().required(),
+                    }),
+                    payload: Joi.object({
+                        userId: Joi.number().integer().optional(),
+                        licenseNumber: Joi.string().min(1).optional(),
+                        licenseState: Joi.string().length(2).optional(),
+                    })
+                }
             },
-            handler: (request, h) => {
-                return Driver.query()
-                    .findById(request.params.id)
-                    .patch({
-                        userId: request.payload.userId,
-                        licenseState: request.payload.licenseState,
-                        licenseNumber: request.payload.licenseNumber,
+            handler: async (request, h) => {
+                const driver = await Driver.query()
+                    .findById(request.params.id);
+                if (!driver) {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't find driver with ID '${request.params.id}'`,
+                    })
+                    .code(404);
+                }
+
+                if (request.payload.userId) {
+                    const user = await User.query()
+                        .findById(request.payload.userId);
+                    if (!user) {
+                        return h.response({
+                            ok: false,
+                            message: `User with ID '${request.payload.userId}' does not exist`
+                        })
+                        .code(404);
                     }
-                );
-            },
+                }
+
+                if (request.payload.licenseState) {
+                    const licenseState = await State.query()
+                        .where('abbreviation', request.payload.licenseState)
+                        .first();
+                    if (!licenseState) {
+                        return h.response({
+                            ok: false,
+                            message: `License state with abbreviation '${request.payload.licenseState}' does not exist`
+                        })
+                        .code(404);
+                    }
+                }
+
+                const updatedDriver = await Driver.query()
+                    .patchAndFetchById(request.params.id, request.payload);
+                
+                if (updatedDriver) {
+                    return h.response({
+                        ok: true,
+                        message: `Updated driver with ID '${request.params.id}'`,
+                        data: updatedDriver
+                    })
+                    .code(204);
+                } else {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't update driver with ID '${request.params.id}'`
+                    })
+                    .code(500);
+                }
+            }
         },
 
         {
