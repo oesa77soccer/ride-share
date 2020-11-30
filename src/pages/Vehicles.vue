@@ -105,84 +105,75 @@ beforeMount() {
 
     // Update make 
     updateMake(item, e) {
-        item.make = e.target.textContent;
         const payload = {
-          make: item.make
+          make: e.target.textContent,
         }
         this.updateVehicle(item.id, payload);    
     },
 
     // Update model 
     updateModel(item, e) {
-        item.model = e.target.textContent;
         const payload = {
-          model: item.model
+          model: e.target.textContent,
         }
         this.updateVehicle(item.id, payload);    
     },
 
     // Update color 
     updateColor(item, e) {
-        item.color = e.target.textContent;
         const payload = {
-          color: item.color
+          color: e.target.textContent,
         }
-        this.updateVehicle(item.id, payload);    
+        this.updateVehicle(item.id, payload);
     },
 
     // Update vehicle type 
     updateVehicleTypeId(item, e) {
-        item.vehicleTypeId = e.target.textContent;
         const payload = {
-          vehicleTypeId: item.vehicleTypeId
+          vehicleTypeId: e.target.textContent
         }
-        this.updateVehicle(item.id, payload);    
+        this.updateVehicle(item.id, payload);  
     },
 
     // Update capacity 
     updateCapacity(item, e) {
-        item.capacity = e.target.textContent;
         const payload = {
-          capacity: item.capacity
+          capacity: e.target.textContent,
         }
-        this.updateVehicle(item.id, payload);    
+        this.updateVehicle(item.id, payload);
     },
 
     // Update mpg 
     updateMPG(item, e) {
-        item.mpg = e.target.textContent;
         const payload = {
-          mpg: item.mpg
+            mpg: e.target.textContent,
         }
         this.updateVehicle(item.id, payload);    
     },
 
     // Update license state 
     updateLicenseState(item, e) {
-        item.licenseState = e.target.textContent;
         const payload = {
-          licenseState: item.licenseState
+            licenseState: e.target.textContent,
         }
         this.updateVehicle(item.id, payload);
     },
 
     // Update license plate 
     updateLicensePlate(item, e) {
-        item.licensePlate = e.target.textContent;
         const payload = {
-          licensePlate: item.licensePlate
+            licensePlate: e.target.textContent,
         }
-        this.updateVehicle(item.id, payload);    },
+        this.updateVehicle(item.id, payload);    
+    },
 
     // update vehicle data entry
     updateVehicle(id, payload) {
-        console.log(payload);
-        console.log(id);
         this.$axios
         .patch(`/vehicles/${id}`, payload)
         .then(response => {
-            if (response.ok) {
-                console.log(response.data);
+            if (response.data.ok) {
+                console.log(response.data.data);
                 console.log("Edit worked in the database");
             }
         })
@@ -197,8 +188,8 @@ beforeMount() {
         )
         .then(response => {
             if (response.data.ok) {
-                this.vehicles.push(response.data);
-                console.log(response.data);
+                this.vehicles.push(response.data.data);
+                console.log(this.vehicles);
                 console.log("Add worked in the database");
             }
         });

@@ -814,24 +814,6 @@ async function init() {
         },
 
         {
-            method: "PATCH",
-            path: "/users/{id}",
-            config: {
-                description: "Update a user",
-            },
-            handler: (request, h) => {
-                return User.query()
-                    .findById(request.params.id)
-                    .patch({
-                        email: request.payload.email,
-                        firstName: request.payload.firstName,
-                        lastName: request.payload.lastName,                        
-                    }
-                );
-            },
-        },
-
-        {
             method: "GET",
             path: "/rides",
             config: {

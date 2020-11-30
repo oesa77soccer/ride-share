@@ -10,15 +10,13 @@
       >
         <template v-slot:item="{ item }">
           <tr v-bind:class="itemClass(item)">
-            <td contenteditable >{{ item.email }}</td>
-            <td>{{ item.firstName }}</td>
-            <td>{{ item.lastName }}</td>
+            <td contenteditable @blur="updateEmail(item, $event)">{{ item.email }}</td>
+            <td contenteditable @blur="updateFirstName(item, $event)">{{ item.firstName }}</td>
+            <td contenteditable @blur="updateLastName(item, $event)">{{ item.lastName }}</td>
+            <td contenteditable @blur="updateAdmin(item, $event)">{{ item.isAdmin  }}</td>
             <td>
               <v-icon small @click="deleteUser(item)">
                 mdi-delete
-              </v-icon>
-              <v-icon small class="ml-2" @click="updateUser(item)">
-                mdi-pencil
               </v-icon>
             </td>
           </tr>
@@ -45,6 +43,7 @@ export default {
         { text: "Email", value: "email" },
         { text: "First", value: "firstName" },
         { text: "Last", value: "lastName" },
+        { text: "Admin?", value: "isAdmin" },
         { text: "Action", value: "action" }
       ],
       users: [],
@@ -62,7 +61,8 @@ export default {
         id: user.id,
         email: user.email,
         firstName: user.firstName,
-        lastName: user.lastName
+        lastName: user.lastName,
+        isAdmin: user.isAdmin,
       }));
     });
   },
@@ -96,22 +96,51 @@ beforeMount() {
       }
     },
 
-    // Update user email.
-    /*updateUserEmail(item, e) {
-      item.email = e.target.textContent;
-      this.$axios
-      .patch(`/users/${item.id}`, {
-        firstName: item.firstName,
-        lastName: item.lastName,
-        email: item.email,
-      })
-      .then(response => {
-        if (response.data.ok) {
-          console.log("Edit worked in the database");
+    // Update user email 
+    updateEmail(item, e) {
+        const payload = {
+            email: e.target.textContent,
         }
-      });
-    
-    },*/
+        this.updateUser(item.id, payload);    
+    },
+
+    // Update user first name 
+    updateFirstName(item, e) {
+        const payload = {
+            firstName: e.target.textContent,
+        }
+        this.updateUser(item.id, payload);    
+    },
+
+    // Update user last name 
+    updateLastName(item, e) {
+        const payload = {
+            lastName: e.target.textContent,
+        }
+        this.updateUser(item.id, payload);    
+    },
+
+    // Update admin privileges
+    updateAdmin(item, e) {
+        const payload = {
+            isAdmin: e.target.textContent,
+        }
+        this.updateUser(item.id, payload);    
+    },
+
+    // update entire user
+    updateUser(id, payload) {
+        this.$axios
+        .patch(`/users/${id}`, payload)
+        .then(response => {
+            if (response.data.ok) {
+                console.log("Edit worked in the database");
+            }
+        })
+        .catch(err => {
+            console.log(err, "Error in making patch");
+        });
+    },
 
     // Delete a user.
     deleteUser(item) {
