@@ -93,48 +93,55 @@ async function init() {
                 description: "Add a vehicle",
                 validate: {
                     payload: Joi.object({
-                        make: Joi.string().min(1).max(50).required(),
-                        model: Joi.string().min(1).max(50).required(),
-                        color: Joi.string().min(1).max(50).required(),
-                        vehicleTypeId: Joi.number().integer().min(1).required(),
-                        capacity: Joi.number().integer().min(1).required(),
-                        mpg: Joi.number().min(1).required(),
-                        licenseState: Joi.string().min(2).max(2).required(),
-                        licensePlate: Joi.string().min(1).max(10).required()
+                        make: Joi.string().min(1).max(50).optional(),
+                        model: Joi.string().min(1).max(50).optional(),
+                        color: Joi.string().min(1).max(50).optional(),
+                        vehicleTypeId: Joi.number().integer().min(1).optional(),
+                        capacity: Joi.number().integer().min(1).optional(),
+                        mpg: Joi.number().min(1).optional(),
+                        licenseState: Joi.string().min(2).max(2).optional(),
+                        licensePlate: Joi.string().min(1).max(10).optional()
                     }),
                 },
             },
             handler: async (request, h) => {
-                const existingVehicle = await Vehicle.query()
-                    .where("licensePlate", request.payload.licensePlate)
-                    .first();
-                if (existingVehicle) {
-                    return h.response({
-                        ok: false,
-                        message: `Vehicle with license plate '${request.payload.licensePlate}' already exists`,
-                    })
-                    .code(400);
+                
+                if (request.payload.licensePlate) {
+                    const existingVehicle = await Vehicle.query()
+                        .where("licensePlate", request.payload.licensePlate)
+                        .first();
+                    if (existingVehicle) {
+                        return h.response({
+                            ok: false,
+                            message: `Vehicle with license plate '${request.payload.licensePlate}' already exists`,
+                        })
+                        .code(400);
+                    }
                 }
 
-                const vehicleType = await VehicleType.query()
-                    .findById(request.payload.vehicleTypeId);
-                if (!vehicleType) {
-                    return h.response({
-                        ok: false,
-                        message: `Vehicle type with ID '${request.payload.vehicleTypeId}' does not exist`
-                    })
-                    .code(404)
+                if (request.payload.vehicleType) {
+                    const vehicleType = await VehicleType.query()
+                        .findById(request.payload.vehicleTypeId);
+                    if (!vehicleType) {
+                        return h.response({
+                            ok: false,
+                            message: `Vehicle type with ID '${request.payload.vehicleTypeId}' does not exist`
+                        })
+                        .code(404)
+                    }
                 }
 
-                const state = await State.query()
-                    .where('abbreviation', request.payload.licenseState)
-                    .first();
-                if (!state) {
-                    return h.response({
-                        ok: false,
-                        message: `State with abbreviation '${request.payload.licenseState}' does not exist`
-                    })
-                    .code(404)
+                if (request.payload.licenseState) {
+                    const state = await State.query()
+                        .where('abbreviation', request.payload.licenseState)
+                        .first();
+                    if (!state) {
+                        return h.response({
+                            ok: false,
+                            message: `State with abbreviation '${request.payload.licenseState}' does not exist`
+                        })
+                        .code(404)
+                    }
                 }
 
                 const newVehicle = await Vehicle.query().insert({
