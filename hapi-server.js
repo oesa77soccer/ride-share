@@ -105,7 +105,6 @@ async function init() {
                 },
             },
             handler: async (request, h) => {
-                
                 if (request.payload.licensePlate) {
                     const existingVehicle = await Vehicle.query()
                         .where("licensePlate", request.payload.licensePlate)
@@ -168,7 +167,7 @@ async function init() {
             method: "PATCH",
             path: "/vehicles/{id}",
             config: {
-                description: "Add a vehicle",
+                description: "Update a vehicle",
                 validate: {
                     params: Joi.object({
                         id: Joi.number().integer().min(1).required(),
@@ -235,8 +234,7 @@ async function init() {
                 }
 
                 const newVehicle = await Vehicle.query()
-                    .insert(request.payload)
-                    .returning('*');
+                    .patchAndFetchById(request.params.id, request.payload)
                 if (newVehicle) {
                     return h.response({
                         ok: true,
@@ -247,7 +245,7 @@ async function init() {
                 } else {
                     return h.response({
                         ok: false,
-                        message: `Couldn't updated vehicle with license plate '${request.params.id}'`,
+                        message: `Couldn't update vehicle with ID '${request.params.id}'`,
                     })
                     .code(500);
                 }
@@ -336,27 +334,27 @@ async function init() {
                 description: "Add a vehicle type",
                 validate: {
                     payload: Joi.object({
-                        type: Joi.string().min(1).max(50).required(),
+                        type: Joi.string().min(1).max(50).optional(),
                     }),
                 },
             },
             handler: async (request, h) => {
-                const existingVehicleType = await Vehicle.query()
-                    .where("type", request.payload.type)
-                    .first();
-                if (existingVehicleType) {
-                    return h.response({
-                        ok: false,
-                        message: `Vehicle type '${request.payload.type}' already exists`,
-                    })
-                    .code(400);
+                if (request.payload.type) {
+                    const existingVehicleType = await Vehicle.query()
+                        .where("type", request.payload.type)
+                        .first();
+                    if (existingVehicleType) {
+                        return h.response({
+                            ok: false,
+                            message: `Vehicle type '${request.payload.type}' already exists`,
+                        })
+                        .code(400);
+                    }
                 }
 
-                const newVehicleType = await Vehicle.query().insert({
-                    type: request.payload.type
-                })
-                .returning('*');
-
+                const newVehicleType = await Vehicle.query()
+                    .insert(request.payload)
+                    .returning('*');
                 if (newVehicleType) {
                     return h.response({
                         ok: true,
@@ -381,35 +379,53 @@ async function init() {
                 description: "Update a vehicle type",
                 validate: {
                     params: Joi.object({
-                        id: Joi.number().integer().required()
+                        id: Joi.number().integer().min(1).required(),
                     }),
                     payload: Joi.object({
-                        type: Joi.string().min(1).max(50).required(),
+                        type: Joi.string().min(1).max(50).optional(),
                     }),
                 },
             },
-            handler: (request, h) => {
-                return VehicleType.query()
+            handler: async (request, h) => {
+                const vehicleType = await VehicleType.query()
                     .findById(request.params.id)
-                    .patch({
-                        type: request.payload.type,
+                if (!vehicleType) {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't find vehicle type with ID '${request.params.id}'`
                     })
-                    .returning('*')
-                    .then(rowsPatched => {
-                        if (rowsPatched) {
-                            return {
-                                ok: true,
-                                message: `Updated vehicle type with ID '${request.params.id}'`,
-                                data: rowsPatched
-                            };
-                        } else {
-                            return {
-                                ok: false,
-                                message: `Couldn't update vehicle type with ID '${request.params.id}'`,
-                            };
-                        }
+                    .code(404);
+                }
+
+                if (request.payload.type) {
+                    const existingVehicleType = await VehicleType.query()
+                        .where("type", request.payload.type)
+                        .first();
+                    if (existingVehicleType) {
+                        return h.response({
+                            ok: false,
+                            message: `Vehicle type '${request.payload.type}' already exists`,
+                        })
+                        .code(400);
                     }
-                );
+                }
+
+                const newVehicleType = await VehicleType.query()
+                    .patchAndFetchById(request.params.id, request.payload)
+                if (newVehicleType) {
+                    return h.response({
+                        ok: true,
+                        message: `Updated vehicle type with ID '${request.params.id}'`,
+                        data: newVehicleType
+                    })
+                    .code(200);
+                } else {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't updated vehicle type with ID '${request.params.id}'`,
+                    })
+                    .code(500);
+                }
             },
         },
 
@@ -491,11 +507,11 @@ async function init() {
                 description: "Create a location",
                 validate: {
                     payload: Joi.object({
-                        name: Joi.string().min(1).max(50).required(),
-                        address: Joi.string().min(1).max(100).required(),
-                        city: Joi.string().min(1).max(50).required(),
-                        state: Joi.string().min(2).max(2).required(),
-                        zipCode: Joi.string().min(5).max(5).required(),
+                        name: Joi.string().min(1).max(50).optional(),
+                        address: Joi.string().min(1).max(100).optional(),
+                        city: Joi.string().min(1).max(50).optional(),
+                        state: Joi.string().min(2).max(2).optional(),
+                        zipCode: Joi.string().min(5).max(5).optional(),
                     }),
                 },
             },
@@ -508,18 +524,12 @@ async function init() {
                         ok: false,
                         message: `State with abbreviation '${request.payload.state}' does not exist`
                     })
-                    .code(404)
+                    .code(404);
                 }
 
-                const newLocation = await Location.query().insert({
-                    name: request.payload.name,
-                    address: request.payload.address,
-                    city: request.payload.city,
-                    state: request.payload.state,
-                    zipCode: request.payload.zipCode,
-                })
-                .returning('*');
-
+                const newLocation = await Location.query()
+                    .insert(request.payload)
+                    .returning('*');
                 if (newLocation) {
                     return h.response({
                         ok: true,
@@ -531,6 +541,65 @@ async function init() {
                     return h.response({
                         ok: false,
                         message: `Couldn't create location '${request.payload.name}'`,
+                    })
+                    .code(500);
+                }
+            },
+        },
+
+        {
+            method: "PATCH",
+            path: "/locations/{id}",
+            config: {
+                description: "Update a location",
+                validate: {
+                    params: Joi.object({
+                        id: Joi.number().integer().min(1).required()
+                    }),
+                    payload: Joi.object({
+                        name: Joi.string().min(1).max(50).optional(),
+                        address: Joi.string().min(1).max(100).optional(),
+                        city: Joi.string().min(1).max(50).optional(),
+                        state: Joi.string().min(2).max(2).optional(),
+                        zipCode: Joi.string().min(5).max(5).optional(),
+                    }),
+                },
+            },
+            handler: async (request, h) => {
+                const location = await Location.query()
+                    .findById(request.params.id)
+                if (!location) {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't find location with ID '${request.params.id}'`
+                    })
+                    .code(404);
+                }
+
+                const state = await State.query()
+                    .where('abbreviation', request.payload.state)
+                    .first();
+                if (!state) {
+                    return h.response({
+                        ok: false,
+                        message: `State with abbreviation '${request.payload.state}' does not exist`
+                    })
+                    .code(404);
+                }
+
+                const newLocation = await Location.query()
+                    .patchAndFetchById(request.params.id, request.payload)
+                if (newLocation) {
+                    return h.response({
+                        ok: true,
+                        message: `Updated location with ID '${request.params.id}'`,
+                        data: newLocation
+                    })
+                    .code(200);
+                } else {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't update location with ID '${request.params.id}'`,
                     })
                     .code(500);
                 }
@@ -558,26 +627,6 @@ async function init() {
                                 message: `Couldn't delete location with ID '${request.params.id}'`,
                             };
                         }
-                    }
-                );
-            },
-        },
-
-        {
-            method: "PATCH",
-            path: "/locations/{id}",
-            config: {
-                description: "Update a location",
-            },
-            handler: (request, h) => {
-                return Location.query()
-                    .findById(request.params.id)
-                    .patch({
-                        name: request.payload.name,
-                        address: request.payload.address,
-                        city: request.payload.city,
-                        state: request.payload.state,
-                        zipCode: request.payload.zipCode,
                     }
                 );
             },
@@ -634,39 +683,97 @@ async function init() {
                 description: "Sign up to be a user",
                 validate: {
                     payload: Joi.object({
-                        firstName: Joi.string().required(),
-                        lastName: Joi.string().required(),
-                        email: Joi.string().email().required(),
-                        password: Joi.string().required(),
-                        phone: Joi.string().required(),
+                        firstName: Joi.string().optional(),
+                        lastName: Joi.string().optional(),
+                        email: Joi.string().email().optional(),
+                        password: Joi.string().optional(),
+                        phone: Joi.string().optional(),
                     }),
                 },
             },
             handler: async (request, h) => {
-                const existingUser = await User.query()
-                    .where("email", request.payload.email)
-                    .first();
-                if (existingUser) {
-                    return h.response({
-                        ok: false,
-                        message: `User with email '${request.payload.email}' is already in use`,
-                    })
-                    .code(400);
+                if (request.payload.email) {
+                    const existingUser = await User.query()
+                        .where("email", request.payload.email)
+                        .first();
+                    if (existingUser) {
+                        return h.response({
+                            ok: false,
+                            message: `User with email '${request.payload.email}' is already in use`,
+                        })
+                        .code(400);
+                    }
                 }
 
-                const newUser = await User.query().insert({
-                    firstName: request.payload.firstName,
-                    lastName: request.payload.lastName,
-                    email: request.payload.email,
-                    password: request.payload.password,
-                    phone: request.payload.phone,
-                })
-                .returning('*');
-
+                const newUser = await User.query()
+                    .insert(request.payload)
+                    .returning('*');
                 if (newUser) {
                     return h.response({
                         ok: true,
-                        message: `Created user '${request.payload.email}'`,
+                        message: `Created user with email '${request.payload.email}'`,
+                        data: newUser
+                    })
+                    .code(201);
+                } else {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't create user with email '${request.payload.email}'`,
+                    })
+                    .code(500);
+                }
+            },
+        },
+
+        {
+            method: "PATCH",
+            path: "/users/{id}",
+            config: {
+                description: "Modify a user",
+                validate: {
+                    params: Joi.object({
+                        id: Joi.number().integer().min(1).required()
+                    }),
+                    payload: Joi.object({
+                        firstName: Joi.string().optional(),
+                        lastName: Joi.string().optional(),
+                        email: Joi.string().email().optional(),
+                        password: Joi.string().optional(),
+                        phone: Joi.string().optional(),
+                    }),
+                },
+            },
+            handler: async (request, h) => {
+                const user = await User.query()
+                    .findById(request.params.id)
+                if (!user) {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't find user with ID '${request.params.id}'`
+                    })
+                    .code(404);
+                }
+
+                if (request.payload.email) {
+                    const existingUser = await User.query()
+                        .where("email", request.payload.email)
+                        .first();
+                    if (existingUser) {
+                        return h.response({
+                            ok: false,
+                            message: `User with email '${request.payload.email}' is already in use`,
+                        })
+                        .code(400);
+                    }
+                }
+
+                const newUser = await User.query()
+                    .insert(request.payload)
+                    .returning('*');
+                if (newUser) {
+                    return h.response({
+                        ok: true,
+                        message: `Created user with email '${request.payload.email}'`,
                         data: newUser
                     })
                     .code(201);
