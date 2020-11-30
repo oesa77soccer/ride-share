@@ -181,9 +181,13 @@ beforeMount() {
         this.$axios
         .patch(`/vehicles/${id}`, payload)
         .then(response => {
-            if (response.data.ok) {
+            if (response.ok) {
+                console.log(response.data);
                 console.log("Edit worked in the database");
             }
+        })
+        .catch(err => {
+            console.log(err, "Error in making patch");
         });
     },
 
@@ -194,6 +198,7 @@ beforeMount() {
         .then(response => {
             if (response.data.ok) {
                 this.vehicles.push(response.data);
+                console.log(response.data);
                 console.log("Add worked in the database");
             }
         });

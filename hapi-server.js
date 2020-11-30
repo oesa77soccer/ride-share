@@ -187,7 +187,7 @@ async function init() {
             },
             handler: async (request, h) => {
                 const vehicle = await Vehicle.query()
-                    .findById(request.params.id)
+                    .findById(request.params.id);
                 if (!vehicle) {
                     return h.response({
                         ok: false,
@@ -209,7 +209,7 @@ async function init() {
                     }
                 }
 
-                if (request.payload.vehicleType) {
+                if (request.payload.vehicleTypeId) {
                     const vehicleType = await VehicleType.query()
                         .findById(request.payload.vehicleTypeId);
                     if (!vehicleType) {
