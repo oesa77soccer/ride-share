@@ -191,24 +191,12 @@ beforeMount() {
     },
 
     addVehicle() {
-        console.log(this.vehicles.length);
-        const vehicle = {
-            /*make: "Ford",
-            model: "Focus",
-            color: "Red",
-            vehicleTypeId: 1,
-            capacity: 12,
-            mpg: 2,
-            licenseState: "OH",
-            licensePlate: "FGE 3004",*/
-        }
-        this.vehicles.push(vehicle);
-
         this.$axios.post(`/vehicles`, 
-            vehicle
+            {} // no parameters with adding empty vehicle
         )
         .then(response => {
             if (response.data.ok) {
+                this.vehicles.push(response.data.newVehicle);
                 console.log("Add worked in the database");
             }
         });
