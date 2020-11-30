@@ -144,18 +144,9 @@ async function init() {
                     }
                 }
 
-                const newVehicle = await Vehicle.query().insert({
-                    make: request.payload.make,
-                    model: request.payload.model,
-                    color: request.payload.color,
-                    vehicleTypeId: request.payload.vehicleTypeId,
-                    capacity: request.payload.capacity,
-                    mpg: request.payload.mpg,
-                    licenseState: request.payload.licenseState,
-                    licensePlate: request.payload.licensePlate,
-                })
-                .returning('*');
-
+                const newVehicle = await Vehicle.query()
+                    .insert(request.payload)
+                    .returning('*');
                 if (newVehicle) {
                     return h.response({
                         ok: true,
@@ -167,6 +158,96 @@ async function init() {
                     return h.response({
                         ok: false,
                         message: `Couldn't create vehicle with license plate '${request.payload.licensePlate}'`,
+                    })
+                    .code(500);
+                }
+            },
+        },
+
+        {
+            method: "PATCH",
+            path: "/vehicles/{id}",
+            config: {
+                description: "Add a vehicle",
+                validate: {
+                    params: Joi.object({
+                        id: Joi.number().integer().min(1).required(),
+                    }),
+                    payload: Joi.object({
+                        make: Joi.string().min(1).max(50).optional(),
+                        model: Joi.string().min(1).max(50).optional(),
+                        color: Joi.string().min(1).max(50).optional(),
+                        vehicleTypeId: Joi.number().integer().min(1).optional(),
+                        capacity: Joi.number().integer().min(1).optional(),
+                        mpg: Joi.number().min(1).optional(),
+                        licenseState: Joi.string().min(2).max(2).optional(),
+                        licensePlate: Joi.string().min(1).max(10).optional()
+                    }),
+                },
+            },
+            handler: async (request, h) => {
+                const vehicle = await Vehicle.query()
+                    .findById(request.params.id)
+                if (!vehicle) {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't find vehicle with ID ${request.params.id}`,
+                    })
+                    .code(404);
+                }
+
+                if (request.payload.licensePlate) {
+                    const existingVehicle = await Vehicle.query()
+                        .where("licensePlate", request.payload.licensePlate)
+                        .first();
+                    if (existingVehicle) {
+                        return h.response({
+                            ok: false,
+                            message: `Vehicle with license plate '${request.payload.licensePlate}' already exists`,
+                        })
+                        .code(400);
+                    }
+                }
+
+                if (request.payload.vehicleType) {
+                    const vehicleType = await VehicleType.query()
+                        .findById(request.payload.vehicleTypeId);
+                    if (!vehicleType) {
+                        return h.response({
+                            ok: false,
+                            message: `Vehicle type with ID '${request.payload.vehicleTypeId}' does not exist`
+                        })
+                        .code(404)
+                    }
+                }
+
+                if (request.payload.licenseState) {
+                    const state = await State.query()
+                        .where('abbreviation', request.payload.licenseState)
+                        .first();
+                    if (!state) {
+                        return h.response({
+                            ok: false,
+                            message: `State with abbreviation '${request.payload.licenseState}' does not exist`
+                        })
+                        .code(404)
+                    }
+                }
+
+                const newVehicle = await Vehicle.query()
+                    .insert(request.payload)
+                    .returning('*');
+                if (newVehicle) {
+                    return h.response({
+                        ok: true,
+                        message: `Updated vehicle with ID '${request.params.id}'`,
+                        data: newVehicle
+                    })
+                    .code(200);
+                } else {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't updated vehicle with license plate '${request.params.id}'`,
                     })
                     .code(500);
                 }
@@ -199,29 +280,6 @@ async function init() {
                                 message: `Couldn't delete vehicle with ID '${request.params.id}'`,
                             };
                         }
-                    }
-                );
-            },
-        },
-
-        {
-            method: "PATCH",
-            path: "/vehicles/{id}",
-            config: {
-                description: "Update a vehicle",
-            },
-            handler: (request, h) => {
-                return Vehicle.query()
-                    .findById(request.params.id)
-                    .patch({
-                        make: request.payload.make,
-                        model: request.payload.model,
-                        color: request.payload.color,
-                        vehicleTypeId: request.payload.vehicleTypeId,
-                        capacity: request.payload.capacity,
-                        mpg: request.payload.mpg,
-                        licenseState: request.payload.licenseState,
-                        licensePlate: request.payload.licensePlate,
                     }
                 );
             },
@@ -1071,7 +1129,8 @@ async function init() {
                 }
 
                 const updatedDriver = await Driver.query()
-                    .patchAndFetchById(request.params.id, request.payload);
+                    .patchAndFetchById(request.params.id, request.payload)
+                    .returning('*');
                 
                 if (updatedDriver) {
                     return h.response({
@@ -1079,7 +1138,7 @@ async function init() {
                         message: `Updated driver with ID '${request.params.id}'`,
                         data: updatedDriver
                     })
-                    .code(204);
+                    .code(200);
                 } else {
                     return h.response({
                         ok: false,
