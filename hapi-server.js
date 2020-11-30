@@ -60,7 +60,7 @@ async function init() {
                 description: "Retrieve a vehicle by ID",
                 validate: {
                     params: Joi.object({
-                        id: Joi.number().integer().min(1)
+                        id: Joi.number().integer().min(1).required()
                     })
                 }
             },
@@ -72,7 +72,7 @@ async function init() {
                             return h.response({
                                 ok: true,
                                 message: `Found vehicle with ID '${request.params.id}'`,
-                                data: rowsFound
+                                results: rowsFound
                             })
                             .code(200);
                         } else {
@@ -99,7 +99,7 @@ async function init() {
                         vehicleTypeId: Joi.number().integer().min(1).optional(),
                         capacity: Joi.number().integer().min(1).optional(),
                         mpg: Joi.number().min(1).optional(),
-                        licenseState: Joi.string().min(2).max(2).optional(),
+                        licenseState: Joi.string().length(2).optional(),
                         licensePlate: Joi.string().min(1).max(10).optional()
                     }),
                 },
@@ -150,7 +150,7 @@ async function init() {
                     return h.response({
                         ok: true,
                         message: `Created vehicle with license plate '${request.payload.licensePlate}'`,
-                        data: newVehicle
+                        results: newVehicle
                     })
                     .code(201);
                 } else {
@@ -179,7 +179,7 @@ async function init() {
                         vehicleTypeId: Joi.number().integer().min(1).optional(),
                         capacity: Joi.number().integer().min(1).optional(),
                         mpg: Joi.number().min(1).optional(),
-                        licenseState: Joi.string().min(2).max(2).optional(),
+                        licenseState: Joi.string().length(2).optional(),
                         licensePlate: Joi.string().min(1).max(10).optional()
                     }),
                 },
@@ -234,12 +234,12 @@ async function init() {
                 }
 
                 const updatedVehicle = await Vehicle.query()
-                    .patchAndFetchById(request.params.id, request.payload)
+                    .patchAndFetchById(request.params.id, request.payload);
                 if (updatedVehicle) {
                     return h.response({
                         ok: true,
                         message: `Updated vehicle with ID '${request.params.id}'`,
-                        data: updatedVehicle
+                        results: updatedVehicle
                     })
                     .code(200);
                 } else {
@@ -259,7 +259,7 @@ async function init() {
                 description: "Delete a vehicle",
                 validate: {
                     params: Joi.object({
-                        id: Joi.number().integer().min(1)
+                        id: Joi.number().integer().min(1).required()
                     })
                 }
             },
@@ -301,7 +301,7 @@ async function init() {
                 description: "Retrieve a vehicle-type by ID",
                 validate: {
                     params: Joi.object({
-                        id: Joi.number().integer().min(1)
+                        id: Joi.number().integer().min(1).required()
                     })
                 }
             },
@@ -313,7 +313,7 @@ async function init() {
                             return h.response({
                                 ok: true,
                                 message: `Found vehicle-type with ID '${request.params.id}'`,
-                                data: rowsFound
+                                results: rowsFound
                             })
                             .code(200);
                         } else {
@@ -359,7 +359,7 @@ async function init() {
                     return h.response({
                         ok: true,
                         message: `Created vehicle type '${request.payload.type}'`,
-                        data: newVehicleType
+                        results: newVehicleType
                     })
                     .code(201);
                 } else {
@@ -410,19 +410,19 @@ async function init() {
                     }
                 }
 
-                const newVehicleType = await VehicleType.query()
-                    .patchAndFetchById(request.params.id, request.payload)
-                if (newVehicleType) {
+                const updatedVehicleType = await VehicleType.query()
+                    .patchAndFetchById(request.params.id, request.payload);
+                if (updatedVehicleType) {
                     return h.response({
                         ok: true,
                         message: `Updated vehicle type with ID '${request.params.id}'`,
-                        data: newVehicleType
+                        results: updatedVehicleType
                     })
                     .code(200);
                 } else {
                     return h.response({
                         ok: false,
-                        message: `Couldn't updated vehicle type with ID '${request.params.id}'`,
+                        message: `Couldn't update vehicle type with ID '${request.params.id}'`,
                     })
                     .code(500);
                 }
@@ -434,6 +434,11 @@ async function init() {
             path: "/vehicle-types/{id}",
             config: {
                 description: "Delete a vehicle-type",
+                validate: {
+                    params: Joi.object({
+                        id: Joi.number().integer().min(1).required()
+                    })
+                }
             },
             handler: (request, h) => {
                 return VehicleType.query()
@@ -443,7 +448,7 @@ async function init() {
                             return {
                                 ok: true,
                                 message: `Deleted vehicle-type with ID '${request.params.id}'`,
-                                data: rowsDeleted
+                                results: rowsDeleted
                             };
                         } else {
                             return {
@@ -474,7 +479,7 @@ async function init() {
                 description: "Retrieve a location by ID",
                 validate: {
                     params: Joi.object({
-                        id: Joi.number().integer().min(1)
+                        id: Joi.number().integer().min(1).required()
                     })
                 }
             },
@@ -486,7 +491,7 @@ async function init() {
                             return h.response({
                                 ok: true,
                                 message: `Found location with ID '${request.params.id}'`,
-                                data: rowsFound
+                                results: rowsFound
                             })
                             .code(200);
                         } else {
@@ -510,7 +515,7 @@ async function init() {
                         name: Joi.string().min(1).max(50).optional(),
                         address: Joi.string().min(1).max(100).optional(),
                         city: Joi.string().min(1).max(50).optional(),
-                        state: Joi.string().min(2).max(2).optional(),
+                        state: Joi.string().length(2).optional(),
                         zipCode: Joi.string().min(5).max(5).optional(),
                     }),
                 },
@@ -534,7 +539,7 @@ async function init() {
                     return h.response({
                         ok: true,
                         message: `Created location '${request.payload.name}'`,
-                        data: newLocation
+                        results: newLocation
                     })
                     .code(201);
                 } else {
@@ -560,7 +565,7 @@ async function init() {
                         name: Joi.string().min(1).max(50).optional(),
                         address: Joi.string().min(1).max(100).optional(),
                         city: Joi.string().min(1).max(50).optional(),
-                        state: Joi.string().min(2).max(2).optional(),
+                        state: Joi.string().length(2).optional(),
                         zipCode: Joi.string().min(5).max(5).optional(),
                     }),
                 },
@@ -587,13 +592,13 @@ async function init() {
                     .code(404);
                 }
 
-                const newLocation = await Location.query()
+                const updatedLocation = await Location.query()
                     .patchAndFetchById(request.params.id, request.payload)
-                if (newLocation) {
+                if (updatedLocation) {
                     return h.response({
                         ok: true,
                         message: `Updated location with ID '${request.params.id}'`,
-                        data: newLocation
+                        results: updatedLocation
                     })
                     .code(200);
                 } else {
@@ -611,6 +616,11 @@ async function init() {
             path: "/locations/{id}",
             config: {
                 description: "Delete a location",
+                validate: {
+                    params: Joi.object({
+                        id: Joi.number().integer().min(1).required()
+                    })
+                }
             },
             handler: (request, h) => {
                 return Location.query()
@@ -650,7 +660,7 @@ async function init() {
                 description: "Retrieve a user by ID",
                 validate: {
                     params: Joi.object({
-                        id: Joi.number().integer().min(1)
+                        id: Joi.number().integer().min(1).required()
                     })
                 }
             },
@@ -662,7 +672,7 @@ async function init() {
                             return h.response({
                                 ok: true,
                                 message: `Found user with ID '${request.params.id}'`,
-                                data: rowsFound
+                                results: rowsFound
                             })
                             .code(200);
                         } else {
@@ -683,11 +693,11 @@ async function init() {
                 description: "Sign up to be a user",
                 validate: {
                     payload: Joi.object({
-                        firstName: Joi.string().optional(),
-                        lastName: Joi.string().optional(),
+                        firstName: Joi.string().min(1).optional(),
+                        lastName: Joi.string().min(1).optional(),
                         email: Joi.string().email().optional(),
-                        password: Joi.string().optional(),
-                        phone: Joi.string().optional(),
+                        password: Joi.string().password().optional(),
+                        phone: Joi.string().length(10).optional(),
                     }),
                 },
             },
@@ -712,7 +722,7 @@ async function init() {
                     return h.response({
                         ok: true,
                         message: `Created user with email '${request.payload.email}'`,
-                        data: newUser
+                        results: newUser
                     })
                     .code(201);
                 } else {
@@ -735,11 +745,11 @@ async function init() {
                         id: Joi.number().integer().min(1).required()
                     }),
                     payload: Joi.object({
-                        firstName: Joi.string().optional(),
-                        lastName: Joi.string().optional(),
+                        firstName: Joi.string().min(1).optional(),
+                        lastName: Joi.string().min(1).optional(),
                         email: Joi.string().email().optional(),
-                        password: Joi.string().optional(),
-                        phone: Joi.string().optional(),
+                        password: Joi.string().password().optional(),
+                        phone: Joi.string().length(10).optional(),
                     }),
                 },
             },
@@ -767,20 +777,19 @@ async function init() {
                     }
                 }
 
-                const newUser = await User.query()
-                    .insert(request.payload)
-                    .returning('*');
-                if (newUser) {
+                const updatedUser = await User.query()
+                    .patchAndFetchById(request.params.id, request.payload);
+                if (updatedUser) {
                     return h.response({
                         ok: true,
-                        message: `Created user with email '${request.payload.email}'`,
-                        data: newUser
+                        message: `Updated user with ID '${request.params.id}'`,
+                        results: updatedUser
                     })
-                    .code(201);
+                    .code(200);
                 } else {
                     return h.response({
                         ok: false,
-                        message: `Couldn't create user with email '${request.payload.email}'`,
+                        message: `Couldn't update user with ID '${request.params.id}'`,
                     })
                     .code(500);
                 }
@@ -792,6 +801,11 @@ async function init() {
             path: "/users/{id}",
             config: {
                 description: "Delete a user",
+                validate: {
+                    params: Joi.object({
+                        id: Joi.number().integer().min(1).required()
+                    })
+                }
             },
             handler: (request, h) => {
                 return User.query()
@@ -877,7 +891,7 @@ async function init() {
                 description: "Retrieve a ride by ID",
                 validate: {
                     params: Joi.object({
-                        id: Joi.number().integer().min(1)
+                        id: Joi.number().integer().min(1).required()
                     })
                 }
             },
@@ -889,7 +903,7 @@ async function init() {
                             return h.response({
                                 ok: true,
                                 message: `Found ride with ID '${request.params.id}'`,
-                                data: rowsFound
+                                results: rowsFound
                             })
                             .code(200);
                         } else {
@@ -910,14 +924,14 @@ async function init() {
                 description: "Create a ride",
                 validate: {
                     payload: Joi.object({
-                        date: Joi.date().required(),
-                        time: Joi.string().min(7).max(8).required(),
-                        distance: Joi.number().required(),
-                        fuelPrice: Joi.number().required(),
-                        fee: Joi.number().required(),
-                        vehicleId: Joi.number().integer().required(),
-                        fromLocationId: Joi.number().integer().required(),
-                        toLocationId: Joi.number().integer().required()
+                        date: Joi.date().optional(),
+                        time: Joi.string().min(7).max(8).optional(),
+                        distance: Joi.number().min(1).optional(),
+                        fuelPrice: Joi.number().min(1).optional(),
+                        fee: Joi.number().min(1).optional(),
+                        vehicleId: Joi.number().integer().min(1).optional(),
+                        fromLocationId: Joi.number().integer().min(1).optional(),
+                        toLocationId: Joi.number().integer().min(1).optional()
                     }),
                 },
             },
@@ -932,43 +946,38 @@ async function init() {
                     .code(404)
                 }
 
-                const fromLocation = await Location.query()
-                    .findById(request.payload.fromLocationId);
-                if (!fromLocation) {
-                    return h.response({
-                        ok: false,
-                        message: `Location '${request.payload.fromLocationId}' does not exist`
-                    })
-                    .code(404)
+                if (request.payload.fromLocationId) {
+                    const fromLocation = await Location.query()
+                        .findById(request.payload.fromLocationId);
+                    if (!fromLocation) {
+                        return h.response({
+                            ok: false,
+                            message: `Location '${request.payload.fromLocationId}' does not exist`
+                        })
+                        .code(404);
+                    }
                 }
 
-                const toLocation = await Location.query()
-                    .findById(request.payload.toLocationId);
-                if (!toLocation) {
-                    return h.response({
-                        ok: false,
-                        message: `Location '${request.payload.toLocationId}' does not exist`
-                    })
-                    .code(404)
+                if (request.payload.toLocationId) {
+                    const toLocation = await Location.query()
+                        .findById(request.payload.toLocationId);
+                    if (!toLocation) {
+                        return h.response({
+                            ok: false,
+                            message: `Location '${request.payload.toLocationId}' does not exist`
+                        })
+                        .code(404);
+                    }
                 }
 
-                const newRide = await Ride.query().insert({
-                    date: request.payload.date,
-                    time: request.payload.time,
-                    distance: request.payload.distance,
-                    fuelPrice: request.payload.fuelPrice,
-                    fee: request.payload.fee,
-                    vehicleId: request.payload.vehicleId,
-                    fromLocationId: request.payload.fromLocationId,
-                    toLocationId: request.payload.toLocationId,
-                })
-                .returning('*');
-
+                const newRide = await Ride.query()
+                    .insert(request.payload)
+                    .returning('*');
                 if (newRide) {
                     return h.response({
                         ok: true,
                         message: `Created ride`,
-                        data: newRide
+                        results: newRide
                     })
                     .code(201);
                 } else {
@@ -981,11 +990,103 @@ async function init() {
             },
         },
 
+        {
+            method: "PATCH",
+            path: "/rides/{id}",
+            config: {
+                description: "Modify a ride",
+                validate: {
+                    params: Joi.object({
+                        id: Joi.number().integer().min(1).required()
+                    }),
+                    payload: Joi.object({
+                        date: Joi.date().optional(),
+                        time: Joi.string().min(7).max(8).optional(),
+                        distance: Joi.number().min(1).optional(),
+                        fuelPrice: Joi.number().min(1).optional(),
+                        fee: Joi.number().min(1).optional(),
+                        vehicleId: Joi.number().integer().min(1).optional(),
+                        fromLocationId: Joi.number().integer().min(1).optional(),
+                        toLocationId: Joi.number().integer().min(1).optional()
+                    }),
+                },
+            },
+            handler: async (request, h) => {
+                const ride = await Ride.query()
+                    .findById(request.params.id);
+                if (!ride) {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't find ride with ID '${request.params.id}'`
+                    })
+                    .code(404);
+                }
+
+                if (request.payload.vehicleId) {
+                    const vehicle = await Vehicle.query()
+                        .findById(request.payload.vehicleId);
+                    if (!vehicle) {
+                        return h.response({
+                            ok: false,
+                            message: `Vehicle with ID '${request.payload.vehicleId}' does not exist`
+                        })
+                        .code(404)
+                    }
+                }
+
+                if (request.payload.fromLocationId) {
+                    const fromLocation = await Location.query()
+                        .findById(request.payload.fromLocationId);
+                    if (!fromLocation) {
+                        return h.response({
+                            ok: false,
+                            message: `Location '${request.payload.fromLocationId}' does not exist`
+                        })
+                        .code(404);
+                    }
+                }
+
+                if (request.payload.toLocationId) {
+                    const toLocation = await Location.query()
+                        .findById(request.payload.toLocationId);
+                    if (!toLocation) {
+                        return h.response({
+                            ok: false,
+                            message: `Location '${request.payload.toLocationId}' does not exist`
+                        })
+                        .code(404);
+                    }
+                }
+
+                const updatedRide = await Ride.query()
+                    .patchAndFetchById(request.params.id, request.payload);
+                if (updatedRide) {
+                    return h.response({
+                        ok: true,
+                        message: `Updated ride with ID '${request.params.id}'`,
+                        results: updatedRide
+                    })
+                    .code(200);
+                } else {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't update ride with ID '${request.params.id}'`,
+                    })
+                    .code(500);
+                }
+            },
+        },
+
         {   
             method: "DELETE",
             path: "/rides/{id}",
             config : {
                 description: "Delete ride",
+                validate: {
+                    params: Joi.object({
+                        id: Joi.number().integer().min(1).required()
+                    })
+                }
             },
             handler: (request, h) => {
                 return Ride.query()
@@ -1002,23 +1103,6 @@ async function init() {
                                 message: `Couldn't delete account with ID '${request.params.id}'`,
                             };
                         }
-                    }
-                );
-            },
-        },
-
-        {
-            method: "PATCH",
-            path: "/rides/{id}",
-            config: {
-                description: "Update a ride",
-            },
-            handler: (request, h) => {
-                return Ride.query()
-                    .findById(request.params.id)
-                    .patch({
-                        date: request.payload.date,
-                        time: request.payload.time,
                     }
                 );
             },
@@ -1042,7 +1126,7 @@ async function init() {
                 description: "Retrieve a driver by ID",
                 validate: {
                     params: Joi.object({
-                        id: Joi.number().integer().min(1)
+                        id: Joi.number().integer().min(1).required()
                     })
                 }
             },
@@ -1054,7 +1138,7 @@ async function init() {
                             return h.response({
                                 ok: true,
                                 message: `Found driver with ID '${request.params.id}'`,
-                                data: rowsFound
+                                results: rowsFound
                             })
                             .code(200);
                         } else {
@@ -1075,32 +1159,35 @@ async function init() {
                 description: "Sign up a user as a driver (in general)",
                 validate: {
                     payload: Joi.object({
-                        userId: Joi.number().integer().required(),
-                        licenseNumber: Joi.string().min(1).required(),
-                        licenseState: Joi.string().length(2).required(),
+                        userId: Joi.number().integer().min(1).optional(),
+                        licenseNumber: Joi.string().min(1).optional(),
+                        licenseState: Joi.string().length(2).optional(),
                     })
                 }
             },
             handler: async (request, h) => {
-                const user = await User.query()
-                    .findById(request.payload.userId);
-                if (!user) {
-                    return h.response({
-                        ok: false,
-                        message: `User with ID '${request.payload.userId}' does not exist`
-                    })
-                    .code(404);
+                if (request.payload.userId) {
+                    const user = await User.query()
+                        .findById(request.payload.userId);
+                    if (!user) {
+                        return h.response({
+                            ok: false,
+                            message: `User with ID '${request.payload.userId}' does not exist`
+                        })
+                        .code(404);
+                    }
                 }
-
-                const licenseState = await State.query()
-                    .where('abbreviation', request.payload.licenseState)
-                    .first();
-                if (!licenseState) {
-                    return h.response({
-                        ok: false,
-                        message: `License state with abbreviation '${request.payload.licenseState}' does not exist`
-                    })
-                    .code(404);
+                if (request.payload.licenseState) {
+                    const licenseState = await State.query()
+                        .where('abbreviation', request.payload.licenseState)
+                        .first();
+                    if (!licenseState) {
+                        return h.response({
+                            ok: false,
+                            message: `License state with abbreviation '${request.payload.licenseState}' does not exist`
+                        })
+                        .code(404);
+                    }
                 }
 
                 const existingDriver = await Driver.query()
@@ -1115,18 +1202,13 @@ async function init() {
                 }
 
                 const newDriver = await Driver.query()
-                    .insert({
-                        userId: request.payload.userId,
-                        licenseNumber: request.payload.licenseNumber,
-                        licenseState: request.payload.licenseState
-                    })
+                    .insert(request.payload)
                     .returning('*');
-
                 if (newDriver) {
                     return h.response({
                         ok: true,
                         message: `Nice! You're now a driver`,
-                        data: newDriver
+                        results: newDriver
                     })
                     .code(201);
                 } else {
@@ -1138,32 +1220,6 @@ async function init() {
                 }
             }
         },
- 
-        {
-            method: "DELETE",
-            path: "/drivers/{id}",
-            config: {
-                description: "Delete a driver",
-            },
-            handler: (request, h) => {
-                return Driver.query()
-                    .deleteById(request.params.id)
-                    .then((rowsDeleted) => {
-                        if (rowsDeleted === 1) {
-                            return {
-                                ok: true,
-                                message: `Deleted driver with ID '${request.params.id}'`,
-                            };
-                        } else {
-                            return {
-                                ok: false,
-                                message: `Couldn't delete driver with ID '${request.params.id}'`,
-                            };
-                        }
-                    }
-                );
-            },
-        },
 
         {
             method: "PATCH",
@@ -1172,10 +1228,10 @@ async function init() {
                 description: "Update a driver",
                 validate: {
                     params: Joi.object({
-                        id: Joi.number().integer().required(),
+                        id: Joi.number().integer().min(1).required(),
                     }),
                     payload: Joi.object({
-                        userId: Joi.number().integer().optional(),
+                        userId: Joi.number().integer().min(1).optional(),
                         licenseNumber: Joi.string().min(1).optional(),
                         licenseState: Joi.string().length(2).optional(),
                     })
@@ -1218,14 +1274,12 @@ async function init() {
                 }
 
                 const updatedDriver = await Driver.query()
-                    .patchAndFetchById(request.params.id, request.payload)
-                    .returning('*');
-                
+                    .patchAndFetchById(request.params.id, request.payload);                
                 if (updatedDriver) {
                     return h.response({
                         ok: true,
                         message: `Updated driver with ID '${request.params.id}'`,
-                        data: updatedDriver
+                        results: updatedDriver
                     })
                     .code(200);
                 } else {
@@ -1236,6 +1290,37 @@ async function init() {
                     .code(500);
                 }
             }
+        },
+
+        {
+            method: "DELETE",
+            path: "/drivers/{id}",
+            config: {
+                description: "Delete a driver",
+                validate: {
+                    params: Joi.object({
+                        id: Joi.number().integer().min(1).required()
+                    })
+                }
+            },
+            handler: (request, h) => {
+                return Driver.query()
+                    .deleteById(request.params.id)
+                    .then((rowsDeleted) => {
+                        if (rowsDeleted === 1) {
+                            return {
+                                ok: true,
+                                message: `Deleted driver with ID '${request.params.id}'`,
+                            };
+                        } else {
+                            return {
+                                ok: false,
+                                message: `Couldn't delete driver with ID '${request.params.id}'`,
+                            };
+                        }
+                    }
+                );
+            },
         },
 
         {
@@ -1256,7 +1341,7 @@ async function init() {
                 description: "Retrieve a passenger by ID",
                 validate: {
                     params: Joi.object({
-                        id: Joi.number().integer().min(1)
+                        id: Joi.number().integer().min(1).required()
                     })
                 }
             },
@@ -1268,7 +1353,7 @@ async function init() {
                             return h.response({
                                 ok: true,
                                 message: `Found passenger with ID '${request.params.id}'`,
-                                data: rowsFound
+                                results: rowsFound
                             })
                             .code(200);
                         } else {
@@ -1289,65 +1374,143 @@ async function init() {
                 description: "Sign a user up for a ride",
                 validate: {
                     payload: Joi.object({
-                        userId: Joi.number().integer().required(),
-                        rideId: Joi.number().integer().required()
+                        userId: Joi.number().integer().min(1).optional(),
+                        rideId: Joi.number().integer().min(1).optional()
                     })
                 }
             },
             handler: async (request, h) => {
-                const ride = await Ride.query()
-                    .findById(request.payload.rideId)
-                    .withGraphFetched('Vehicle')
-                    .withGraphFetched('Passengers');
-                if (!ride) {
-                    return h.response({
-                        ok: false,
-                        message: `Ride with ID ${request.payload.rideId} does not exist`
-                    })
-                    .code(404);
+                if (request.payload.rideId) {
+                    const ride = await Ride.query()
+                        .findById(request.payload.rideId)
+                        .withGraphFetched('Vehicle')
+                        .withGraphFetched('Passengers');
+                    if (!ride) {
+                        return h.response({
+                            ok: false,
+                            message: `Ride with ID ${request.payload.rideId} does not exist`
+                        })
+                        .code(404);
+                    }
+
+                    const currentDate = new Date();        
+                    if (ride.date < currentDate) {
+                        return h.response({
+                            ok: false,
+                            message: `Ride is already in transit`
+                        })
+                        .code(400);
+                    }
+
+                    if (ride.Passengers.length == ride.Vehicle.capacity) {
+                        return h.response({
+                            ok: false,
+                            message: `Ride is full`
+                        })
+                        .code(400);                
+                    }
                 }
 
-                const currentDate = new Date();        
-                if (ride.date < currentDate) {
-                    return h.response({
-                        ok: false,
-                        message: `Ride is already in transit`
-                    })
-                    .code(400);
-                }
-
-                if (ride.Passengers.length == ride.Vehicle.capacity) {
-                    return h.response({
-                        ok: false,
-                        message: `Ride is full`
-                    })
-                    .code(400);                
-                }
-
-                const user = await User.query()
-                    .findById(request.payload.userId);
-                if (!user) {
-                    return h.response({
-                        ok: false,
-                        message: `User with ID '${request.payload.userId}' does not exist`
-                    })
-                    .code(404);                
+                if (request.payload.userId) {
+                    const user = await User.query()
+                        .findById(request.payload.userId);
+                    if (!user) {
+                        return h.response({
+                            ok: false,
+                            message: `User with ID '${request.payload.userId}' does not exist`
+                        })
+                        .code(404);                
+                    }
                 }
 
                 const newPassenger = await Passenger.query()
-                    .insert({
-                        userId: request.payload.userId,
-                        rideId: request.payload.rideId
-                    })
+                    .insert(request.payload)
                     .returning('*');
-
                 if (newPassenger) {
                     return h.response({
                         ok: true,
                         message: `Created passenger`,
-                        data: newPassenger
+                        results: newPassenger
                     })
                     .code(201);
+                } else {
+                    return h.response({
+                        ok: false,
+                        message: `That didn't work for some reason`
+                    })
+                    .code(500);
+                }
+            }
+        },
+
+        {
+            method: "PATCH",
+            path: "/passengers/{id}",
+            config: {
+                description: "Modify a passenger",
+                validate: {
+                    params: Joi.object({
+                        id: Joi.number().integer().min(1).required()
+                    }),
+                    payload: Joi.object({
+                        userId: Joi.number().integer().min(1).optional(),
+                        rideId: Joi.number().integer().min(1).optional()
+                    })
+                }
+            },
+            handler: async (request, h) => {
+                if (request.payload.rideId) {
+                    const ride = await Ride.query()
+                        .findById(request.payload.rideId)
+                        .withGraphFetched('Vehicle')
+                        .withGraphFetched('Passengers');
+                    if (!ride) {
+                        return h.response({
+                            ok: false,
+                            message: `Ride with ID ${request.payload.rideId} does not exist`
+                        })
+                        .code(404);
+                    }
+
+                    const currentDate = new Date();        
+                    if (ride.date < currentDate) {
+                        return h.response({
+                            ok: false,
+                            message: `Ride is already in transit`
+                        })
+                        .code(400);
+                    }
+
+                    if (ride.Passengers.length == ride.Vehicle.capacity) {
+                        return h.response({
+                            ok: false,
+                            message: `Ride is full`
+                        })
+                        .code(400);                
+                    }
+                }
+
+                if (request.payload.userId) {
+                    const user = await User.query()
+                        .findById(request.payload.userId);
+                    if (!user) {
+                        return h.response({
+                            ok: false,
+                            message: `User with ID '${request.payload.userId}' does not exist`
+                        })
+                        .code(404);                
+                    }
+                }
+
+                const updatedPassenger = await Passenger.query()
+                    .patchAndFetchById(request.params.id, request.payload);
+                if (updatedPassenger) {
+                    return h.response({
+                        ok: true,
+                        message: `Updated passenger`,
+                        results: updatedPassenger
+                    })
+                    .code(200);
                 } else {
                     return h.response({
                         ok: false,
@@ -1363,6 +1526,11 @@ async function init() {
             path: "/passengers/{id}",
             config: {
                 description: "Delete a passenger",
+                validate: {
+                    params: Joi.object({
+                        id: Joi.number().integer().min(1).required()
+                    })
+                }
             },
             handler: (request, h) => {
                 return Passenger.query()
