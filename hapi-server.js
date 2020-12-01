@@ -1593,6 +1593,8 @@ async function init() {
                     .code(404);                
                 }
                 const myRides = await Ride.query()
+                    .withGraphFetched('FromLocation')
+                    .withGraphFetched('ToLocation')
                     .withGraphJoined('Passengers')
                     .where('Passengers.passengerId', request.params.userId)
                     .withGraphJoined('Drivers.[Driver]')
