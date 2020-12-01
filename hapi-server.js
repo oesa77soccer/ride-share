@@ -849,6 +849,7 @@ async function init() {
             handler: async (request, h) => {
                 if (request.query.name) {
                     return await Ride.query()
+                        .withGraphJoined('Vehicle')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.name', 'like', '%'+request.query.name+'%')
@@ -856,6 +857,7 @@ async function init() {
                 }
                 if (request.query.address) {
                     return await Ride.query()
+                        .withGraphJoined('Vehicle')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.address', 'like', '%'+request.query.address+'%')
@@ -863,6 +865,7 @@ async function init() {
                 }
                 if (request.query.city) {
                     return await Ride.query()
+                        .withGraphJoined('Vehicle')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.city', 'like', '%'+request.query.city+'%')
@@ -870,6 +873,7 @@ async function init() {
                 }
                 if (request.query.state) {
                     return await Ride.query()
+                        .withGraphJoined('Vehicle')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.state', 'like', '%'+request.query.state+'%')
@@ -877,12 +881,14 @@ async function init() {
                 }
                 if (request.query.zipCode) {
                     return await Ride.query()
+                        .withGraphJoined('Vehicle')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.zipCode', 'like', '%'+request.query.zipCode+'%')
                         .orWhere('ToLocation.zipCode', 'like', '%'+request.query.zipCode+'%')
                 }
                 return await Ride.query()
+                    .withGraphJoined('Vehicle')
                     .withGraphFetched('FromLocation')
                     .withGraphFetched('ToLocation')
             },
