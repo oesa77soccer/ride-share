@@ -292,7 +292,8 @@ export default {
   border-color: darkgray;
 }
 .search-container {
-  background: rgb(228, 194, 194);
+  background: rgba(122, 179, 255, 0.712);
+  border-radius: 5px 5px 0px 0px;
 }
 
 .searchbox {
