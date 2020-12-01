@@ -11,7 +11,7 @@
           <option value="state">State</option>
           <option value="zipCode">Zip Code</option>
         </select>
-        <input id="search" type="text" placeholder="Search.." />
+        <input class="searchbox" id="search" type="text" placeholder="Search.." />
         <v-icon large @click="search"> mdi-search-web </v-icon>
       </div>
 
@@ -283,8 +283,8 @@ export default {
   background: lightcoral;
 }
 .button {
-  background: white;
-  color: black;
+  background: gray;
+  color: white;
   text-align: center;
   border-radius: 5%;
   margin: 10px;
@@ -292,6 +292,11 @@ export default {
   border-color: darkgray;
 }
 .search-container {
-  background: lightgray;
+  background: rgb(228, 194, 194);
+}
+
+.searchbox {
+  background: white;
+  border-radius: 3px;
 }
 </style>
