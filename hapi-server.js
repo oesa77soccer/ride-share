@@ -842,14 +842,15 @@ async function init() {
                         address: Joi.string().min(1).optional(),
                         city: Joi.string().min(1).optional(),
                         state: Joi.string().length(2).optional(),
-                        zipCode: Joi.number().min(5).optional()
+                        zipCode: Joi.number().min(5).optional(),
+                        // isDriver: Joi.boolean().required(),
                     })
                 }
             },
             handler: async (request, h) => {
                 if (request.query.name) {
                     return await Ride.query()
-                        .withGraphJoined('Vehicle')
+                        .withGraphJoined('Vehicle.[Authorizations]')
                         .withGraphJoined('Passengers')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
@@ -1649,16 +1650,20 @@ async function init() {
                     user &&
                     (await user.verifyPassword(request.payload.password))
                 ) {
+                    const isDriver = await Driver.query()
+                        .where('userId', user.id)
+                        .first();
                     return {
                         ok: true,
                         message: `Logged in successfully as '${request.payload.email}'`,
-                        details: {
+                        result: {
                             id: user.id,
                             firstName: user.first_name,
                             lastName: user.last_name,
                             email: user.email,
                             phone: user.phone,
                             isAdmin: user.isAdmin,
+                            isDriver: !!isDriver,
                         },
                     };
                 } else {
