@@ -16,6 +16,8 @@ import Locations from "./pages/Locations.vue";
 import Drivers from "./pages/Drivers.vue";
 import Passengers from "./pages/Passengers.vue";
 import VehicleTypes from "./pages/VehicleTypes.vue";
+import MyRides from "./pages/MyRides.vue";
+
 
 Vue.use(Router);
 
@@ -38,5 +40,6 @@ export default new Router({
     { name: "drivers", path: "/drivers", component: Drivers },
     { name: "passengers", path: "/passengers", component: Passengers },
     { name: "vehicle-types", path: "/vehicle-types", component: VehicleTypes },
+    { name: "my-rides", path: "/my-rides", component: MyRides },
   ]
 });
