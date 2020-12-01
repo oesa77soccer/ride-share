@@ -30,12 +30,18 @@
             <td>{{ item.fee }}</td>
 
             <td>
-              <v-icon v-if="isAdmin" small > mdi-delete </v-icon>
-              <v-icon title="Ride!" v-if="!isAdmin" small class="ml-2">
-                  mdi-car
+              <v-icon v-if="isAdmin" medium > mdi-delete </v-icon>
+              <v-icon title="Ride!" v-if="!isAdmin && !isPassenger(item) && !isDriver(item)" medium class="ml-2">
+                  mdi-seat-recline-normal
               </v-icon>
-              <v-icon title="Sign up to Drive" v-if="!isAdmin" small class="ml-2" >
-                  mdi-circle
+              <v-icon title="Cancel Ride" v-if="!isAdmin && isPassenger(item) && !isDriver(item)" large class="ml-2">
+                  mdi-minus-circle-outline
+              </v-icon>
+              <v-icon title="Sign up to Drive" v-if="!isAdmin && !isDriver(item) && !isPassenger(item)" medium class="ml-2" >
+                  mdi-car-hatchback
+              </v-icon>
+              <v-icon title="Cancel being a Driver" v-if="!isAdmin && isDriver(item) && !isPassenger(item)" large class="ml-2" >
+                  mdi-minus-circle-outline
               </v-icon>
             </td>
           </tr>
@@ -109,7 +115,7 @@ export default {
                         zipCode: ride["ToLocation"].zipCode,
                     },
                     fuelPrice: ride.fuelPrice,
-                    capacity: ride.capacity,
+                    capacity: ride.Vehicle.capacity,
                     distance: ride.distance,
                     fee: ride.fee,
                     vehicleId: ride.vehicleId,
@@ -163,4 +169,5 @@ export default {
 .currentRide {
   background: lightcoral;
 }
+
 </style>

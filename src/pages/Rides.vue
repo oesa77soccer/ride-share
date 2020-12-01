@@ -38,12 +38,14 @@
             <td>{{ item.fee }}</td>
 
             <td>
-              <v-icon v-if="isAdmin" small @click="deleteRide(item)"> mdi-delete </v-icon>
-              <v-icon title="Ride!" v-if="!isAdmin" small class="ml-2" @click="signUpForRide(item)">
-                  mdi-car
+              <v-icon v-if="isAdmin" medium @click="deleteRide(item)"> 
+                mdi-delete 
               </v-icon>
-              <v-icon title="Sign up to Drive" v-if="!isAdmin" small class="ml-2" @click="signUpToBeDriver(item)">
-                  mdi-circle
+              <v-icon title="Ride!" v-if="!isAdmin && !isPassenger(item)" medium class="ml-2" @click="signUpForRide(item)">
+                  mdi-seat-recline-normal
+              </v-icon>
+              <v-icon title="Sign up to Drive" v-if="!isAdmin" medium class="ml-2" @click="signUpToBeDriver(item)">
+                  mdi-car-hatchback
               </v-icon>
             </td>
           </tr>
@@ -114,9 +116,11 @@ export default {
                         zipCode: ride["ToLocation"].zipCode,
                     },
                     fuelPrice: ride.fuelPrice,
-                    capacity: ride.capacity,
+                    capacity: ride.Vehicle.capacity,
                     distance: ride.distance,
                     fee: ride.fee,
+                    isDriver: ride.isDriver,
+                    isPassenger: ride.isPassenger,
                 }))
             });
     },
@@ -129,6 +133,14 @@ export default {
     methods: {
         isLoggedIn() {
             return this.$store.getters.isLoggedIn;
+        },
+
+        isPassenger(item) {
+            return item.isPassenger;
+        },
+
+        isDriver(item) {
+            return item.isDriver;
         },
 
         // Display a snackbar message.
@@ -210,21 +222,35 @@ export default {
 
         // sign up for ride if occupancy is available
         signUpForRide(item) {
-            console.log("SIGN UP", JSON.stringify(item, null, 2));
-
             const params = {
               rideId: item.id,
-              userId: this.userId(),
+              passengerId: this.userId(),
             }
-            //console.log(this.userId());
 
             // need post route to add self as a rider for a ride if it has capacity
             this.$axios.post('/passengers', params).then(response => {
+                console.log(response.data);
                 if (response.data.ok) {
                     this.showSnackbar("Signing up for ride was successful!"); 
                 }
                 else {
                     this.showSnackbar("Signing up for ride was unsuccessful!"); 
+                }
+            });
+        },
+
+        signUpToBeDriver(item) {
+            const params = {
+              rideId: item.id,
+              driverId: 22,
+            }
+            this.$axios.post('/drive-ride', params).then(response => {
+                console.log(response.data);
+                if (response.data.ok) {
+                    this.showSnackbar("Signing up to be driver for ride was successful!"); 
+                }
+                else {
+                    this.showSnackbar("Signing up to be driver for ride was unsuccessful!"); 
                 }
             });
         },

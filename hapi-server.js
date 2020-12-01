@@ -1390,7 +1390,7 @@ async function init() {
                 description: "Sign a user up for a ride",
                 validate: {
                     payload: Joi.object({
-                        userId: Joi.number().integer().min(1).optional(),
+                        passengerId: Joi.number().integer().min(1).optional(),
                         rideId: Joi.number().integer().min(1).optional()
                     })
                 }
@@ -1427,13 +1427,13 @@ async function init() {
                     }
                 }
 
-                if (request.payload.userId) {
+                if (request.payload.passengerId) {
                     const user = await User.query()
-                        .findById(request.payload.userId);
+                        .findById(request.payload.passengerId);
                     if (!user) {
                         return h.response({
                             ok: false,
-                            message: `User with ID '${request.payload.userId}' does not exist`
+                            message: `User with ID '${request.payload.passengerId}' does not exist`
                         })
                         .code(404);                
                     }
@@ -1469,7 +1469,7 @@ async function init() {
                         id: Joi.number().integer().min(1).required()
                     }),
                     payload: Joi.object({
-                        userId: Joi.number().integer().min(1).optional(),
+                        passengerId: Joi.number().integer().min(1).optional(),
                         rideId: Joi.number().integer().min(1).optional()
                     })
                 }
@@ -1506,13 +1506,13 @@ async function init() {
                     }
                 }
 
-                if (request.payload.userId) {
+                if (request.payload.passengerId) {
                     const user = await User.query()
-                        .findById(request.payload.userId);
+                        .findById(request.payload.passengerId);
                     if (!user) {
                         return h.response({
                             ok: false,
-                            message: `User with ID '${request.payload.userId}' does not exist`
+                            message: `User with ID '${request.payload.passengerId}' does not exist`
                         })
                         .code(404);                
                     }
