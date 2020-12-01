@@ -843,14 +843,13 @@ async function init() {
                         city: Joi.string().min(1).optional(),
                         state: Joi.string().length(2).optional(),
                         zipCode: Joi.number().min(5).optional(),
-                        // isDriver: Joi.boolean().required(),
                     })
                 }
             },
             handler: async (request, h) => {
                 if (request.query.name) {
                     return await Ride.query()
-                        .withGraphJoined('Vehicle.[Authorizations]')
+                        .withGraphFetched('Vehicle.[Authorizations.[Driver]]')
                         .withGraphJoined('Passengers')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
@@ -859,7 +858,7 @@ async function init() {
                 }
                 if (request.query.address) {
                     return await Ride.query()
-                        .withGraphJoined('Vehicle')
+                        .withGraphFetched('Vehicle.[Authorizations.[Driver]]')
                         .withGraphJoined('Passengers')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
@@ -868,7 +867,7 @@ async function init() {
                 }
                 if (request.query.city) {
                     return await Ride.query()
-                        .withGraphJoined('Vehicle')
+                        .withGraphFetched('Vehicle.[Authorizations.[Driver]]')
                         .withGraphJoined('Passengers')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
@@ -877,7 +876,7 @@ async function init() {
                 }
                 if (request.query.state) {
                     return await Ride.query()
-                        .withGraphJoined('Vehicle')
+                        .withGraphFetched('Vehicle.[Authorizations.[Driver]]')
                         .withGraphJoined('Passengers')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
@@ -886,7 +885,7 @@ async function init() {
                 }
                 if (request.query.zipCode) {
                     return await Ride.query()
-                        .withGraphJoined('Vehicle')
+                        .withGraphFetched('Vehicle.[Authorizations.[Driver]]')
                         .withGraphJoined('Passengers')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
@@ -894,7 +893,7 @@ async function init() {
                         .orWhere('ToLocation.zipCode', 'like', '%'+request.query.zipCode+'%')
                 }
                 return await Ride.query()
-                    .withGraphJoined('Vehicle')
+                    .withGraphFetched('Vehicle.[Authorizations.[Driver]]')
                     .withGraphJoined('Passengers')
                     .withGraphFetched('FromLocation')
                     .withGraphFetched('ToLocation')
@@ -1572,6 +1571,49 @@ async function init() {
 
 
 
+        {
+            method: "GET",
+            path: "/my-rides/{userId}",
+            config: {
+                description: "Retrieve all rides I'm signed up for",
+                validate: {
+                    params: Joi.object({
+                        userId: Joi.number().integer().min(1).required(),
+                    })
+                }
+            },
+            handler: async (request, h) => {
+                const user = await User.query()
+                    .findById(request.params.userId);
+                if (!user) {
+                    return h.response({
+                        ok: false,
+                        message: `User with ID '${request.params.userId}' does not exist`
+                    })
+                    .code(404);                
+                }
+                const myRides = await Ride.query()
+                    .withGraphJoined('Passengers')
+                    .where('Passengers.passengerId', request.params.userId)
+                    .withGraphJoined('Drivers.[Driver]')
+                    // .withGraphJoined('Driver')
+                    .orWhere('Drivers:Driver.userId', request.params.userId);
+                if (myRides) {
+                    return h.response({
+                        ok: true,
+                        message: `Found some rides`,
+                        results: myRides
+                    })
+                    .code(200);
+                } else {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't find any rides`
+                    })
+                    .code(404);
+                }
+            },
+        },
 
         {
             method: "POST",
