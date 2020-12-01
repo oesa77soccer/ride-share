@@ -848,55 +848,176 @@ async function init() {
             },
             handler: async (request, h) => {
                 if (request.query.name) {
-                    return await Ride.query()
+                    const rides = await Ride.query()
                         .withGraphFetched('Vehicle.[Authorizations.[Driver]]')
-                        .withGraphJoined('Passengers')
+                        .withGraphFetched('Passengers')
+                        .withGraphFetched('Drivers')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.name', 'like', '%'+request.query.name+'%')
                         .orWhere('ToLocation.name', 'like', '%'+request.query.name+'%')
+                
+                    if (rides) {
+                        const allRides = rides.map(ride => {
+                                ride.passengerNumber = ride.Passengers.length + ride.Drivers.length;
+                                return ride;
+                        });
+                        return h.response({
+                            ok: true,
+                            message: `Found some rides`,
+                            results: allRides
+                        })
+                        .code(200);
+                    } else {
+                        return h.response({
+                            ok: false,
+                            message: `Couldn't find any rides`
+                        })
+                        .code(404);
+                    }
                 }
                 if (request.query.address) {
-                    return await Ride.query()
+                    const rides = await Ride.query()
                         .withGraphFetched('Vehicle.[Authorizations.[Driver]]')
-                        .withGraphJoined('Passengers')
+                        .withGraphFetched('Passengers')
+                        .withGraphFetched('Drivers')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.address', 'like', '%'+request.query.address+'%')
                         .orWhere('ToLocation.address', 'like', '%'+request.query.address+'%')
+            
+                    if (rides) {
+                        const allRides = rides.map(ride => {
+                            ride.passengerNumber = ride.Passengers.length + ride.Drivers.length;
+                            return ride;
+                        });
+                        return h.response({
+                            ok: true,
+                            message: `Found some rides`,
+                            results: allRides
+                        })
+                        .code(200);
+                    } else {
+                        return h.response({
+                            ok: false,
+                            message: `Couldn't find any rides`
+                        })
+                        .code(404);
+                    }
                 }
                 if (request.query.city) {
-                    return await Ride.query()
+                    const rides = await Ride.query()
                         .withGraphFetched('Vehicle.[Authorizations.[Driver]]')
-                        .withGraphJoined('Passengers')
+                        .withGraphFetched('Passengers')
+                        .withGraphFetched('Drivers')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.city', 'like', '%'+request.query.city+'%')
                         .orWhere('ToLocation.city', 'like', '%'+request.query.city+'%')
+                
+                    if (rides) {
+                        const allRides = rides.map(ride => {
+                            ride.passengerNumber = ride.Passengers.length + ride.Drivers.length;
+                            return ride;
+                        });
+                        return h.response({
+                            ok: true,
+                            message: `Found some rides`,
+                            results: allRides
+                        })
+                        .code(200);
+                    } else {
+                        return h.response({
+                            ok: false,
+                            message: `Couldn't find any rides`
+                        })
+                        .code(404);
+                    }
                 }
                 if (request.query.state) {
-                    return await Ride.query()
+                    const rides = await Ride.query()
                         .withGraphFetched('Vehicle.[Authorizations.[Driver]]')
-                        .withGraphJoined('Passengers')
+                        .withGraphFetched('Passengers')
+                        .withGraphFetched('Drivers')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.state', 'like', '%'+request.query.state+'%')
                         .orWhere('ToLocation.state', 'like', '%'+request.query.state+'%')
+                
+                    if (rides) {
+                        const allRides = rides.map(ride => {
+                            ride.passengerNumber = ride.Passengers.length + ride.Drivers.length;
+                            return ride;
+                        });
+                        return h.response({
+                            ok: true,
+                            message: `Found some rides`,
+                            results: allRides
+                        })
+                        .code(200);
+                    } else {
+                        return h.response({
+                            ok: false,
+                            message: `Couldn't find any rides`
+                        })
+                        .code(404);
+                    }
                 }
                 if (request.query.zipCode) {
-                    return await Ride.query()
+                    const rides = await Ride.query()
                         .withGraphFetched('Vehicle.[Authorizations.[Driver]]')
-                        .withGraphJoined('Passengers')
+                        .withGraphFetched('Passengers')
+                        .withGraphFetched('Drivers')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.zipCode', 'like', '%'+request.query.zipCode+'%')
                         .orWhere('ToLocation.zipCode', 'like', '%'+request.query.zipCode+'%')
+                
+                    if (rides) {
+                        const allRides = rides.map(ride => {
+                            ride.passengerNumber = ride.Passengers.length + ride.Drivers.length;
+                            return ride;
+                        });
+                        return h.response({
+                            ok: true,
+                            message: `Found some rides`,
+                            results: allRides
+                        })
+                        .code(200);
+                    } else {
+                        return h.response({
+                            ok: false,
+                            message: `Couldn't find any rides`
+                        })
+                        .code(404);
+                    }
                 }
-                return await Ride.query()
+
+                const rides = await Ride.query()
                     .withGraphFetched('Vehicle.[Authorizations.[Driver]]')
-                    .withGraphJoined('Passengers')
+                    .withGraphFetched('Passengers')
+                    .withGraphFetched('Drivers')
                     .withGraphFetched('FromLocation')
                     .withGraphFetched('ToLocation')
+                
+                if (rides) {
+                    const allRides = rides.map(ride => {
+                        ride.passengerNumber = ride.Passengers.length + ride.Drivers.length;
+                        return ride;
+                    });
+                    return h.response({
+                        ok: true,
+                        message: `Found some rides`,
+                        results: allRides
+                    })
+                    .code(200);
+                } else {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't find any rides`
+                    })
+                    .code(404);
+                }
             },
         },
 
@@ -1592,6 +1713,11 @@ async function init() {
                     })
                     .code(404);                
                 }
+
+                const allRides = await Ride.query()
+                    .withGraphFetched('Passengers')
+                    .withGraphFetched('Drivers.[Driver]');
+
                 const myRides = await Ride.query()
                     .withGraphFetched('FromLocation')
                     .withGraphFetched('ToLocation')
@@ -1602,8 +1728,13 @@ async function init() {
                     .orWhere('Drivers:Driver.userId', request.params.userId);
                 if (myRides) {
                     const rides = myRides.map(ride => {
-                        ride.isPassenger = !!ride.Passengers[0].rideId;
-                        ride.isDriver = !!ride.Drivers[0].rideId;
+                        ride.isDriver = ride.Drivers[0].Driver.userId === request.params.userId;
+                        ride.isPassenger = !ride.isDriver;
+                        allRides.map(normalRide => {
+                            if (normalRide.id === ride.id) {
+                                ride.passengerNumber = normalRide.Passengers.length + normalRide.Drivers.length;
+                            }
+                        })
                         return ride;
                     });
                     return h.response({
