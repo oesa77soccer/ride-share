@@ -447,13 +447,13 @@ async function init() {
                         if (rowsDeleted) {
                             return {
                                 ok: true,
-                                message: `Deleted vehicle-type with ID '${request.params.id}'`,
+                                message: `Deleted vehicle type with ID '${request.params.id}'`,
                                 results: rowsDeleted
                             };
                         } else {
                             return {
                                 ok: false,
-                                message: `Couldn't delete vehicle-type with ID '${request.params.id}'`,
+                                message: `Couldn't delete vehicle type with ID '${request.params.id}'`,
                             };
                         }
                     }
@@ -842,13 +842,16 @@ async function init() {
                         address: Joi.string().min(1).optional(),
                         city: Joi.string().min(1).optional(),
                         state: Joi.string().length(2).optional(),
-                        zipCode: Joi.number().min(5).optional()
+                        zipCode: Joi.number().min(5).optional(),
+                        // isDriver: Joi.boolean().required(),
                     })
                 }
             },
             handler: async (request, h) => {
                 if (request.query.name) {
                     return await Ride.query()
+                        .withGraphJoined('Vehicle.[Authorizations]')
+                        .withGraphJoined('Passengers')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.name', 'like', '%'+request.query.name+'%')
@@ -856,6 +859,8 @@ async function init() {
                 }
                 if (request.query.address) {
                     return await Ride.query()
+                        .withGraphJoined('Vehicle')
+                        .withGraphJoined('Passengers')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.address', 'like', '%'+request.query.address+'%')
@@ -863,6 +868,8 @@ async function init() {
                 }
                 if (request.query.city) {
                     return await Ride.query()
+                        .withGraphJoined('Vehicle')
+                        .withGraphJoined('Passengers')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.city', 'like', '%'+request.query.city+'%')
@@ -870,6 +877,8 @@ async function init() {
                 }
                 if (request.query.state) {
                     return await Ride.query()
+                        .withGraphJoined('Vehicle')
+                        .withGraphJoined('Passengers')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.state', 'like', '%'+request.query.state+'%')
@@ -877,12 +886,16 @@ async function init() {
                 }
                 if (request.query.zipCode) {
                     return await Ride.query()
+                        .withGraphJoined('Vehicle')
+                        .withGraphJoined('Passengers')
                         .withGraphJoined('FromLocation')
                         .withGraphJoined('ToLocation')
                         .where('FromLocation.zipCode', 'like', '%'+request.query.zipCode+'%')
                         .orWhere('ToLocation.zipCode', 'like', '%'+request.query.zipCode+'%')
                 }
                 return await Ride.query()
+                    .withGraphJoined('Vehicle')
+                    .withGraphJoined('Passengers')
                     .withGraphFetched('FromLocation')
                     .withGraphFetched('ToLocation')
             },
@@ -1562,6 +1575,63 @@ async function init() {
 
         {
             method: "POST",
+            path: "/drive-ride",
+            config: {
+                description: "Sign up as a driver for a specific ride",
+                validate: {
+                    payload: Joi.object({
+                        driverId: Joi.number().integer().min(1).required(),
+                        rideId: Joi.number().integer().min(1).required()
+                    }),
+                },
+            },
+            handler: async (request, h) => {
+                if (request.payload.driverId) {
+                    const driver = await Driver.query()
+                        .findById(request.payload.driverId);
+                    if (!driver) {
+                        return h.response({
+                            ok: false,
+                            message: `You have not signed up to be a driver`
+                        })
+                        .code(404);
+                    }
+                }
+
+                if (request.payload.rideId) {
+                    const ride = await Ride.query()
+                        .findById(request.payload.rideId);
+                    if (!ride) {
+                        return h.response({
+                            ok: false,
+                            message: `Ride with ID '${request.payload.rideId}' does not exist`
+                        })
+                        .code(404);
+                    }
+                }
+
+                const newDriverForRide = await Drivers.query()
+                    .insert(request.payload)
+                    .returning('*');
+                if (newDriverForRide) {
+                    return h.response({
+                        ok: true,
+                        message: `You are now the driver for ride with ID '${request.payload.rideId}'`,
+                        results: newDriverForRide
+                    })
+                    .code(201);
+                } else {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't create add you as the driver of this ride`,
+                    })
+                    .code(500);
+                }
+            },
+        },
+
+        {
+            method: "POST",
             path: "/login",
             config: {
                 description: "Log in",
@@ -1580,16 +1650,20 @@ async function init() {
                     user &&
                     (await user.verifyPassword(request.payload.password))
                 ) {
+                    const isDriver = await Driver.query()
+                        .where('userId', user.id)
+                        .first();
                     return {
                         ok: true,
                         message: `Logged in successfully as '${request.payload.email}'`,
-                        details: {
+                        result: {
                             id: user.id,
                             firstName: user.first_name,
                             lastName: user.last_name,
                             email: user.email,
                             phone: user.phone,
                             isAdmin: user.isAdmin,
+                            isDriver: !!isDriver,
                         },
                     };
                 } else {
