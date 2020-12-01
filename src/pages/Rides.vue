@@ -11,7 +11,7 @@
         <option value="zipCode">Zip Code</option>
       </select>
       <input id="search" type="text" placeholder="Search.." />
-      <v-icon large @click="search()"> mdi-search-web </v-icon>
+      <v-icon large @click="search"> mdi-search-web </v-icon>
 
       <v-data-table
         class="elevation-1"
@@ -20,9 +20,10 @@
       >
         <template v-slot:item="{ item }">
           <tr v-bind:class="itemClass(item)">
-            <td contenteditable @blur="updateDate(item, $event)">{{ item.date }}</td>
-            <td contenteditable @blur="updateTime(item, $event)">{{ item.time }}</td>
-
+            <td v-if="isAdmin" contenteditable @blur="updateDate(item, $event)">{{ item.date }}</td>
+            <td v-if="isAdmin" contenteditable @blur="updateTime(item, $event)">{{ item.time }}</td>
+            <td v-if="!isAdmin" >{{ item.date }}</td>
+            <td v-if="!isAdmin" >{{ item.time }}</td>
             <td>
               <div>{{ item.from.direction }}</div>
               <div>{{ item.to.direction }}</div>
@@ -31,29 +32,18 @@
               <div>{{ item.from.name }}</div>
               <div>{{ item.to.name }}</div>
             </td>
-            <td>
-              <div>{{ item.from.address }}</div>
-              <div>{{ item.to.address }}</div>
-            </td>
-            <td>
-              <div>{{ item.from.city }}</div>
-              <div>{{ item.to.city }}</div>
-            </td>
-            <td>
-              <div>{{ item.from.state }}</div>
-              <div>{{ item.to.state }}</div>
-            </td>
-            <td>
-              <div>{{ item.from.zipCode }}</div>
-              <div>{{ item.to.zipCode }}</div>
-            </td>
+            <td>{{ item.fuelPrice }}</td>
+            <td>{{ item.capacity }}</td>
+            <td>{{ item.distance }}</td>
+            <td>{{ item.fee }}</td>
+
             <td>
               <v-icon v-if="isAdmin" small @click="deleteRide(item)"> mdi-delete </v-icon>
-              <v-icon v-if="isAdmin" small class="ml-2" @click="updateRide(item)">
-                mdi-pencil
+              <v-icon title="Ride!" v-if="!isAdmin" small class="ml-2" @click="signUpForRide(item)">
+                  mdi-car
               </v-icon>
-              <v-icon v-if="!isAdmin" small class="ml-2" @click="signUpForRide(item)">
-                mdi-plus
+              <v-icon title="Sign up to Drive" v-if="!isAdmin" small class="ml-2" @click="signUpToBeDriver(item)">
+                  mdi-circle
               </v-icon>
             </td>
           </tr>
@@ -79,10 +69,10 @@ export default {
             { text: "Time", value: "time" },
             { text: "Direction", value: "direction" },
             { text: "Name", value: "name" },
-            { text: "Address", value: "address" },
-            { text: "City", value: "city" },
-            { text: "State", value: "state" },
-            { text: "Zip Code", value: "zipCode" },
+            { text: "Fuel Price", value: "fuelPrice" },
+            { text: "Capacity", value: "capacity" },
+            { text: "Distance (mi.)", value: "distance" },
+            { text: "Fee", value: "fee" },
             { text: "Action", value: "action" }
         ],
         rides: [],
@@ -122,10 +112,13 @@ export default {
                         city: ride["ToLocation"].city,
                         state: ride["ToLocation"].state,
                         zipCode: ride["ToLocation"].zipCode,
-                    }
+                    },
+                    fuelPrice: ride.fuelPrice,
+                    capacity: ride.capacity,
+                    distance: ride.distance,
+                    fee: ride.fee,
                 }))
             });
-        // }
     },
     computed: {
         isAdmin() {

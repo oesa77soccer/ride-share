@@ -28,6 +28,10 @@ export default new Vuex.Store({
   // Access in components as `this.$store.getters.isLoggedIn`
   // (Not that it behaves like a property -- no parens.)
   getters: {
+    isDriver(state) {
+      return state.currentUser.isDriver;
+    },
+    
     isLoggedIn(state) {
       return state.currentUser !== null;
     },
@@ -37,9 +41,7 @@ export default new Vuex.Store({
     },
 
     isAdmin(state) {
-        console.log(state);
-        return true;
-        // return state.currentUser.isAdmin;
+        return state.currentUser.isAdmin;
     }
   },
 
@@ -47,6 +49,10 @@ export default new Vuex.Store({
   // Access in components using the `commit` method:
   // `this.$store.commit('logIn', user)`
   mutations: {
+    becomeDriver(state) {
+      state.currentUser.isDriver = true;
+    },
+
     logIn(state, user) {
       state.currentUser = user;
     },

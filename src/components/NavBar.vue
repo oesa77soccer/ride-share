@@ -19,7 +19,7 @@
       Sign In
     </v-btn>
     <v-btn v-if="isLoggedIn && !isAdmin" text v-bind:to="{ name: 'rides' }">Find a Ride</v-btn>
-    <v-btn v-if="isLoggedIn && !isAdmin" text v-bind:to="{ name: 'become-driver' }">Become a Driver</v-btn>
+    <v-btn v-if="isLoggedIn && !isAdmin && !isDriver" text v-bind:to="{ name: 'become-driver' }">Become a Driver</v-btn>
 
     <v-menu v-if="isLoggedIn" offset-y>
       <template v-slot:activator="{ on }">
@@ -48,6 +48,9 @@
 <script>
 export default {
   computed: {
+    isDriver() {
+      return this.$store.getters.isDriver;
+    },
     isLoggedIn() {
       return this.$store.getters.isLoggedIn;
     },

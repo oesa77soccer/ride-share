@@ -339,8 +339,8 @@ async function init() {
                 },
             },
             handler: async (request, h) => {
-                /*if (request.payload.type) {
-                    const existingVehicleType = await Vehicle.query()
+                if (request.payload.type) {
+                    const existingVehicleType = await VehicleType.query()
                         .where("type", request.payload.type)
                         .first();
                     if (existingVehicleType) {
@@ -350,9 +350,9 @@ async function init() {
                         })
                         .code(400);
                     }
-                }*/
+                }
 
-                const newVehicleType = await Vehicle.query()
+                const newVehicleType = await VehicleType.query()
                     .insert(request.payload)
                     .returning('*');
                 if (newVehicleType) {
