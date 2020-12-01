@@ -1,9 +1,9 @@
 <template>
   <v-container>
     <div>
-      <h4 class="display-1">Welcome, Sexy Admin</h4>
+      <h4 class="display-1">Admin Portal</h4>
 
-      <p class="body-1">We love that you're our admin (;</p>
+      <p class="body-1">Let's get to work.</p>
     </div>
 
     <v-btn text v-bind:to="{ name: 'vehicles' }">

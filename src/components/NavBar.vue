@@ -9,7 +9,7 @@
     <v-spacer></v-spacer>
 
     <v-btn v-if="isLoggedIn && isAdmin" text v-bind:to="{ name: 'admin' }">
-      Full Admin Privileges
+      Pull Strings
     </v-btn>    
     
     <v-btn v-if="!isLoggedIn" text v-bind:to="{ name: 'sign-up' }">
@@ -19,7 +19,7 @@
       Sign In
     </v-btn>
     <v-btn v-if="isLoggedIn && !isAdmin" text v-bind:to="{ name: 'rides' }">Find a Ride</v-btn>
-    <v-btn v-if="isLoggedIn" text v-bind:to="{ name: 'my-rides' }">My Rides</v-btn>
+    <v-btn v-if="isLoggedIn && !isAdmin" text v-bind:to="{ name: 'my-rides' }">My Rides</v-btn>
     <v-btn v-if="isLoggedIn && !isAdmin && !isDriver" text v-bind:to="{ name: 'become-driver' }">Become a Driver</v-btn>
 
     <v-menu v-if="isLoggedIn" offset-y>
