@@ -149,7 +149,8 @@ methods: {
           if (response.data.ok) {
             this.showDialog("Success", response.data.message);
             this.addedDriver = true;
-            this.$store.commit("becomeDriver", response.data.id);
+            this.$store.commit("becomeDriver", response.data.results.id);
+            console.log(response.data.results.id);
 
           } else {
             this.showDialog("Sorry", response.data.message);

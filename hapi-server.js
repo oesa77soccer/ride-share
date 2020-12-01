@@ -1833,19 +1833,35 @@ async function init() {
                     const driver = await Driver.query()
                         .where('userId', user.id)
                         .first();
-                    return {
-                        ok: true,
-                        message: `Logged in successfully as '${request.payload.email}'`,
-                        result: {
-                            id: user.id,
-                            firstName: user.first_name,
-                            lastName: user.last_name,
-                            email: user.email,
-                            phone: user.phone,
-                            isAdmin: user.isAdmin,
-                            isDriver: driver.id,
-                        },
-                    };
+                    if (driver) {
+                        return {
+                            ok: true,
+                            message: `Logged in successfully as '${request.payload.email}'`,
+                            result: {
+                                id: user.id,
+                                firstName: user.first_name,
+                                lastName: user.last_name,
+                                email: user.email,
+                                phone: user.phone,
+                                isAdmin: user.isAdmin,
+                                isDriver: driver.id,
+                            },
+                        };      
+                    } else {
+                        return {
+                            ok: true,
+                            message: `Logged in successfully as '${request.payload.email}'`,
+                            result: {
+                                id: user.id,
+                                firstName: user.first_name,
+                                lastName: user.last_name,
+                                email: user.email,
+                                phone: user.phone,
+                                isAdmin: user.isAdmin,
+                                isDriver: false,
+                            },
+                        }
+                    }
                 } else {
                     throw Boom.badRequest('Invalid email or password');
                 }
