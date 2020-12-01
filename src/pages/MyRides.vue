@@ -28,17 +28,18 @@
             <td>${{ item.fuelPrice }}</td>
             <td>${{ item.fee }}</td>
             <td>{{item.passengerNumber}}/{{ item.capacity }}</td>
+            <td>${{ Math.floor((item.distance*item.fuelPrice/(item.passengerNumber+1))+item.fee) }}</td>
 
             <td>
               <v-icon v-if="isAdmin" medium > mdi-delete </v-icon>
               <v-icon title="Ride!" v-if="!isAdmin && !isPassenger(item) && !isDriver(item)" medium class="ml-2">
-                  mdi-car-hatchback
+                  mdi-car-convertible
               </v-icon>
               <v-icon title="Cancel Ride" v-if="!isAdmin && isPassenger(item) && !isDriver(item)" large class="ml-2">
                   mdi-minus-circle-outline
               </v-icon>
               <v-icon title="Sign up to Drive" v-if="!isAdmin && !isDriver(item) && !isPassenger(item)" medium class="ml-2" >
-                  mdi-seat-recline-normal
+                  mdi-seat-recline-extra
               </v-icon>
               <v-icon title="Cancel being a Driver" v-if="!isAdmin && isDriver(item) && !isPassenger(item)" large class="ml-2" >
                   mdi-minus-circle-outline
@@ -72,6 +73,7 @@ export default {
             { text: "Fuel Price", value: "fuelPrice" },
             { text: "Fee", value: "fee" },
             { text: "Seats Taken", value: "seatsTaken" },
+            { text: "Total Cost", value: "totalCost" },
             { text: "Action", value: "action" }
         ],
         rides: [],
