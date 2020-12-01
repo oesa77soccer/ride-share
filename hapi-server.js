@@ -1920,17 +1920,10 @@ async function init() {
                     ok: true,
                     message: `Reset password successfully for '${request.payload.email}'`,
                     details: {
-<<<<<<< HEAD
                         id: user.id,
                         firstName: user.firstName,
                         lastName: user.lastName,
                         email: user.email,
-=======
-                        id: account.id,
-                        firstName: account.firstName,
-                        lastName: account.lastName,
-                        email: account.email,
->>>>>>> 5da534ea14ef522b60c3a23d22675ad3495bd987
                     },
                 }
             }
