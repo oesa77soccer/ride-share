@@ -2,7 +2,9 @@
   <v-container>
     <div>
       <h4 class="display-1">Vehicle Types</h4>
-
+      <v-icon large @click="addVehicleType">
+          mdi-plus
+      </v-icon>
       <v-data-table
         class="elevation-1"
         v-bind:headers="headers"
@@ -81,21 +83,33 @@ beforeMount() {
 
     // Update vehicleType information.
     updateVehicleType(item, e) {
-      item.type = e.target.textContent;
-      this.updateRow(item);
+      const payload = {
+          vehicleType: e.target.textContent,
+      }
+      this.updateRow(item.id, payload);
     },
 
     // update row for entire item in database
-    updateRow(item) {
+    updateRow(id, payload) {
       this.$axios
-      .patch(`/vehicle-type/${item.id}`, {
-        type: item.type
-      })
+      .patch(`/vehicle-type/${id}`, payload )
       .then(response => {
         if (response.data.ok) {
           console.log("Edit worked in the database");
         }
       });
+    },
+
+    addVehicleType() {
+        this.$axios.post(`/vehicle-types`, 
+            {} // no parameters with adding empty vehicle
+        )
+        .then(response => {
+            if (response.data.ok) {
+                this.vehicleTypes.push(response.data.results);
+                console.log("Add worked in the database");
+            }
+        });
     },
 
     // Delete a vehicleType.

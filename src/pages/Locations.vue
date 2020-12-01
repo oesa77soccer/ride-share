@@ -2,7 +2,9 @@
   <v-container>
     <div>
       <h4 class="display-1">Locations</h4>
-
+      <v-icon large @click="addLocation">
+          mdi-plus
+      </v-icon>
       <v-data-table
         class="elevation-1"
         v-bind:headers="headers"
@@ -93,46 +95,65 @@ beforeMount() {
 
     // Update name 
     updateName(item, e) {
-        item.name = e.target.textContent;
-        this.updateLocation(item);
+        const payload = {
+            name: e.target.textContent,
+        }
+        this.updateLocation(item.id, payload);
     },
 
     // Update address 
     updateAddress(item, e) {
-        item.address = e.target.textContent;
-        this.updateLocation(item);
+        const payload = {
+            address: e.target.textContent,
+        }
+        this.updateLocation(item.id, payload);
     },
 
     // Update city 
     updateCity(item, e) {
-        item.city = e.target.textContent;
-        this.updateLocation(item);
+        const payload = {
+            city: e.target.textContent,
+        }
+        this.updateLocation(item.id, payload);
     },
 
     // Update state 
     updateState(item, e) {
-        item.state = e.target.textContent;
-        this.updateLocation(item);
+        const payload = {
+            state: e.target.textContent,
+        }
+        this.updateLocation(item.id, payload);
     },
 
     // Update zip code 
     updateZipCode(item, e) {
-        item.state = e.target.textContent;
-        this.updateLocation(item);
+        const payload = {
+            zipCode: e.target.textContent,
+        }
+        this.updateLocation(item.id, payload);
     },
 
-    updateLocation(item) {
+    updateLocation(id, payload) {
         this.$axios
-        .patch(`/locations/${item.id}`, {
-            name: item.name,
-            address: item.address,
-            city: item.city,
-            state: item.state,
-            zipCode: item.zipCode,
-         })
+        .patch(`/locations/${id}`, payload)
         .then(response => {
             if (response.data.ok) {
                 console.log("Edit worked in the database");
+            }
+        })
+        .catch(err => {
+            console.log(err, "Error in making patch");
+        });
+    },
+
+    addLocation() {
+        this.$axios.post(`/locations`, 
+            {} // no parameters with adding empty vehicle
+        )
+        .then(response => {
+            if (response.data.ok) {
+                this.locations.push(response.data.results);
+                console.log("Add worked in the database");
             }
         });
     },

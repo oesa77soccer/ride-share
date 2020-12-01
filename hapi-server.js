@@ -339,7 +339,7 @@ async function init() {
                 },
             },
             handler: async (request, h) => {
-                if (request.payload.type) {
+                /*if (request.payload.type) {
                     const existingVehicleType = await Vehicle.query()
                         .where("type", request.payload.type)
                         .first();
@@ -350,7 +350,7 @@ async function init() {
                         })
                         .code(400);
                     }
-                }
+                }*/
 
                 const newVehicleType = await Vehicle.query()
                     .insert(request.payload)
@@ -521,15 +521,17 @@ async function init() {
                 },
             },
             handler: async (request, h) => {
-                const state = await State.query()
-                    .where('abbreviation', request.payload.state)
-                    .first();
-                if (!state) {
-                    return h.response({
-                        ok: false,
-                        message: `State with abbreviation '${request.payload.state}' does not exist`
-                    })
-                    .code(404);
+                if (request.payload.state) {
+                    const state = await State.query()
+                        .where('abbreviation', request.payload.state)
+                        .first();
+                    if (!state) {
+                        return h.response({
+                            ok: false,
+                            message: `State with abbreviation '${request.payload.state}' does not exist`
+                        })
+                        .code(404);
+                    }
                 }
 
                 const newLocation = await Location.query()
@@ -581,15 +583,17 @@ async function init() {
                     .code(404);
                 }
 
-                const state = await State.query()
-                    .where('abbreviation', request.payload.state)
-                    .first();
-                if (!state) {
-                    return h.response({
-                        ok: false,
-                        message: `State with abbreviation '${request.payload.state}' does not exist`
-                    })
-                    .code(404);
+                if (request.payload.state) {
+                    const state = await State.query()
+                        .where('abbreviation', request.payload.state)
+                        .first();
+                    if (!state) {
+                        return h.response({
+                            ok: false,
+                            message: `State with abbreviation '${request.payload.state}' does not exist`
+                        })
+                        .code(404);
+                    }
                 }
 
                 const updatedLocation = await Location.query()
@@ -696,7 +700,7 @@ async function init() {
                         firstName: Joi.string().min(1).optional(),
                         lastName: Joi.string().min(1).optional(),
                         email: Joi.string().email().optional(),
-                        password: Joi.string().password().optional(),
+                        password: Joi.string().optional(),
                         phone: Joi.string().length(10).optional(),
                     }),
                 },
@@ -748,7 +752,7 @@ async function init() {
                         firstName: Joi.string().min(1).optional(),
                         lastName: Joi.string().min(1).optional(),
                         email: Joi.string().email().optional(),
-                        password: Joi.string().password().optional(),
+                        password: Joi.string().optional(),
                         phone: Joi.string().length(10).optional(),
                     }),
                 },
@@ -764,7 +768,7 @@ async function init() {
                     .code(404);
                 }
 
-                if (request.payload.email) {
+                /*if (request.payload.email) {
                     const existingUser = await User.query()
                         .where("email", request.payload.email)
                         .first();
@@ -775,7 +779,7 @@ async function init() {
                         })
                         .code(400);
                     }
-                }
+                }*/
 
                 const updatedUser = await User.query()
                     .patchAndFetchById(request.params.id, request.payload);

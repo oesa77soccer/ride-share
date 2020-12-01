@@ -130,6 +130,7 @@ beforeMount() {
 
     // update entire user
     updateUser(id, payload) {
+        console.log(id, payload);
         this.$axios
         .patch(`/users/${id}`, payload)
         .then(response => {
