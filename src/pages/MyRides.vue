@@ -14,8 +14,8 @@
                 <div v-if="isDriver(item)">Driver</div>
                 <div v-if="isPassenger(item)">Passenger</div>
             </td>
-            <td>{{ item.date }}</td>
-            <td>{{ item.time }}</td>
+            <td>{{ item.date.slice(0,10) }}</td>
+            <td>{{ item.time.slice(0,5) }}</td>
             <td>
               <div>{{ item.from.direction }}</div>
               <div>{{ item.to.direction }}</div>

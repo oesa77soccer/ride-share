@@ -22,8 +22,8 @@
           <tr v-bind:class="itemClass(item)">
             <td v-if="isAdmin" contenteditable @blur="updateDate(item, $event)">{{ item.date }}</td>
             <td v-if="isAdmin" contenteditable @blur="updateTime(item, $event)">{{ item.time }}</td>
-            <td v-if="!isAdmin" >{{ item.date }}</td>
-            <td v-if="!isAdmin" >{{ item.time }}</td>
+            <td v-if="!isAdmin" >{{ item.date.slice(0,10) }}</td>
+            <td v-if="!isAdmin" >{{ item.time.slice(0,5) }}</td>
             <td>
               <div>{{ item.from.direction }}</div>
               <div>{{ item.to.direction }}</div>
