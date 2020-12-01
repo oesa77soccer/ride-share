@@ -41,7 +41,12 @@ export default new Vuex.Store({
     },
 
     isAdmin(state) {
-        return state.currentUser.isAdmin;
+        if (state.currentUser) {
+            return state.currentUser.isAdmin;
+        }
+        else {
+          return false;
+        }
     }
   },
 
