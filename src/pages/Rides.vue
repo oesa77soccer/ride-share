@@ -39,13 +39,13 @@
 
             <td>
               <v-icon v-if="isAdmin" medium @click="deleteRide(item)"> 
-                mdi-delete 
+                  mdi-delete 
               </v-icon>
               <v-icon title="Ride!" v-if="!isAdmin && !isPassenger(item)" medium class="ml-2" @click="signUpForRide(item)">
-                  mdi-seat-recline-normal
+                  mdi-car-hatchback
               </v-icon>
               <v-icon title="Sign up to Drive" v-if="!isAdmin" medium class="ml-2" @click="signUpToBeDriver(item)">
-                  mdi-car-hatchback
+                  mdi-seat-recline-normal
               </v-icon>
             </td>
           </tr>
@@ -141,7 +141,7 @@ export default {
         },
 
         isDriver(item) {
-            return item.isDriver;
+            return item.isDriver !== null;
         },
 
         // Display a snackbar message.

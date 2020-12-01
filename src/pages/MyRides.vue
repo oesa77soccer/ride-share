@@ -32,13 +32,13 @@
             <td>
               <v-icon v-if="isAdmin" medium > mdi-delete </v-icon>
               <v-icon title="Ride!" v-if="!isAdmin && !isPassenger(item) && !isDriver(item)" medium class="ml-2">
-                  mdi-seat-recline-normal
+                  mdi-car-hatchback
               </v-icon>
               <v-icon title="Cancel Ride" v-if="!isAdmin && isPassenger(item) && !isDriver(item)" large class="ml-2">
                   mdi-minus-circle-outline
               </v-icon>
               <v-icon title="Sign up to Drive" v-if="!isAdmin && !isDriver(item) && !isPassenger(item)" medium class="ml-2" >
-                  mdi-car-hatchback
+                  mdi-seat-recline-normal
               </v-icon>
               <v-icon title="Cancel being a Driver" v-if="!isAdmin && isDriver(item) && !isPassenger(item)" large class="ml-2" >
                   mdi-minus-circle-outline
@@ -133,7 +133,7 @@ export default {
 
     methods: {
         isDriver(item) {
-            return item.isDriver;
+            return item.isDriver !== null;
         },
 
         isPassenger(item) {
