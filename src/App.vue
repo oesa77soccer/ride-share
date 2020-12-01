@@ -25,3 +25,9 @@ export default {
   },
 };
 </script>
+
+<style>
+  .datum {
+    color: red,
+  }
+</style>

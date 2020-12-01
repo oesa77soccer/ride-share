@@ -173,7 +173,7 @@ beforeMount() {
         .patch(`/vehicles/${id}`, payload)
         .then(response => {
             if (response.data.ok) {
-                console.log(response.data.data);
+                console.log(response.data.results);
                 console.log("Edit worked in the database");
             }
         })

@@ -14,8 +14,8 @@
                 <div v-if="isDriver(item)">Driver</div>
                 <div v-if="isPassenger(item)">Passenger</div>
             </td>
-            <td>{{ item.date }}</td>
-            <td>{{ item.time }}</td>
+            <td>{{ item.date.slice(0,10) }}</td>
+            <td>{{ item.time.slice(0,5) }}</td>
             <td>
               <div>{{ item.from.direction }}</div>
               <div>{{ item.to.direction }}</div>
@@ -70,7 +70,7 @@ export default {
             { text: "Direction", value: "direction" },
             { text: "Name", value: "name" },
             { text: "Distance (mi.)", value: "distance" },
-            { text: "Fuel Price", value: "fuelPrice" },
+            { text: "Fuel Price (per mi.)", value: "fuelPrice" },
             { text: "Fee", value: "fee" },
             { text: "Seats Taken", value: "seatsTaken" },
             { text: "Total Cost", value: "totalCost" },

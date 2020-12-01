@@ -3,15 +3,17 @@
     <div>
       <h4 class="display-1">Rides</h4>
 
-      <select name="field" id="field">
-        <option value="name">Name</option>
-        <option value="address">Address</option>
-        <option value="city">City</option>
-        <option value="state">State</option>
-        <option value="zipCode">Zip Code</option>
-      </select>
-      <input id="search" type="text" placeholder="Search.." />
-      <v-icon large @click="search"> mdi-search-web </v-icon>
+      <div class="search-container">
+        <select class="button" name="field" id="field">
+          <option value="name">Name</option>
+          <option value="address">Address</option>
+          <option value="city">City</option>
+          <option value="state">State</option>
+          <option value="zipCode">Zip Code</option>
+        </select>
+        <input class="searchbox" id="search" type="text" placeholder="Search.." />
+        <v-icon large @click="search"> mdi-search-web </v-icon>
+      </div>
 
       <v-data-table
         class="elevation-1"
@@ -22,8 +24,8 @@
           <tr v-bind:class="itemClass(item)">
             <td v-if="isAdmin" contenteditable @blur="updateDate(item, $event)">{{ item.date }}</td>
             <td v-if="isAdmin" contenteditable @blur="updateTime(item, $event)">{{ item.time }}</td>
-            <td v-if="!isAdmin" >{{ item.date }}</td>
-            <td v-if="!isAdmin" >{{ item.time }}</td>
+            <td v-if="!isAdmin" >{{ item.date.slice(0,10) }}</td>
+            <td v-if="!isAdmin" >{{ item.time.slice(0,5) }}</td>
             <td>
               <div>{{ item.from.direction }}</div>
               <div>{{ item.to.direction }}</div>
@@ -73,7 +75,7 @@ export default {
             { text: "Direction", value: "direction" },
             { text: "Name", value: "name" },
             { text: "Distance (mi.)", value: "distance" },
-            { text: "Fuel Price", value: "fuelPrice" },
+            { text: "Fuel Price (per mi.)", value: "fuelPrice" },
             { text: "Fee", value: "fee" },
             { text: "Seats Taken", value: "seatsTaken" },
             { text: "Total Price", value: "totalPrice" },
@@ -279,5 +281,22 @@ export default {
 <style>
 .currentRide {
   background: lightcoral;
+}
+.button {
+  background: gray;
+  color: white;
+  text-align: center;
+  border-radius: 5%;
+  margin: 10px;
+  border: 1px;
+  border-color: darkgray;
+}
+.search-container {
+  background: rgb(228, 194, 194);
+}
+
+.searchbox {
+  background: white;
+  border-radius: 3px;
 }
 </style>
