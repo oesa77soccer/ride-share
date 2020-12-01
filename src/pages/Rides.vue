@@ -3,15 +3,17 @@
     <div>
       <h4 class="display-1">Rides</h4>
 
-      <select name="field" id="field">
-        <option value="name">Name</option>
-        <option value="address">Address</option>
-        <option value="city">City</option>
-        <option value="state">State</option>
-        <option value="zipCode">Zip Code</option>
-      </select>
-      <input id="search" type="text" placeholder="Search.." />
-      <v-icon large @click="search"> mdi-search-web </v-icon>
+      <div class="search-container">
+        <select class="button" name="field" id="field">
+          <option value="name">Name</option>
+          <option value="address">Address</option>
+          <option value="city">City</option>
+          <option value="state">State</option>
+          <option value="zipCode">Zip Code</option>
+        </select>
+        <input id="search" type="text" placeholder="Search.." />
+        <v-icon large @click="search"> mdi-search-web </v-icon>
+      </div>
 
       <v-data-table
         class="elevation-1"
@@ -279,5 +281,17 @@ export default {
 <style>
 .currentRide {
   background: lightcoral;
+}
+.button {
+  background: white;
+  color: black;
+  text-align: center;
+  border-radius: 5%;
+  margin: 10px;
+  border: 1px;
+  border-color: darkgray;
+}
+.search-container {
+  background: lightgray;
 }
 </style>
