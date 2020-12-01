@@ -70,7 +70,7 @@ export default {
             { text: "Direction", value: "direction" },
             { text: "Name", value: "name" },
             { text: "Distance (mi.)", value: "distance" },
-            { text: "Fuel Price", value: "fuelPrice" },
+            { text: "Fuel Price (per mi.)", value: "fuelPrice" },
             { text: "Fee", value: "fee" },
             { text: "Seats Taken", value: "seatsTaken" },
             { text: "Total Cost", value: "totalCost" },

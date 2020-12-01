@@ -1839,8 +1839,8 @@ async function init() {
                             message: `Logged in successfully as '${request.payload.email}'`,
                             result: {
                                 id: user.id,
-                                firstName: user.first_name,
-                                lastName: user.last_name,
+                                firstName: user.firstName,
+                                lastName: user.lastName,
                                 email: user.email,
                                 phone: user.phone,
                                 isAdmin: user.isAdmin,
@@ -1853,8 +1853,8 @@ async function init() {
                             message: `Logged in successfully as '${request.payload.email}'`,
                             result: {
                                 id: user.id,
-                                firstName: user.first_name,
-                                lastName: user.last_name,
+                                firstName: user.firstName,
+                                lastName: user.lastName,
                                 email: user.email,
                                 phone: user.phone,
                                 isAdmin: user.isAdmin,
@@ -1912,8 +1912,8 @@ async function init() {
                     message: `Reset password successfully for '${request.payload.email}'`,
                     details: {
                         id: account.id,
-                        firstName: account.first_name,
-                        lastName: account.last_name,
+                        firstName: account.firstName,
+                        lastName: account.lastName,
                         email: account.email,
                     },
                 }
