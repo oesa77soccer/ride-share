@@ -1830,7 +1830,7 @@ async function init() {
                     user &&
                     (await user.verifyPassword(request.payload.password))
                 ) {
-                    const isDriver = await Driver.query()
+                    const driver = await Driver.query()
                         .where('userId', user.id)
                         .first();
                     return {
@@ -1843,7 +1843,7 @@ async function init() {
                             email: user.email,
                             phone: user.phone,
                             isAdmin: user.isAdmin,
-                            isDriver: !!isDriver,
+                            isDriver: driver.id,
                         },
                     };
                 } else {
