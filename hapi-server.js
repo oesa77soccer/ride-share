@@ -339,8 +339,8 @@ async function init() {
                 },
             },
             handler: async (request, h) => {
-                /*if (request.payload.type) {
-                    const existingVehicleType = await Vehicle.query()
+                if (request.payload.type) {
+                    const existingVehicleType = await VehicleType.query()
                         .where("type", request.payload.type)
                         .first();
                     if (existingVehicleType) {
@@ -350,9 +350,9 @@ async function init() {
                         })
                         .code(400);
                     }
-                }*/
+                }
 
-                const newVehicleType = await Vehicle.query()
+                const newVehicleType = await VehicleType.query()
                     .insert(request.payload)
                     .returning('*');
                 if (newVehicleType) {
@@ -447,13 +447,13 @@ async function init() {
                         if (rowsDeleted) {
                             return {
                                 ok: true,
-                                message: `Deleted vehicle-type with ID '${request.params.id}'`,
+                                message: `Deleted vehicle type with ID '${request.params.id}'`,
                                 results: rowsDeleted
                             };
                         } else {
                             return {
                                 ok: false,
-                                message: `Couldn't delete vehicle-type with ID '${request.params.id}'`,
+                                message: `Couldn't delete vehicle type with ID '${request.params.id}'`,
                             };
                         }
                     }
@@ -1559,6 +1559,63 @@ async function init() {
 
 
 
+
+        {
+            method: "POST",
+            path: "/drive-ride",
+            config: {
+                description: "Sign up as a driver for a specific ride",
+                validate: {
+                    payload: Joi.object({
+                        driverId: Joi.number().integer().min(1).required(),
+                        rideId: Joi.number().integer().min(1).required()
+                    }),
+                },
+            },
+            handler: async (request, h) => {
+                if (request.payload.driverId) {
+                    const driver = await Driver.query()
+                        .findById(request.payload.driverId);
+                    if (!driver) {
+                        return h.response({
+                            ok: false,
+                            message: `You have not signed up to be a driver`
+                        })
+                        .code(404);
+                    }
+                }
+
+                if (request.payload.rideId) {
+                    const ride = await Ride.query()
+                        .findById(request.payload.rideId);
+                    if (!ride) {
+                        return h.response({
+                            ok: false,
+                            message: `Ride with ID '${request.payload.rideId}' does not exist`
+                        })
+                        .code(404);
+                    }
+                }
+
+                const newDriverForRide = await Drivers.query()
+                    .insert(request.payload)
+                    .returning('*');
+                if (newDriverForRide) {
+                    return h.response({
+                        ok: true,
+                        message: `You are now the driver for ride with ID '${request.payload.rideId}'`,
+                        results: newDriverForRide
+                    })
+                    .code(201);
+                } else {
+                    return h.response({
+                        ok: false,
+                        message: `Couldn't create add you as the driver of this ride`,
+                    })
+                    .code(500);
+                }
+            },
+        },
 
         {
             method: "POST",
