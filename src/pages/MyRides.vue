@@ -24,10 +24,10 @@
               <div>{{ item.from.name }}</div>
               <div>{{ item.to.name }}</div>
             </td>
-            <td>{{ item.fuelPrice }}</td>
-            <td>{{ item.capacity }}</td>
             <td>{{ item.distance }}</td>
-            <td>{{ item.fee }}</td>
+            <td>${{ item.fuelPrice }}</td>
+            <td>${{ item.fee }}</td>
+            <td>{{item.passengerNumber}}/{{ item.capacity }}</td>
 
             <td>
               <v-icon v-if="isAdmin" medium > mdi-delete </v-icon>
@@ -68,10 +68,10 @@ export default {
             { text: "Time", value: "time" },
             { text: "Direction", value: "direction" },
             { text: "Name", value: "name" },
-            { text: "Fuel Price", value: "fuelPrice" },
-            { text: "Capacity", value: "capacity" },
             { text: "Distance (mi.)", value: "distance" },
+            { text: "Fuel Price", value: "fuelPrice" },
             { text: "Fee", value: "fee" },
+            { text: "Seats Taken", value: "seatsTaken" },
             { text: "Action", value: "action" }
         ],
         rides: [],
@@ -121,6 +121,7 @@ export default {
                     vehicleId: ride.vehicleId,
                     isPassenger: ride.isPassenger,
                     isDriver: ride.isDriver,
+                    passengerNumber: ride.passengerNumber,
                 }))
             });
     },

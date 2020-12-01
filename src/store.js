@@ -54,8 +54,8 @@ export default new Vuex.Store({
   // Access in components using the `commit` method:
   // `this.$store.commit('logIn', user)`
   mutations: {
-    becomeDriver(state) {
-      state.currentUser.isDriver = true;
+    becomeDriver(state, driverId) {
+      state.currentUser.isDriver = driverId;
     },
 
     logIn(state, user) {

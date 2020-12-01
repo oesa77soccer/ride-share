@@ -32,10 +32,10 @@
               <div>{{ item.from.name }}</div>
               <div>{{ item.to.name }}</div>
             </td>
-            <td>{{ item.fuelPrice }}</td>
-            <td>{{ item.capacity }}</td>
             <td>{{ item.distance }}</td>
-            <td>{{ item.fee }}</td>
+            <td>${{ item.fuelPrice }}</td>
+            <td>${{ item.fee }}</td>
+            <td>{{item.passengerNumber}}/{{ item.capacity }}</td>
 
             <td>
               <v-icon v-if="isAdmin" medium @click="deleteRide(item)"> 
@@ -71,10 +71,10 @@ export default {
             { text: "Time", value: "time" },
             { text: "Direction", value: "direction" },
             { text: "Name", value: "name" },
-            { text: "Fuel Price", value: "fuelPrice" },
-            { text: "Capacity", value: "capacity" },
             { text: "Distance (mi.)", value: "distance" },
+            { text: "Fuel Price", value: "fuelPrice" },
             { text: "Fee", value: "fee" },
+            { text: "Seats Taken", value: "seatsTaken" },
             { text: "Action", value: "action" }
         ],
         rides: [],
@@ -95,7 +95,7 @@ export default {
                 params: this.$route.query
             })
             .then(response => {
-                this.rides = response.data.map(ride => ({
+                this.rides = response.data.results.map(ride => ({
                     id: ride.id,
                     date: ride.date,
                     time: ride.time,
@@ -121,6 +121,7 @@ export default {
                     fee: ride.fee,
                     isDriver: ride.isDriver,
                     isPassenger: ride.isPassenger,
+                    passengerNumber: ride.passengerNumber,
                 }))
             });
     },
@@ -242,8 +243,9 @@ export default {
         signUpToBeDriver(item) {
             const params = {
               rideId: item.id,
-              driverId: 22,
+              driverId: this.$store.getters.isDriver,
             }
+            console.log(params.driverId);
             this.$axios.post('/drive-ride', params).then(response => {
                 console.log(response.data);
                 if (response.data.ok) {
