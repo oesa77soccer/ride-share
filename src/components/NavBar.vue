@@ -56,7 +56,7 @@
 export default {
   computed: {
     isDriver() {
-      return this.$store.getters.isDriver;
+      return !!this.$store.getters.isDriver;
     },
     isLoggedIn() {
       return this.$store.getters.isLoggedIn;
