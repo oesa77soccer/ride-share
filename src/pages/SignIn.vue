@@ -64,8 +64,8 @@ export default {
         .then((result) => {
             this.showSnackbar(result.data.message);
           if (result.data.ok) {
-            this.$store.commit("logIn", result.data.details);
-            console.log(result.data.details);
+            this.$store.commit("logIn", result.data.result);
+            console.log(result.data.result);
             this.$router.push({ name: "home-page" });
           }
         })

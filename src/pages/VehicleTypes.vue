@@ -12,7 +12,7 @@
       >
         <template v-slot:item="{ item }">
           <tr>
-            <td contenteditable @blur="updateVehicleType(item, $event)">{{ item.type }}</td>
+            <td contenteditable @blur="updateType(item, $event)">{{ item.type }}</td>
             <td>
               <v-icon small @click="deleteVehicleType(item)">
                 mdi-delete
@@ -81,16 +81,16 @@ beforeMount() {
       this.snackbar.show = true;
     },
 
-    // Update vehicleType information.
-    updateVehicleType(item, e) {
+    // Update type information.
+    updateType(item, e) {
       const payload = {
-          vehicleType: e.target.textContent,
+          type: e.target.textContent,
       }
-      this.updateRow(item.id, payload);
+      this.updateVehicleType(item.id, payload);
     },
 
     // update row for entire item in database
-    updateRow(id, payload) {
+    updateVehicleType(id, payload) {
       this.$axios
       .patch(`/vehicle-type/${id}`, payload )
       .then(response => {

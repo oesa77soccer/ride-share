@@ -143,14 +143,16 @@ methods: {
           licenseState: this.member.state,
           licenseNumber: this.member.licenseNumber
         })
-        .then((result) => {
+        .then((response) => {
           // Based on whether things worked or not, show the
           // appropriate dialog.
-          if (result.data.ok) {
-            this.showDialog("Success", result.data.message);
+          if (response.data.ok) {
+            this.showDialog("Success", response.data.message);
             this.addedDriver = true;
+            this.$store.commit("becomeDriver");
+
           } else {
-            this.showDialog("Sorry", result.data.message);
+            this.showDialog("Sorry", response.data.message);
           }
         })
         .catch((err) => this.showDialog("Sorry", err.response.data.message));

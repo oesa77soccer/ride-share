@@ -10,8 +10,8 @@
 
     <v-btn v-if="isLoggedIn && isAdmin" text v-bind:to="{ name: 'admin' }">
       Full Admin Privileges
-    </v-btn>
-    <v-btn v-if="!isAdmin" text v-bind:to="{ name: 'about-us' }">About Us</v-btn>
+    </v-btn>    
+    
     <v-btn v-if="!isLoggedIn" text v-bind:to="{ name: 'sign-up' }">
       Sign Up
     </v-btn>
@@ -19,7 +19,8 @@
       Sign In
     </v-btn>
     <v-btn v-if="isLoggedIn && !isAdmin" text v-bind:to="{ name: 'rides' }">Find a Ride</v-btn>
-    <v-btn v-if="isLoggedIn && !isAdmin" text v-bind:to="{ name: 'become-driver' }">Become a Driver</v-btn>
+    <v-btn v-if="isLoggedIn" text v-bind:to="{ name: 'my-rides' }">My Rides</v-btn>
+    <v-btn v-if="isLoggedIn && !isAdmin && !isDriver" text v-bind:to="{ name: 'become-driver' }">Become a Driver</v-btn>
 
     <v-menu v-if="isLoggedIn" offset-y>
       <template v-slot:activator="{ on }">
@@ -31,6 +32,12 @@
       </template>
 
       <v-list>
+        <v-list-item v-bind:to="{ name: 'about-us' }">
+          <v-list-item-title>About Us</v-list-item-title>
+        </v-list-item>
+        
+        <v-divider></v-divider>
+
         <v-list-item v-bind:to="{ name: 'reset-password' }">
           <v-list-item-title>Reset Password</v-list-item-title>
         </v-list-item>
@@ -48,6 +55,9 @@
 <script>
 export default {
   computed: {
+    isDriver() {
+      return this.$store.getters.isDriver;
+    },
     isLoggedIn() {
       return this.$store.getters.isLoggedIn;
     },
