@@ -1593,16 +1593,22 @@ async function init() {
                     .code(404);                
                 }
                 const myRides = await Ride.query()
+                    .withGraphFetched('FromLocation')
+                    .withGraphFetched('ToLocation')
                     .withGraphJoined('Passengers')
                     .where('Passengers.passengerId', request.params.userId)
                     .withGraphJoined('Drivers.[Driver]')
-                    // .withGraphJoined('Driver')
                     .orWhere('Drivers:Driver.userId', request.params.userId);
                 if (myRides) {
+                    const rides = myRides.map(ride => {
+                        ride.isPassenger = !!ride.Passengers[0].rideId;
+                        ride.isDriver = !!ride.Drivers[0].rideId;
+                        return ride;
+                    });
                     return h.response({
                         ok: true,
                         message: `Found some rides`,
-                        results: myRides
+                        results: rides
                     })
                     .code(200);
                 } else {
