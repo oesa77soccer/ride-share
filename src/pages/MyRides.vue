@@ -10,6 +10,10 @@
       >
         <template v-slot:item="{ item }">
           <tr v-bind:class="itemClass(item)">
+            <td>
+                <div v-if="isDriver(item)">Driver</div>
+                <div v-if="isPassenger(item)">Passenger</div>
+            </td>
             <td>{{ item.date }}</td>
             <td>{{ item.time }}</td>
             <td>
@@ -53,6 +57,7 @@ export default {
     data: function() {
         return {
         headers: [
+            { text: "I am a...", value: "drivpass" },
             { text: "Date", value: "date" },
             { text: "Time", value: "time" },
             { text: "Direction", value: "direction" },
@@ -78,7 +83,9 @@ export default {
         // }
         // else {
             const id = this.userId();
-            this.$axios.get(`/my-rides/${id}`)
+            this.$axios.get(`/my-rides/${id}`, {
+                id: id,
+            })
             .then(response => {
                 console.log(response);
                 this.rides = response.data.results.map(ride => ({
@@ -105,16 +112,27 @@ export default {
                     capacity: ride.capacity,
                     distance: ride.distance,
                     fee: ride.fee,
+                    vehicleId: ride.vehicleId,
+                    isPassenger: ride.isPassenger,
+                    isDriver: ride.isDriver,
                 }))
             });
     },
     computed: {
         isAdmin() {
             return this.$store.getters.isAdmin;
-        }
+        } 
     },
 
     methods: {
+        isDriver(item) {
+            return item.isDriver;
+        },
+
+        isPassenger(item) {
+            return item.isPassenger;
+        },   
+
         isLoggedIn() {
             return this.$store.getters.isLoggedIn;
         },
