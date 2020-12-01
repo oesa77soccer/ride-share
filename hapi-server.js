@@ -1342,6 +1342,12 @@ async function init() {
                     .insert(request.payload)
                     .returning('*');
                 if (newDriver) {
+                    const newAuthorization = await Authorization.query()
+                        .insert({
+                            driverId: newDriver.id,
+                            vehicleId: 1
+                        })
+                        .returning('*');
                     return h.response({
                         ok: true,
                         message: `Nice! You're now a driver`,
@@ -1728,7 +1734,10 @@ async function init() {
                     .orWhere('Drivers:Driver.userId', request.params.userId);
                 if (myRides) {
                     const rides = myRides.map(ride => {
-                        ride.isDriver = ride.Drivers[0].Driver.userId === request.params.userId;
+                        ride.isDriver = false;
+                        if (ride.Drivers[0].Driver) {
+                            ride.isDriver = ride.Drivers[0].Driver.userId === request.params.userId;
+                        }
                         ride.isPassenger = !ride.isDriver;
                         allRides.map(normalRide => {
                             if (normalRide.id === ride.id) {
@@ -1839,8 +1848,8 @@ async function init() {
                             message: `Logged in successfully as '${request.payload.email}'`,
                             result: {
                                 id: user.id,
-                                firstName: user.first_name,
-                                lastName: user.last_name,
+                                firstName: user.firstName,
+                                lastName: user.lastName,
                                 email: user.email,
                                 phone: user.phone,
                                 isAdmin: user.isAdmin,
@@ -1853,8 +1862,8 @@ async function init() {
                             message: `Logged in successfully as '${request.payload.email}'`,
                             result: {
                                 id: user.id,
-                                firstName: user.first_name,
-                                lastName: user.last_name,
+                                firstName: user.firstName,
+                                lastName: user.lastName,
                                 email: user.email,
                                 phone: user.phone,
                                 isAdmin: user.isAdmin,
@@ -1883,16 +1892,16 @@ async function init() {
                 },
             },
             handler: async (request, h) => {
-                const account = await Account.query()
+                const user = await User.query()
                     .where("email", request.payload.email)
                     .first();
-                if (!account) {
+                if (!user) {
                     return {
                         ok: false,
                         message: "Invalid email address",
                     };
                 }
-                if (!(await account.verifyPassword(request.payload.currentPassword))) {
+                if (!(await user.verifyPassword(request.payload.currentPassword))) {
                     return {
                         ok: false,
                         message: "Incorrect password",
@@ -1904,17 +1913,17 @@ async function init() {
                         message: "New passwords don't match",
                     };
                 }
-                await Account.query()
+                await User.query()
                     .patch({ password: request.payload.newPassword })
                     .where("email", request.payload.email)
                 return {
                     ok: true,
                     message: `Reset password successfully for '${request.payload.email}'`,
                     details: {
-                        id: account.id,
-                        firstName: account.first_name,
-                        lastName: account.last_name,
-                        email: account.email,
+                        id: user.id,
+                        firstName: user.firstName,
+                        lastName: user.lastName,
+                        email: user.email,
                     },
                 }
             }

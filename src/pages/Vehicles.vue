@@ -188,7 +188,7 @@ beforeMount() {
         )
         .then(response => {
             if (response.data.ok) {
-                this.vehicles.push(response.data.data);
+                this.vehicles.push(response.data.results);
                 console.log("Add worked in the database");
             }
         });

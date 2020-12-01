@@ -135,11 +135,11 @@ export default {
 
     methods: {
         isDriver(item) {
-            return item.isDriver !== null;
+            return !!item.isDriver;
         },
 
         isPassenger(item) {
-            return item.isPassenger;
+            return !!item.isPassenger;
         },   
 
         isLoggedIn() {
